@@ -1,4 +1,4 @@
-# phase3 — 構造／フロー分析
+# phase3a — 構造／フロー分析【タイプA：単一HTML】
 
 あなたは今 Phase3 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
 入力は `.h2p/phase1-analysis.md`（観測）と `.h2p/phase2-requirements.md`
