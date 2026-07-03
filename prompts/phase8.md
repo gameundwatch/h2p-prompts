@@ -6,7 +6,8 @@
 入力は `shared/`（Phase7で確定実装した契約の正本）、
 `.h2p/phase5-stack.md`（バック技術・契約方式）、
 `.h2p/phase2-requirements.md`（契約の論理定義）、
-`.h2p/phase6-workflow.md`（開発規律）、稼働中の `frontend/`。
+`.h2p/phase6-workflow.md`（開発規律）、`.h2p/phase1-analysis.md`（挙動
+チェックリスト）、`.h2p/ubiquitous.md`（用語台帳）、稼働中の `frontend/`。
 
 ## このPhaseの責務
 
@@ -38,6 +39,10 @@ backend が結合して動くことを検証する。
 - TypeSpec/OpenAPI（言語またぎ）なら、正本から生成した型/バリデーションを
   使う。
 - **契約を backend 側で再定義しない。** 二重管理は密結合と不整合の源。
+- 実装中に契約の不備が見つかったら、Phase7 の「契約の補正について」の
+  規約に従う（形の補正＝承認の上 `phase2-requirements.md` と `shared/` を
+  同時更新／意味の変更＝Phase2への後戻りを諮る）。
+- ルーティング・モックデータの命名は `.h2p/ubiquitous.md` の識別子に従う。
 
 ### 3. バック3層での実装（フロントの鏡像）
 - **ルーティング層（routes/）**：リクエストを受け、契約に沿って入出力を
@@ -58,15 +63,18 @@ frontend のデータアクセス層が backend を叩けるよう設定する�
 ### 5. 動作検証ゲート（出口）★
 - frontend と backend を**同時に起動**する。
 - frontend が契約を介して backend のモックを叩き、**結合して動く**ことを
-  確認する。主要な操作フロー（Phase3図4）で実際に通信が成立し、
-  リファクタ後HTMLと同等の挙動になることを確かめる。
-- 成立しなければ修正する。成立するまで done にできない。
+  確認する。Phase1 の挙動チェックリストのうち通信が絡む項目
+  （Phase3図4の主要フロー）で実際に通信が成立し、リファクタ後HTMLと同等の
+  挙動になることを確かめる。視覚・操作の最終確認はユーザーが行い、許容した
+  差異は `approved_deviations` に記録する。
+- 成立しなければ修正する。成立するまで done にできない。通過したらコミットし
+  （`h2p: P8 gate passed`）、ハッシュを gates に記録する。
 
 ## 成果物
 - `backend/` 一式（routes/ logic/ data/ の3層、起動設定、package.json等）。
 - frontend と backend の結線設定（プロキシ等）。
-- `state.md`：`gates.p8_integration_runs` を `passed` に更新。decisions に
-  実装・結線上の重要な決定を追記。
+- `state.md`：`gates.p8_integration_runs` を `passed (commit <hash>)` に更新。
+  decisions に実装・結線上の重要な決定を追記。
 
 ## やってはいけないこと
 - ビジネスロジック・本DB・認証実体を作らない（射程外。動かない理想になる）。

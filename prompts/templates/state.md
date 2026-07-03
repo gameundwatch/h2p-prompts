@@ -19,37 +19,49 @@
 - created: <ISO8601 日時>
 - last_updated: <ISO8601 日時>
 - current_phase: 1
+- input_type: undecided   # undecided | A | B（起動時に司令塔が判別・記録）
 - backend: undecided   # undecided | none | mock（Phase2で確定。fullは将来予約・本ツール射程外）
                        # フロントエンドは常に作る前提。分岐はバックエンドの有無のみ
 
 ## source
-退避済み入力（.h2p/source/ 配下）と分析対象の確定状況。
-- copied_files:
-  - <例: source/index.html>
-- analysis_target: undecided   # 複数HTML時、対象の確定をPhase1冒頭で行う
-- notes: <複数ページか単一かなど、確定時のメモ>
+入力の退避・作業コピーの状況と、分析対象の確定状況。input_type により記載が変わる。
+- **タイプA**：退避済み入力（.h2p/source/ 配下）を列挙する。
+  - copied_files:
+    - <例: source/index.html>
+- **タイプB**：退避はしない。作業コピーの状況を記録する。
+  - working_copy: <例: ルートへ作業コピー済み（node_modules/.git 除外）、
+    依存インストール済み、起動確認済み。origin/ は凍結>
+- analysis_target: undecided   # 対象ファイル群と「1つのアプリである」ことの確認記録
+- notes: <複数ページ構成か単一かなど、確定時のメモ>
 
 ## phases
 各Phaseの状態。status は pending | in_progress | done | skipped のいずれか。
 artifact は成果物の相対パス。done にする条件は各Phaseプロンプトが定義する。
 
-| # | name                         | status      | artifact                              |
-|---|------------------------------|-------------|---------------------------------------|
-| 1 | HTML分析                      | in_progress | .h2p/phase1-analysis.md               |
-| 2 | 要件定義(5W1H)・契約昇華        | pending     | .h2p/phase2-requirements.md           |
-| 3 | 構造／フロー分析               | pending     | .h2p/phase3-structure.md              |
-| 4 | HTMLリファクタリング           | pending     | .h2p/phase4-refactor.md, source/refactored.html |
-| 5 | 技術スタック作成               | pending     | .h2p/phase5-stack.md                  |
-| 6 | 開発フロー設計                 | pending     | .h2p/phase6-workflow.md               |
-| 7 | HTML to Frontend実装          | pending     | frontend/                             |
-| 8 | Backend実装                   | pending     | backend/, shared/                     |
-| 9 | ドキュメント生成               | pending     | CLAUDE.md, README.md, documents/      |
+| # | name                                   | status      | artifact                              |
+|---|----------------------------------------|-------------|---------------------------------------|
+| 1 | 分析（A:観測 / B:棚卸し・診断）           | in_progress | .h2p/phase1-analysis.md（挙動チェックリスト含む） |
+| 2 | 要件（A:意図遡及 / B:将来意図）・契約昇華  | pending     | .h2p/phase2-requirements.md, .h2p/ubiquitous.md |
+| 3 | 構造（A:構造付与 / B:再設計・移行計画）    | pending     | .h2p/phase3-structure.md              |
+| 4 | 構造リファクタリング                      | pending     | .h2p/phase4-refactor.md, source/refactored/(A) |
+| 5 | 技術スタック作成                          | pending     | .h2p/phase5-stack.md                  |
+| 6 | 開発フロー設計                            | pending     | .h2p/phase6-workflow.md               |
+| 7 | Frontend実装/移行                        | pending     | frontend/                             |
+| 8 | Backend実装                              | pending     | backend/, shared/                     |
+| 9 | ドキュメント生成                          | pending     | CLAUDE.md, README.md, documents/      |
 
 ## gates
-動作検証ゲートの通過記録。進行時に司令塔が参照する。
-- p4_html_behaves: not_checked   # not_checked | passed | failed
+動作検証ゲートの通過記録。進行時に司令塔が参照する。passed にする際は
+通過時コミットのハッシュを添える（例: `passed (commit a1b2c3d)`）。
+- p4_html_behaves: not_checked   # not_checked | passed (commit <hash>) | failed
 - p7_frontend_behaves: not_checked
-- p8_integration_runs: not_checked   # frontend_only の場合は n/a
+- p8_integration_runs: not_checked   # backend: none の場合は n/a
+
+## approved_deviations
+検証ゲートで見つかった原本との差異のうち、**ユーザーが明示的に許容したもの**の
+記録（追記式・既存行を消さない）。各エントリは「Phase・差異の内容・許容の理由」を
+1行〜数行で。記録なき黙認は第一原則違反である。
+- <なければ空>
 
 ## decisions
 重要な決定の追記ログ（時系列・末尾追記）。後戻り時の判断根拠にもなる。
@@ -70,6 +82,17 @@ artifact は成果物の相対パス。done にする条件は各Phaseプロン�
 Phase完了時、司令塔は (a) その行を `done` に、(b) 次行を `in_progress` に、
 (c) `current_phase` を進める、の3つを同時に更新する。
 
+### git 規律
+h2p は git 操作込みの環境構築ワークフローである。
+- 初回起動時、作業フォルダが git リポジトリでなければ司令塔が `git init` する。
+- **動作検証ゲート（P4/P7/P8）の通過時は必ずコミット**し（メッセージは
+  `h2p: P4 gate passed` のような `h2p: ` プレフィックスの定型）、ハッシュを
+  gates に記録する。
+- **タイプBの移行ステップは1ステップ＝1コミット。**
+- `.h2p/`・`.h2p-archive/`・`prompts/` は **git で追跡する**（.gitignore に
+  入れない）。移行の意思決定の記録を履歴に残すため。ignore するのは
+  `node_modules` 等の生成物だけ。
+
 ### backend の効き方
 フロントエンドは常に作る。分岐はバックエンドの有無のみ。
 - `backend: none` のとき、Phase8 の行を `skipped` にし、
@@ -81,8 +104,10 @@ Phase完了時、司令塔は (a) その行を `done` に、(b) 次行を `in_pr
 
 ### gates の更新
 動作検証ゲートに該当するPhase（4・7・8）の出口で検証を行い、結果を gates に
-記録する。司令塔は進行指示を受けた際、該当ゲートが `passed` であることを
-確認してから次へ進める。`failed` の間は進行を保留する。
+記録する。検証は Phase1 の挙動チェックリストを照合対象とし、視覚・操作の
+最終確認はユーザーが行う。ユーザーが許容した差異は `approved_deviations` に
+記録してから passed にする。司令塔は進行指示を受けた際、該当ゲートが
+`passed` であることを確認してから次へ進める。`failed` の間は進行を保留する。
 
 ### 後戻り時の扱い
 ユーザーが上流Phaseへの後戻りを指示したら：
@@ -95,5 +120,6 @@ Phase完了時、司令塔は (a) その行を `done` に、(b) 次行を `in_pr
 
 ### 書き込みの原則
 - last_updated は更新のたびに必ず書き換える。
-- decisions と backlog は**追記**（既存行を消さない）。後の判断根拠になるため。
+- decisions・backlog・approved_deviations は**追記**（既存行を消さない）。
+  後の判断根拠になるため。
 - このファイルは人間が読んで現在地を完全に把握できる状態を常に保つ。
