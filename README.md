@@ -76,8 +76,10 @@ my-project/                  ← 作業フォルダ（最終的にここがプ�
 │   ├── a_html/              ←   タイプA用の指示書（phase1a〜3a）
 │   ├── b_frontend/          ←   タイプB用の指示書（phase1b〜3b）
 │   ├── phase4.md 〜 phase9.md ← 後半の共通指示書
-│   └── templates/
-│       └── state.md         ←   進行状態ファイルの雛形
+│   └── templates/           ←   成果物の雛形置き場
+│       ├── state.md         ←     進行状態ファイル
+│       ├── ubiquitous.md    ←     用語台帳＋命名文法（辞書的命名の固定辞書）
+│       └── analysis.md / requirements.md / structure.md / stack.md
 │
 ├── origin/                  ← あなたの入力はここに置く
 │   └── index.html           ←   HTML一式、または既存プロジェクト一式

@@ -61,8 +61,9 @@ Phase2で実質的な合意は済んでいるため、このPhaseは重い議論
    `.h2p/review/p3-diagrams.html`（Mermaid を描画する使い捨てのHTMLビュー）を
    生成して確認してもらう。**正本はあくまで `phase3-structure.md` の Mermaid
    コード**であり、HTMLは消しても情報が失われないビューに留める。
-3. 合意が取れたら `.h2p/phase3-structure.md` に4図すべてを書き込む
-   （各図に短い説明を添える）。
+3. 合意が取れたら `.h2p/phase3-structure.md` に4図すべてを書き込む。
+   構造と図ごとの Mermaid 記法は `prompts/templates/structure.md` に従う
+   （見出し構造を変えない。タイプAでは「移行計画」は該当なし）。
 4. `state.md` の decisions に、構造上の重要な決定（層の割り付け、状態と
    契約の分離方針など）を要約。
 
