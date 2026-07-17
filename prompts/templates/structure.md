@@ -1,65 +1,69 @@
-# structure.md — 構造定義成果物（テンプレート）
+# structure.md — structure artifact (template)
 
-`.h2p/phase3-structure.md` の雛形。書き手は入力タイプで異なる
-（A: phase3a / B: phase3b）が、下流（Phase4〜7）は入力タイプを意識せず読む。
-**見出し構造と、図ごとの Mermaid 記法の指定は不変**。図の中身だけが
-プロジェクトごとに変わる。要素名はすべて `.h2p/ubiquitous.md` の識別子を使う
-（台帳に無い概念は登録が先）。
+Skeleton for `.h2p/phase3-structure.md`. The writer differs by input type
+(A: phase3a / B: phase3b), but downstream Phases (4–7) read it without caring
+about the type. **The heading structure and the per-diagram Mermaid notation
+are immutable**; only the diagram content varies per project. All element
+names use identifiers from `.h2p/ubiquitous.md` (register new concepts
+first). Headings are fixed English anchors; prose is in the user's language
+(`meta.language`).
 
 ---
 
 ```markdown
-# 構造定義（phase3-structure）
+# Structure (phase3-structure)
 
-## 図1: アプリケーション構造図
-記法: Mermaid flowchart（graph TD/LR）。層（UI / ロジック / データアクセス、
-backend: mock ならバック3層と shared）を subgraph で明示し、依存の向きを
-矢印で示す。「UIは契約を直接知らない」「データアクセス層のみ contract に
-依存」が図から読めること。
-<タイプB: 目標構造。現状からの差分を図の下に箇条書きで明記>
-
-```mermaid
-<図>
-```
-
-## 図2: 使用データの型
-記法: Mermaid classDiagram（または erDiagram）。契約の正本の設計図。
-**この図に書いてよいのは「やり取り・永続化されるデータの形」だけ。**
-UIが一時的に持つ状態を混ぜない（それは図3）。
+## Diagram 1: Application structure
+Notation: Mermaid flowchart (graph TD/LR). Show layers (UI / logic / data
+access; with backend: mock, also the backend 3 layers and shared) as
+subgraphs, with dependency direction as arrows. The diagram must make
+readable: "UI does not know the contract directly" and "only the data-access
+layer depends on the contract".
+<Type B: target structure; list the deltas from the current state below the diagram>
 
 ```mermaid
-<図>
+<diagram>
 ```
 
-## 図3: 状態構造
-記法: Mermaid flowchart。フロントが保持する状態を ローカル / 共有 /
-サーバ由来 に分類し、どのコンポーネント・層に属するかを示す。
-**この図に書いてよいのは「画面が動くために持つ状態」だけ。** 契約の型を
-混ぜない（それは図2）。この分離が密結合防止の起点。
+## Diagram 2: Data types
+Notation: Mermaid classDiagram (or erDiagram). The blueprint of the canonical
+contract. **Only shapes of data that are exchanged or persisted belong
+here.** Never mix in UI-held transient state (that is Diagram 3).
 
 ```mermaid
-<図>
+<diagram>
 ```
 
-## 図4: フローチャート
-記法: Mermaid flowchart。主要なユーザー操作の流れ（5W1HのHowに対応）。
-通信が絡む箇所（契約を介したやり取り）をノード注記でマークする。
+## Diagram 3: State structure
+Notation: Mermaid flowchart. Classify frontend-held state into local /
+shared / server-derived, showing which component/layer owns each. **Only
+state the screen needs to run belongs here.** Never mix in contract types
+(that is Diagram 2). This separation is the origin of coupling prevention.
 
 ```mermaid
-<図>
+<diagram>
 ```
 
-## 移行計画
-<タイプBのみ。タイプA: 該当なし>
-1ステップ=1ブロック。依存順序（土台から）で並べる。各ステップ完了時に
-1コミット（h2p: プレフィックス）。
+## Diagram 4: Flow chart
+Notation: Mermaid flowchart. Primary user-operation flows (matching How in
+the 5W1H). Mark the points where communication happens (exchanges through
+the contract) with node annotations.
 
-### Step <N>: <名前>
-- 何を: <変更内容>
-- なぜ: <どのギャップを埋めるか>
-- 検証: <このステップ後も動くことをどう確かめるか>
+```mermaid
+<diagram>
+```
 
-### 線引き
-- 今回実行する範囲: <Step 1〜N>
-- 生成 CLAUDE.md に委ねる範囲: <Step N+1〜>
+## Migration plan
+<Type B only. Type A: N/A>
+One step = one block, ordered by dependency (foundation first). One commit
+per completed step (with the h2p: prefix).
+
+### Step <N>: <name>
+- what: <the change>
+- why: <which gap it closes>
+- verify: <how to confirm the app still works after this step>
+
+### Scope line
+- executed in this run: <Steps 1–N>
+- delegated to the generated CLAUDE.md: <Steps N+1–>
 ```

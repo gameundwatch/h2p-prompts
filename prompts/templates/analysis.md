@@ -1,44 +1,50 @@
-# analysis.md — 分析成果物（テンプレート）
+# analysis.md — analysis artifact (template)
 
-`.h2p/phase1-analysis.md` の雛形。書き手は入力タイプで異なる
-（A: phase1a の観測 / B: phase1b の棚卸し・診断）が、下流（Phase2〜8）は
-入力タイプを意識せずこれを読む。**見出し構造は共通・不変**とし、タイプ差は
-セクションの中で吸収する（使わないセクションは「該当なし」と明記して残す）。
+Skeleton for `.h2p/phase1-analysis.md`. The writer differs by input type
+(A: phase1a observation / B: phase1b inventory & diagnosis), but downstream
+Phases (2–8) read it without caring about the type. **The heading structure
+is shared and immutable**; type differences are absorbed inside sections
+(unused sections stay present, marked "N/A"). Headings are fixed English
+anchors; body content is written in the user's language (`meta.language`).
 
 ---
 
 ```markdown
-# 分析（phase1-analysis）
+# Analysis (phase1-analysis)
 
-## 対象（analysis_target）
-<対象ファイル群。複数HTMLなら「全体で1つのアプリ」の確認記録も>
+## Target (analysis_target)
+<target files; for multiple HTML files, also the confirmation that they form one app>
 
-## 観測 / 棚卸し
-<タイプA: (a)DOM構造とUI要素 / (b)振る舞いとイベント / (c)状態的に変化する値 /
- (d)画面遷移・表示切替 / (e)スタイル / (f)外部依存・バックエンド要求の痕跡
- （CDN経由のフレームワーク読み込みは名前・バージョン・使い方まで具体的に）>
-<タイプB: 依存とスクリプト / ディレクトリ・モジュール構成 / ビルド・ツール設定 / 規模>
+## Observation / Inventory
+<Type A: (a) DOM structure & UI elements / (b) behavior & events /
+ (c) values that change as state / (d) navigation & view switching /
+ (e) styling / (f) external dependencies & backend-demand traces
+ (record CDN-loaded frameworks concretely: name, version, how they are used)>
+<Type B: dependencies & scripts / directory & module layout / build & tooling
+ config / size>
 
-## 診断
-<タイプBのみ: 非機能要件の劣化・不足の検出（層の混在・密結合・状態管理・
- 依存の健全性・テスト/型・重複）。事実とリスクの形で、origin の該当箇所つき>
-<タイプA: 該当なし（Phase1a は観測に徹する）>
+## Diagnosis
+<Type B only: detected degradation/lack of non-functional requirements
+ (layer mixing, tight coupling, state management, dependency health,
+ tests/types, duplication) — as facts and risks, with origin locations>
+<Type A: N/A (phase1a observes only)>
 
-## バックエンド要求の痕跡
-<タイプA: (f) の要約。何が・どこに・何を要求しているように見えるか>
-<タイプB: 既存バックエンド/外部APIとの関係、契約の有無>
+## Backend-demand traces
+<Type A: summary of (f) — what, where, and what it appears to demand>
+<Type B: relationship with existing backend / external APIs; contract presence>
 
-## 判断保留
-<不明・曖昧としたものの明示的なリスト>
+## Deferred judgments
+<explicit list of things left unknown or ambiguous>
 
-## 挙動チェックリスト
-動作検証ゲート（P4/P7/P8）の唯一の照合対象。番号付き・「操作 → 期待される
-結果」の形式。ページ/画面単位のセクションに分け、ページ間遷移も項目化する。
+## Behavior Checklist
+The sole reference for behavior verification gates (P4/P7/P8). Numbered,
+"action → expected result" format. Split into sections per page/screen;
+include cross-page navigation as items.
 
-### <ページ/画面名>
-1. [ ] <操作> → <期待される結果>
-2. [ ] <操作> → <期待される結果>
+### <page/screen name>
+1. [ ] <action> → <expected result>
+2. [ ] <action> → <expected result>
 
-### ページ間遷移
-1. [ ] <操作> → <遷移先と状態>
+### Cross-page navigation
+1. [ ] <action> → <destination and state>
 ```

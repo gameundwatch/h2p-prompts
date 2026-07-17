@@ -1,161 +1,182 @@
-# phase5 — 技術スタック作成
+# phase5 — tech stack selection
 
-あなたは今 Phase5 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
-入力は入力タイプにより異なる（`state.md` の `input_type`）：
-- **タイプA**：`.h2p/source/refactored/` 一式（Phase4の整理済みHTML）＋
-  `.h2p/phase1-analysis.md`（CDN読み込み等の観測）。
-- **タイプB**：ルート作業コピーの現状スタック（package.json の既存依存）＋
-  `.h2p/phase3-structure.md` の目標構造・移行計画＋Phase4で着手した土台。
-いずれも `.h2p/phase2-requirements.md`（意図・スコープ・契約）と
-`.h2p/phase3-structure.md`（構造）を併せて参照する。
+You are now in Phase 5. The orchestrator's First Principle and progression
+rules are assumed loaded. Input differs by type (`state.md`'s `input_type`):
+- **Type A**: the `.h2p/source/refactored/` set (Phase 4's tidied HTML) plus
+  `.h2p/phase1-analysis.md` (observations such as CDN loads).
+- **Type B**: the root working copy's current stack (existing deps in
+  package.json) + `.h2p/phase3-structure.md`'s target structure & migration
+  plan + the foundation begun in Phase 4.
+Both also reference `.h2p/phase2-requirements.md` (intent, scope, contracts)
+and `.h2p/phase3-structure.md` (structure).
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-確定した意図とスコープから、**技術スタックを証拠ベースで保守的に選定する**。
+From the settled intent and scope, **select the tech stack conservatively,
+evidence-based**.
 
-- **タイプA**：入力が元HTMLではなく**リファクタ後HTML**であることが重要。
-  意図に沿って整理された後のHTMLは、コンポーネント境界も状態の流れも明瞭で、
-  技術判断の証拠として質が高い。
-- **タイプB**：既存スタックがすでに存在する。ここでの選定は「ゼロから選ぶ」
-  ではなく「**現状スタックを起点に、将来意図のギャップを埋めるのに必要な
-  変更だけを選ぶ**」。既存の妥当な選定は尊重し、変えるべきもの（陳腐化・
-  重複・将来意図に不足）だけを、証拠と二段判定に基づき入れ替え/追加する。
-  移行コストも判断材料に含める（変更は保守に直結するため）。
+- **Type A**: it matters that the input is the **refactored HTML**, not the
+  original. HTML tidied to intent has clear component boundaries and state
+  flow — higher-quality evidence for technology judgment.
+- **Type B**: a stack already exists. Selection here is not "pick from
+  zero" but "**starting from the current stack, choose only the changes
+  needed to close the future-intent gaps**". Respect sound existing choices;
+  replace/add only what must change (obsolete, duplicated, insufficient for
+  the future intent), based on evidence and the two-stage decision.
+  Migration cost is part of the judgment (changes hit maintenance directly).
 
-### 選定の二段判定（全カテゴリ共通の原則）
+### The two-stage decision (principle for all categories)
 
-技術選定は2段階に分ける。混同しないこと。
+Split selection into two stages. Never conflate them.
 
-**一段目：機能カテゴリの要否（証拠ベース・エージェント判定）**
-リファクタ後HTMLとPhase3の図を証拠に、「その機能カテゴリがそもそも必要か」を
-判定する。ここは証拠から導ける。不要なら切る ── これがエージェントの責務。
+**Stage 1: category necessity (evidence-based, agent-decided)**
+With the refactored HTML and Phase 3 diagrams as evidence, decide "is this
+capability category needed at all?". This is derivable from evidence. If
+unnecessary, cut it — that is the agent's responsibility.
 
-**二段目：候補の選択（ユーザー判定）**
-一段目で「必要」となったカテゴリを満たす候補が**複数ある場合**、こちらで
-決め打ちしない。**候補とトレードオフ（学習コスト・保守性・規模適合・
-バンドルサイズ等）を中立に提示し、ユーザーに選ばせる。** 技術選定は
-ユーザーのスキルセットと保守責任に直結するためである。
+**Stage 2: candidate choice (user-decided)**
+For categories judged "needed" with **multiple viable candidates**, never
+pick unilaterally. **Present candidates and trade-offs (learning cost,
+maintainability, scale fit, bundle size, …) neutrally and let the user
+choose.** Technology choice binds to the user's skill set and maintenance
+responsibility.
 
-つまり証拠で導けるのは「要るか否か」まで。「どれで満たすか」はユーザーの
-選好と習熟が決める領域。閾値による自動採用はしない。
+Evidence can derive "whether it's needed"; "which one satisfies it" belongs
+to the user's preference and fluency. No threshold-based auto-adoption.
 
-### 選定の基本姿勢：保守的・過剰実装の禁止
-使えるカードの役割は、むしろ「使わない判断」を促すことにある。一段目で
-スコープと証拠に照らし、不要なカテゴリは積極的に切る。**不要な依存を
-入れることは設計ミスである。**
+### Base stance: conservative; over-engineering forbidden
+The role of available cards is, if anything, to encourage the decision **not
+to use them**. In Stage 1, cut unnecessary categories aggressively against
+scope and evidence. **Adding an unnecessary dependency is a design defect.**
 
 ---
 
-## カテゴリ別の判断材料
+## Judgment material per category
 
-### A. フロントエンド
-各カテゴリ、一段目（要否の証拠）と二段目（候補提示）を分けて扱う。
+### A. Frontend
+For each category, keep Stage 1 (evidence of necessity) and Stage 2
+(candidate presentation) separate.
 
-- **UIライブラリ（React/Vue/Svelte等）**
-  一段目：コンポーネント候補の数・状態の複雑さから、フレームワークが要るか、
-  素のTS+Viteで足りるかを判定。**Phase1 で CDN 経由のフレームワーク読み込み
-  （React/Vue 等）が観測されている場合、それは当該フレームワークがすでに
-  使われている＝採用の最有力証拠**として扱う。
-  二段目：要るなら、候補と特性（エコシステム・学習コスト・ユーザーの習熟）を
-  提示して選ばせる。
+- **UI library (React/Vue/Svelte, …)**
+  Stage 1: from the number of component candidates and state complexity,
+  decide whether a framework is needed or plain TS + Vite suffices. **If
+  Phase 1 observed a framework loaded via CDN (React/Vue, …), treat that as
+  the strongest evidence for adopting that framework** (it is already in
+  use).
+  Stage 2: if needed, present candidates and traits (ecosystem, learning
+  cost, the user's fluency) and let the user choose.
 
 - **Router**
-  一段目：図4・Phase1(d)に画面遷移が**あるか**。**複数ページ構成（複数HTMLで
-  1アプリ）は Router 要否の第一級の証拠**として扱う。なければカテゴリごと不採用。
-  二段目：要るなら、選んだUIライブラリに対応するRouter候補を提示して選ばせる。
+  Stage 1: does Diagram 4 / Phase 1(d) contain navigation? **A multi-page
+  input (several HTML files, one app) is first-class evidence for Router
+  necessity.** If none, reject the whole category.
+  Stage 2: if needed, present Router candidates matching the chosen UI
+  library.
 
-- **状態管理（標準 vs 専用ライブラリ）**
-  一段目：図3の共有状態の規模を評価する。**閾値で機械的に決めない。**
-  専用ライブラリ（Zustand/Jotai/Recoil等）のメリットは「細粒度購読による
-  大規模での再レンダリング最適化」「状態ロジックのUI外分離」だが、共有状態が
-  少数で再レンダリングがボトルネックでない規模では、これらメリットがほぼ
-  効かず、デメリット（依存増・状態の所在分散による密結合・過剰設計）だけが
-  残る。この帯域ではフレームワーク標準（useState/useContext、ref/provide）が
-  優位。一段目では「標準で足りるか／専用が要る規模か」のトレードオフを示す。
-  二段目：専用が妥当となった場合のみ、候補のトレードオフ（Zustandは単一
-  ストアで学習コスト最小／Jotaiはatom単位で細粒度だが管理が散りやすい／
-  Recoilは開発停滞ぎみで新規推奨度低）を提示し、ユーザーに選ばせる。
+- **State management (built-in vs dedicated library)**
+  Stage 1: assess the shared-state scale in Diagram 3. **No mechanical
+  thresholds.** Dedicated libraries (Zustand/Jotai/Recoil, …) pay off via
+  fine-grained subscriptions (re-render optimization at scale) and moving
+  state logic out of the UI; with few shared states and no re-render
+  bottleneck, those benefits barely apply and the costs remain (extra
+  dependency, scattered state, over-design). In that band, framework
+  built-ins (useState/useContext, ref/provide) win. Stage 1 presents this
+  trade-off: "built-ins suffice / dedicated is warranted".
+  Stage 2: only when dedicated is warranted, present trade-offs (Zustand:
+  single store, minimal learning cost / Jotai: atom-level granularity but
+  easily scattered / Recoil: stalled development, low recommendation for new
+  projects) and let the user choose.
 
-- **UIコンポーネントセット（Radix/MUI等）**
-  一段目：リファクタ後HTMLが明確にアクセシブルな対話部品（modal/dropdown/
-  tooltip等）を持つか。なければ不採用。
-  二段目：要るなら、ヘッドレス系/スタイル付き系などの候補を提示して選ばせる。
+- **UI component set (Radix/MUI, …)**
+  Stage 1: does the refactored HTML clearly contain accessible interactive
+  widgets (modal/dropdown/tooltip)? If not, reject.
+  Stage 2: if needed, present headless vs styled candidates.
 
-- **通信（fetch vs ライブラリ）**
-  一段目：`backend` 設定と契約に応じて要否を判定。fetchで足りるか。
-  二段目：ライブラリが要るなら候補（axios等、データ取得層なら TanStack Query
-  等）を提示して選ばせる。
+- **Networking (fetch vs library)**
+  Stage 1: decide from the `backend` setting and contracts. Does fetch
+  suffice?
+  Stage 2: if a library is warranted, present candidates (axios, or TanStack
+  Query for a data-fetching layer) and let the user choose.
 
-- **スタイリング戦略**
-  一段目：リファクタ後HTMLのスタイルの持ち方を証拠にする（トークンが変数化
-  されているか、ベタ書きか）。
-  二段目：候補（プレーンCSS / CSS Modules / Tailwind / CSS-in-JS）の
-  トレードオフを提示し、ユーザーに選ばせる。**どれを選びなぜかを明記。**
-  （ビジュアルデザインのカスタム性はこの選定に吸収される。）
+- **Styling strategy**
+  Stage 1: use the refactored HTML's style situation as evidence (tokens
+  variablized, or hard-coded?).
+  Stage 2: present trade-offs among plain CSS / CSS Modules / Tailwind /
+  CSS-in-JS and let the user choose. **Record which and why.**
+  (Custom visual-design needs are absorbed into this selection.)
 
-- **パッケージマネージャ / バージョン管理 / テスト手法**
-  一段目：スコープ（保守の時間軸）から要否・厳しさを判定（使い捨てなら最小、
-  長期育成ならテスト基盤を整える）。
-  二段目：複数候補があればユーザーに選ばせる（npm/pnpm/yarn 等）。
+- **Package manager / version control / testing approach**
+  Stage 1: decide necessity/strictness from scope (maintenance horizon) —
+  minimal for throwaway, test infrastructure for long-term growth.
+  Stage 2: multiple candidates (npm/pnpm/yarn, …) → user chooses.
 
-各カテゴリの一段目判定は「リファクタ後HTMLのこの証拠が根拠」と対応づける。
-証拠なきカテゴリ採用は禁止。
+Tie every Stage 1 verdict to "this evidence in the refactored HTML".
+Adopting a category without evidence is forbidden.
 
-### B. バックエンド ── 全面的にユーザー判断（`backend: mock` のときのみ）
-バックエンドの言語・フレームワークはHTMLからは導けない（同じ契約を
-Node/Hono でも Python/FastAPI でも実装できる）。保守に直結し、組織の
-スキルセットや既存資産に縛られる。したがって**一段目から要否ではなく
-候補提示**となる。選択肢と特性を中立に提示し、ユーザーに選ばせる。
+### B. Backend — entirely the user's call (only when `backend: mock`)
+Backend language/framework cannot be derived from HTML (the same contract
+can be served by Node/Hono or Python/FastAPI). It binds to maintenance,
+organizational skill sets, and existing assets. Therefore Stage 1 is skipped
+— go straight to **neutral candidate presentation** and let the user choose.
 
-### C. 契約の方式 ── バック言語と連動（`backend: mock` のときのみ）
-契約の正本を `shared/` に置く。方式はBのバック言語選択と連動する。
-- フロント・バックとも TypeScript → Zod 等のスキーマで型と実行時検証を
-  一本化し `shared/` に置く（中間生成物を挟まず軽量）。
-- 言語をまたぐ（例：フロントTS / バックPython）→ TypeSpec / OpenAPI を
-  正本とし両側の型を生成で導く。
-- 方式が複数ありうる場合はトレードオフを提示して選ばせる。方式が何であれ
-  不変の原則：**型の正本は一箇所、両側はそこから導く。**
+### C. Contract method — tied to the backend language (only when `backend: mock`)
+The canonical contract lives in `shared/`. The method follows B's language
+choice.
+- Frontend and backend both TypeScript → unify types and runtime validation
+  in one schema (Zod, …) placed in `shared/` (lightweight, no generated
+  intermediates).
+- Cross-language (e.g. TS frontend / Python backend) → make TypeSpec /
+  OpenAPI the canon and derive both sides' types by generation.
+- Multiple viable methods → present trade-offs, user chooses. Whatever the
+  method, the invariant holds: **the type canon lives in one place; both
+  sides derive from it.**
 
 ---
 
-## 手順
-1. リファクタ後HTML・Phase2・Phase3 を読み、**一段目**：各カテゴリの要否を
-   証拠ベースで判定する（不要カテゴリはここで切る）。
-2. **二段目**：必要と判定したカテゴリで候補が複数あるものについて、候補と
-   トレードオフを中立に提示し、ユーザーに選ばせる。`backend: mock` なら
-   B（バック技術）とC（契約方式）も同様にユーザーに諮る。
-3. 確定した選定全体をユーザーに提示。特に「不採用にしたカテゴリとその根拠」も
-   示し、過剰実装でないことを確認してもらう。
-4. 合意したら `.h2p/phase5-stack.md` に確定スタックを書く。
+## Procedure
+1. Read the refactored HTML, Phase 2, Phase 3. **Stage 1**: decide each
+   category's necessity on evidence (cut the unnecessary here).
+2. **Stage 2**: for needed categories with multiple candidates, present
+   trade-offs neutrally and let the user choose. With `backend: mock`, also
+   put B (backend tech) and C (contract method) before the user.
+3. Present the complete selection, **including rejected categories and their
+   grounds**, and have the user confirm it is not over-engineered.
+4. On agreement, write `.h2p/phase5-stack.md`.
 
-## 成果物の書き込み
-`.h2p/phase5-stack.md` に、`prompts/templates/stack.md` の構造に従って書く
-（見出し構造を変えない。不採用カテゴリも省略しない）。
-- 各カテゴリ：要否の観点・判定・採用技術・**プロジェクト内での役割**・
-  選ばなかった候補と理由。
-- スタイリング戦略、`backend: mock` 時のバック技術と契約方式、基盤
-  （パッケージマネージャ等）。
-- **スキャフォールドコマンド**：Phase7/8 のエージェントがそのまま bash で
-  実行する想定のコマンド列。
+## Writing the artifact
+Write `.h2p/phase5-stack.md` following the structure of
+`prompts/templates/stack.md` (do not change the heading structure; do not
+omit rejected categories).
+- Per category: necessity, verdict, adopted technology, **role in the
+  project**, candidates not chosen and why.
+- Styling strategy; with `backend: mock`, backend tech and contract method;
+  foundation (package manager, …).
+- **Scaffold commands**: the command sequence Phase 7/8 agents will execute
+  via bash as-is.
 
-技術選定でフレームワーク固有の命名流儀（ハンドラ命名・ファイル命名等）が
-確定したら、`.h2p/ubiquitous.md` 第2部の「プロジェクト固有の流儀」に追記する。
+If the selection settles framework-specific naming idioms (handler naming,
+file naming, …), append them to the "Project-specific idioms" section of
+`.h2p/ubiquitous.md` Part 2.
 
-`state.md`：decisions に主要な技術決定と「入れなかったもの」を要約。
+`state.md`: summarize in decisions the main technology choices and "what was
+left out".
 
-## やってはいけないこと
-- 一段目で証拠なきカテゴリを採用しない／将来を見越した過剰装備をしない。
-- 二段目で**候補を勝手に決め打ちしない**。複数候補があるカテゴリは必ず
-  ユーザーに諮る。閾値による機械的な自動採用をしない。
-- 契約の二重管理を許す方式を選ばない（正本は一箇所）。
+## Do not
+- No evidence, no adoption (Stage 1); no equipping for imagined futures.
+- Never pick candidates unilaterally in Stage 2. Categories with multiple
+  candidates always go to the user. No threshold-based auto-adoption.
+- Never choose a method that permits dual contract management (one canon).
 
-## 完了条件（doneにできる条件）
-- 一段目：各カテゴリの要否が証拠ベースで判定され、不採用根拠も記録されている。
-- 二段目：複数候補のあるカテゴリがユーザー選択で確定している。
-- `backend: mock` の場合、バック技術と契約方式がユーザー判断で確定している。
-- スタイリング戦略が選定・記録されている。
-- スキャフォールド用コマンドの想定が書かれている。
-- ユーザーがスタックに合意した。
+## Completion conditions (to mark done)
+- Stage 1: every category's necessity decided on evidence, with rejection
+  grounds recorded.
+- Stage 2: every multi-candidate category settled by user choice.
+- With `backend: mock`: backend tech and contract method settled by the
+  user.
+- Styling strategy selected and recorded.
+- Scaffold commands written.
+- The user agreed to the stack.
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経てPhase6へ。
-Phase6は実装に入る前の開発フロー・規律を設計する。
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 6. Phase 6 designs the development workflow and
+discipline before implementation begins.

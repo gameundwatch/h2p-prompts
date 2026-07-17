@@ -1,94 +1,109 @@
-# phase1b — 棚卸し・診断【タイプB：既存フロントエンドアプリ】
+# phase1b — inventory & diagnosis [Type B: existing frontend app]
 
-あなたは今 Phase1（タイプB）にいる。司令塔の第一原則と進行規約は読み込み
-済みの前提。入力は `origin/` の既存アプリ原本（package.json + src + 依存）。
-**原本には手を触れず**、読み取って診断する。
+You are now in Phase 1 (Type B). The orchestrator's First Principle and
+progression rules are assumed loaded. Input: the original app in `origin/`
+(package.json + src + dependencies). **Never touch the originals** — read
+and diagnose.
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-既存アプリの現状を**棚卸し**（事実の把握）し、**診断**（非機能要件の劣化・
-不足の検出）する。タイプAの「観測」と違い、ここには**評価が含まれる** ──
-ただし評価の対象は**非機能要件（構造の健全性）だけ**であり、機能の良し悪しは
-評価しない。
+**Inventory** the existing app (grasp the facts) and **diagnose** it (detect
+degraded or missing non-functional requirements). Unlike Type A's pure
+observation, this Phase **includes evaluation** — but the object of
+evaluation is **non-functional requirements (structural health) only**;
+never evaluate the quality of features.
 
-第一原則の通り、このツールは機能を変えない。診断は「機能を増やせる構造に
-なっているか」を見るためのものであって、機能そのものを断罪するためではない。
-
----
-
-## 棚卸し（事実の把握）
-
-`origin/` を読み、以下を事実として把握する。
-
-- **依存とスクリプト**（package.json）：使用フレームワーク・ライブラリ・
-  バージョン、ビルド/テスト/起動スクリプト、パッケージマネージャ。
-- **ディレクトリ/モジュール構成**（src等）：どんな単位でファイルが分かれて
-  いるか、エントリポイント、ルーティング、状態管理の仕組み。
-- **ビルド/ツール設定**：bundler、TS設定、Lint/Format、既存のテスト。
-- **規模**：おおよそのファイル数・コンポーネント数・依存数（移行計画の
-  重さを見積もる材料）。
-
-## 診断（非機能要件の検出）★
-
-「機能を増やしていけるか」の観点で、現状の構造的な状態を検出する。**事実に
-基づき、決めつけない。** 検出は「ここがこうなっている」という観測＋「それが
-拡張性にこう影響しうる」というリスク提示に留め、是正の是非はPhase3で計画する。
-
-見る観点（該当するもののみ）：
-- **層の混在**：表示・ロジック・通信が同じ場所に混ざっていないか
-  （フロント3層＝UI/ロジック/データアクセスの観点で）。
-- **密結合**：あるモジュールの変更が広範囲に波及する構造になっていないか。
-  コンポーネントがAPIの形に直接依存していないか（契約の不在）。
-- **状態管理の状態**：状態の所在が分散・重複していないか。型と状態が
-  混ざっていないか。
-- **依存の健全性**：過剰な依存、陳腐化・非推奨・放置された依存、重複目的の
-  ライブラリ（同種機能の複数採用）。
-- **テスト・型の充足**：テストの有無と範囲、型付けの状態。
-- **重複・暗黙知**：コピペ的重複、暗黙のルール、ドキュメントの欠如。
-
-各検出は「origin のどこに・何が・どう見えるか」と対応づける。機能の不足や
-UI/UXの良し悪しは**診断対象外**（このツールの射程外）。
+Per the First Principle, this tool does not change features. The diagnosis
+exists to see "is the structure ready to grow features?", not to condemn the
+features themselves.
 
 ---
 
-## 手順
-1. `origin/` を読み、棚卸しを行う（原本は変更しない。以降の変更はすべて
-   ルートの作業コピーに対して行われ、`origin/` は凍結された基準点であり続ける）。
-2. 診断観点で現状の非機能要件の状態を検出する。
-3. **挙動チェックリストを作る**：アプリを起動して観測できる主要な利用フローと
-   挙動を、番号付きの「操作 → 期待される結果」のリストにする。画面単位の
-   セクションに分け、画面間遷移も項目化する。これが後続の動作検証ゲート
-   （P4/P7/P8）で「まだ同じ機能が動くか」を判定する唯一の照合対象になる。
-4. 棚卸し＋診断の結果をユーザーに提示する。特に「拡張の妨げになりうる箇所」を
-   事実とリスクの形で示す（決めつけず、判断は後のPhaseに委ねる）。
-   対象範囲が広い場合は、どのモジュール/領域を対象にするか（analysis_target）を
-   ユーザーと確認する。
-5. `.h2p/phase1-analysis.md` に構造化して書く。
+## Inventory (grasping facts)
 
-## 成果物の書き込み
-`.h2p/phase1-analysis.md`（ファイル名はタイプAと共通＝後半が入力タイプを
-意識せず読める）に、`prompts/templates/analysis.md` の構造に従って書く
-（見出し構造を変えない）。内容：棚卸し（依存・構成・設定・規模）、診断
-（検出した非機能要件の状態と拡張性へのリスク。origin の該当箇所つき）、
-対象範囲（analysis_target）、判断保留、挙動チェックリスト（書式は
-テンプレートに従う）。
+Read `origin/` and establish as fact:
 
-`state.md`：`analysis_target` 確定、診断の要点（特に拡張の妨げ）を decisions に
-要約。
+- **Dependencies and scripts** (package.json): frameworks, libraries,
+  versions; build/test/start scripts; package manager.
+- **Directory/module layout** (src etc.): the units files are split into,
+  entry points, routing, state-management mechanism.
+- **Build/tooling config**: bundler, TS config, lint/format, existing tests.
+- **Size**: approximate file count, component count, dependency count
+  (material for estimating migration-plan weight).
 
-## やってはいけないこと
-- 機能の良し悪し・UI/UXを評価しない（射程外）。診断は非機能要件に限る。
-- 「こう直すべき」と是正を断定しない（是正計画はPhase3）。検出とリスク提示に
-  留める。
-- `origin/` の原本を**変更しない**（このPhaseは読み取りのみ）。
-- 推測で埋めない。確認できた事実と、明示した「保留」だけを書く。
+## Diagnosis (detecting non-functional state) ★
 
-## 完了条件（doneにできる条件）
-- 棚卸しと診断が `.h2p/phase1-analysis.md` に書かれている。
-- 拡張の妨げになりうる非機能要件の状態が、事実とリスクの形で示されている。
-- **番号付きの挙動チェックリスト**が成果物の末尾に書かれている。
-- 対象範囲（analysis_target）が確定している。
-- ユーザーが診断結果を確認した。
+Detect the current structural condition from the viewpoint of "can features
+keep being added?". **Ground everything in fact; never presume.** Detection
+stays at "here is what this looks like" plus "here is how it could affect
+extensibility" — whether to fix it is planned in Phase 3.
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経て Phase2（phase2b）へ。
-Phase2 は現状の設計意図を読み取り、どこへスケールさせたいかの将来意図を引き出す。
+Aspects to inspect (only those that apply):
+- **Layer mixing**: are presentation, logic, and communication mixed in the
+  same place (viewed against the frontend 3 layers: UI / logic / data
+  access)?
+- **Tight coupling**: does changing one module ripple widely? Do components
+  depend directly on API shapes (absence of a contract)?
+- **State management**: is state scattered or duplicated? Are types and
+  state mixed?
+- **Dependency health**: excessive dependencies; obsolete/deprecated/
+  abandoned ones; duplicated-purpose libraries (multiple picks for the same
+  capability).
+- **Tests and typing**: presence and coverage of tests; typing condition.
+- **Duplication and tribal knowledge**: copy-paste duplication, implicit
+  rules, missing documentation.
+
+Tie every detection to "where in origin, what, and how it looks". Feature
+gaps and UI/UX quality are **outside the diagnosis** (outside this tool's
+range).
+
+---
+
+## Procedure
+1. Read `origin/` and take the inventory (do not modify the originals; all
+   subsequent changes happen on the root working copy, and `origin/` remains
+   the frozen baseline).
+2. Detect the non-functional condition along the diagnosis aspects.
+3. **Build the behavior checklist**: run the app and list its main usage
+   flows and behaviors as a numbered "action → expected result" checklist.
+   Split into sections per screen; include cross-screen navigation. This
+   becomes the sole reference by which the behavior verification gates
+   (P4/P7/P8) decide "does it still work the same?".
+4. Present inventory + diagnosis to the user. Show "possible obstacles to
+   growth" as facts and risks (no verdicts; judgment belongs to later
+   Phases). If the codebase is large, confirm with the user which
+   modules/areas are in scope (`analysis_target`).
+5. Write `.h2p/phase1-analysis.md`.
+
+## Writing the artifact
+Write `.h2p/phase1-analysis.md` (same filename as Type A, so later Phases
+read it type-agnostically) following the structure of
+`prompts/templates/analysis.md` (do not change the heading structure).
+Content: inventory (dependencies, layout, config, size); diagnosis (detected
+non-functional conditions and extensibility risks, with origin locations);
+scope (`analysis_target`); deferred judgments; behavior checklist (format
+per the template).
+
+`state.md`: fix `analysis_target`; summarize the diagnosis essentials
+(especially obstacles to growth) in decisions.
+
+## Do not
+- Do not evaluate feature quality or UI/UX (out of range). Diagnosis is
+  limited to non-functional requirements.
+- Do not decree fixes ("this must be corrected") — remediation is planned in
+  Phase 3. Stay at detection and risk presentation.
+- Do not **modify** the `origin/` originals (this Phase is read-only).
+- Do not fill gaps with speculation. Write only confirmed facts and explicit
+  deferrals.
+
+## Completion conditions (to mark done)
+- Inventory and diagnosis are written in `.h2p/phase1-analysis.md`.
+- Non-functional conditions that could obstruct growth are shown as facts
+  and risks.
+- A **numbered behavior checklist** is written at the end of the artifact.
+- The scope (`analysis_target`) is confirmed.
+- The user has reviewed the diagnosis.
+
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 2 (phase2b). Phase 2 reads the current design
+intent and draws out the future intent — where the user wants to scale.

@@ -1,139 +1,153 @@
-# phase4 — 構造リファクタリング（入力タイプ共通）
+# phase4 — structural refactoring (shared across input types)
 
-あなたは今 Phase4 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
-このPhaseは第一原則の**最初の砦**：機能を変えず、構造だけを意図・目標に
-合わせて整える。出口で「**まだ同じ機能が動く**」ことを必ず検証する。
+You are now in Phase 4. The orchestrator's First Principle and progression
+rules are assumed loaded. This Phase is the **first fortress** of the First
+Principle: features unchanged, only structure aligned to intent and target.
+At the exit, always verify that **it still works the same**.
 
-**入力タイプにより振る舞いが分かれる**（`state.md` の `input_type` を見る）。
+**Behavior branches by input type** (see `state.md`'s `input_type`).
 
-## タイプA（HTMLプロトタイプ）の場合
-入力は `.h2p/source/` の原本HTML一式、`.h2p/phase1-analysis.md`（挙動
-チェックリスト）、`.h2p/phase2-requirements.md`（意図）、
-`.h2p/phase3-structure.md`（構造）。**動くHTMLのまま**、意図・構造との乖離を
-是正する。成果物は `.h2p/source/refactored/` 配下の**是正済み一式**（原本と
-同じファイル構成。単一ページなら1ファイル、複数ページなら複数）。技術移行は
-しない（フレームワーク化はPhase7）。詳細は本文「タイプA詳細」を参照。
+## Type A (HTML prototype)
+Input: the original HTML set in `.h2p/source/`, `.h2p/phase1-analysis.md`
+(behavior checklist), `.h2p/phase2-requirements.md` (intent), and
+`.h2p/phase3-structure.md` (structure). **Keeping it working HTML**, correct
+its divergences from intent and structure. Artifact: the **corrected set**
+under `.h2p/source/refactored/` (same file layout as the original; one file
+for a single page, several for multi-page). No technology migration
+(frameworkization is Phase 7). Details under "Type A details".
 
-## タイプB（既存アプリ）の場合
-入力は `.h2p/phase3-structure.md`（目標構造・段階的移行計画）、
-`.h2p/phase2-requirements.md`（ギャップ）、`.h2p/phase1-analysis.md`（挙動
-チェックリスト）、ルートの**作業コピー**（起動時に origin/ から複製済み）。
-Phase3の移行計画の**今回実行する範囲のうち、土台にあたる最初のステップ群**を、
-機能を保ちながら**ルートの作業コピーに対して**実行に移す。`origin/` は凍結
-された基準点であり**一切変更しない**（比較相手は常に origin/ を起動して得る）。
-各ステップ後に動作を確認し、**1ステップ＝1コミット**（`h2p: ` プレフィックス）
-で記録する。残りのステップはPhase7以降および生成 CLAUDE.md へ引き継ぐ。
-成果物は `.h2p/phase4-refactor.md`（実行したステップと差分の記録）＋変更後の
-動くコード。タイプBでは「refactored/」は作らない。
+## Type B (existing app)
+Input: `.h2p/phase3-structure.md` (target structure & stepwise migration
+plan), `.h2p/phase2-requirements.md` (gaps), `.h2p/phase1-analysis.md`
+(behavior checklist), and the root **working copy** (copied from `origin/`
+at boot). Execute, **against the root working copy**, the first
+foundation-level steps of the migration plan's this-run range while
+preserving features. `origin/` is a frozen baseline — **never modify it**
+(the comparison target is always `origin/` booted up). After each step,
+verify behavior and record **one step = one commit** (with the `h2p: `
+prefix). Remaining steps are handed to Phase 7+ and the generated CLAUDE.md.
+Artifacts: `.h2p/phase4-refactor.md` (steps executed and diffs) plus the
+modified working code. Type B does not create `refactored/`.
 
-いずれのタイプも、目的は**設計意図・目標構造への適合**であって一般的な
-コード品質改善ではない。機能・見た目・振る舞いは変えない。
-
----
-
-## タイプA詳細
-
-### このリファクタリングの目的は何か
-**「設計意図への適合」だけ**である。一般的なコード品質改善ではない。
-Phase2で言語化した意図と、Phase3で描いた構造に対して、現HTMLがズレている
-箇所を直す。たとえば：
-- 図3で「共有状態」と整理した値が、HTML上ではバラバラのDOM/変数に散って
-  いる → 意図に沿って一箇所に集約する。
-- 図1でコンポーネント候補とした繰り返し構造が、微妙に食い違う手書き複製に
-  なっている → 意図に沿って構造を揃える(将来コンポーネント化しやすい形に)。
-- 図2の契約と、HTML内のダミーデータの形がズレている → 契約に合わせる。
+For both types, the goal is **fit to design intent and target structure**,
+not generic code-quality improvement. Features, appearance, and behavior do
+not change.
 
 ---
 
-## やってはいけないこと（最重要）
+## Type A details
 
-このPhaseは「技術移行」ではない。**素のHTML/CSS/JSのまま是正する。**
-- React/Vue等のフレームワークへ**置き換えない**。コンポーネント化・JSX化・
-  ビルドツール導入は一切しない（それはPhase7）。
-- 新しいライブラリを導入しない。npm初期化もしない。
-- 動作を変える「改善」をしない。機能の追加・削除・挙動の変更は禁止。
-  あくまで「同じ動作のまま、意図に沿って内部を整える」。
-- 見た目を変えない。スタイルの整理（重複の集約・トークン化）は意図に沿う
-  範囲で可だが、レンダリング結果が変わってはいけない。
-
-判断に迷ったら「これは意図への適合か、それとも理想の上乗せか」を自問する。
-上乗せなら、やらない（または backlog に記録してPhase以降に委ねる）。
-
-### タイプA 手順
-1. 原本一式を `.h2p/source/refactored/` 配下へコピーし（原本と同じファイル
-   構成）、これを編集対象とする(原本は触らない)。
-2. Phase2・Phase3 と現HTMLを突き合わせ、**乖離の一覧**を作る。各乖離に
-   ついて「意図ではどうあるべきか／現状どうか／是正方針」を整理する。
-3. 乖離の一覧をユーザーに提示し、是正の是非と方針を確認する（事実を提示し
-   判断を委ねる）。問題と決めつけず、「ここが意図とズレて見えます。揃えますか、
-   このままにしますか」と問う。
-4. 合意した範囲で `refactored/` の一式を是正する。
-5. **動作検証ゲート（出口）**：Phase1 の挙動チェックリストを照合対象に、
-   是正後の一式が原本と**同じ挙動**をすることを確かめる。
-   - エージェントは機械で確認できる範囲（構文、DOM構造、console エラー等）を
-     検証する。
-   - `.h2p/review/p4-compare.html`（原本と是正後を並置し、チェックリストを
-     添えた使い捨てのHTMLビュー）を生成し、**視覚・操作の最終確認をユーザーに
-     求める**。
-   - ユーザーが許容した差異は `state.md` の `approved_deviations` に記録する。
-   - 挙動が変わっていたら是正をやり直す。通過したらコミットし
-     （`h2p: P4 gate passed`）、ハッシュを gates に記録する。
+### What is this refactoring for?
+**"Fit to design intent" only.** Not generic quality improvement. Fix where
+the current HTML diverges from the intent verbalized in Phase 2 and the
+structure drawn in Phase 3. For example:
+- A value organized as "shared state" in Diagram 3 is scattered across
+  DOM/variables in the HTML → consolidate per the intent.
+- A repeated structure marked as a component candidate in Diagram 1 exists
+  as slightly-inconsistent hand copies → align the structure per the intent
+  (a shape easy to componentize later).
+- Dummy data in the HTML diverges from Diagram 2's contract shape → align to
+  the contract.
 
 ---
 
-## タイプB詳細
+## Do not (most important)
 
-### 目的
-Phase3の段階的移行計画のうち、**今回実行する範囲の土台となる最初のステップ群**を
-実行に移す。土台とは、後続の移行が依存する基盤 ── 多くは契約（`shared` の型）の
-確立、データアクセス層の切り出し、状態と型の分離など。UIの大掛かりな再編は
-Phase7以降に回し、ここでは「以降の移行を可能にする下地」を作る。
+This Phase is not technology migration. **Correct in plain HTML/CSS/JS.**
+- Do **not** replace with React/Vue or any framework. No componentization,
+  no JSX, no build tooling (that is Phase 7).
+- No new libraries. No npm initialization.
+- No behavior-changing "improvements". Adding/removing features or changing
+  behavior is forbidden. Only "same behavior, internals aligned to intent".
+- Do not change appearance. Style consolidation (dedup, tokenization) is
+  allowed within intent, but the rendered result must not change.
 
-### 漸進性の規律（最重要）
-- **一気に書き換えない。** 移行計画のステップ単位で進め、各ステップ後に
-  アプリが動くことを確認する。
-- 古い構造と新しい構造が一時的に共存してよい（ストラングラーフィグ）。新しい
-  構造へ少しずつ移し替え、安全になってから古いものを外す。
-- 機能・見た目・振る舞いは変えない。構造だけを動かす。
+When in doubt, ask: "is this fit-to-intent, or ideal-stacking?" If
+ideal-stacking: don't (or record in backlog for later Phases).
 
-### タイプB 手順
-1. Phase3の移行計画から、今回実行する土台ステップ群を確認する。
-2. 依存順序に従い、1ステップずつ**ルートの作業コピー**に対して実行する
-   （`origin/` は凍結。触らない）。各ステップで「何を・どのギャップのために・
-   どう動作確認するか」を明示する。
-3. **各ステップ後に動作確認とコミット**：そのステップ後もアプリが従来どおり
-   動くこと（挙動チェックリストの該当項目）を開発サーバー等で確かめ、
-   **1ステップ＝1コミット**で記録する。壊れたらそのステップをやり直す
-   （直前のコミットに戻れる）。
-4. 今回の範囲のステップ群が完了したら、残りステップが計画として
-   `phase3-structure.md` に残っていることを確認し、引き継ぎを整理する。
+### Type A procedure
+1. Copy the original set into `.h2p/source/refactored/` (same file layout)
+   and edit that (never the originals).
+2. Cross-check Phase 2 / Phase 3 against the current HTML and build a
+   **divergence list**. For each: "what the intent says / current state /
+   correction policy".
+3. Present the list to the user and confirm whether and how to correct
+   (present facts, delegate judgment). No verdicts: "this looks divergent
+   from the intent — align it, or leave it?"
+4. Correct the `refactored/` set within the agreed range.
+5. **Behavior verification gate (exit)**: with the Phase 1 behavior
+   checklist as the reference, confirm the corrected set behaves the same as
+   the original.
+   - The agent verifies what a machine can check (syntax, DOM structure,
+     console errors, etc.).
+   - Generate `.h2p/review/p4-compare.html` (original and corrected side by
+     side, checklist attached — a disposable HTML view) and **ask the user
+     for final visual/interaction confirmation**.
+   - Record user-accepted differences in `state.md`'s `approved_deviations`.
+   - If behavior changed, redo the correction. On pass, commit
+     (`h2p: P4 gate passed`) and record the hash in gates.
 
 ---
 
-## 成果物の書き込み
-**タイプA**：
-- `.h2p/source/refactored/` 一式：是正後の動くHTML（原本と同じファイル構成）。
-- `.h2p/phase4-refactor.md`：是正した乖離の一覧（何を・なぜ・どう直したか）。
-- `state.md`：`gates.p4_html_behaves` を `passed (commit <hash>)` に更新。
-  許容した差異があれば `approved_deviations` に記録。decisions に要点。
+## Type B details
 
-**タイプB**：
-- 変更後の動くコード（ルートの作業コピー上。ステップごとのコミット付き）。
-- `.h2p/phase4-refactor.md`：実行したステップ・差分・各ステップの動作確認結果、
-  および残ステップの引き継ぎ。
-- `state.md`：`gates.p4_html_behaves` を `passed (commit <hash>)`（＝各ステップ
-  後も機能が動く状態を確認）に更新。decisions に実行範囲と引き継ぎを要約。
+### Goal
+Execute the **first foundation steps** of the this-run range of Phase 3's
+migration plan. Foundation = what later migration depends on — typically
+establishing the contract (`shared` types), extracting the data-access
+layer, separating state from types. Large UI reshuffles wait for Phase 7+;
+here, build "the base that makes further migration possible".
 
-## 完了条件（doneにできる条件）
-**共通**：機能・見た目・振る舞いが変わっていない（許容差異は
-`approved_deviations` に記録済み）。動作検証ゲート通過
-（`p4_html_behaves: passed`）とゲートコミット。`.h2p/phase4-refactor.md` に
-記録がある。ユーザーが結果に合意した。
-- **タイプA**：`refactored/` 一式が存在し、意図との乖離が合意範囲で是正され、
-  技術移行をしていない。
-- **タイプB**：移行計画の今回範囲の土台ステップ群が実行され、各ステップ後も
-  アプリが動き（1ステップ＝1コミット）、残ステップが計画として引き継がれている。
+### Incrementality discipline (most important)
+- **Never rewrite in one stroke.** Move step by step per the plan, and
+  confirm the app works after each step.
+- Old and new structures may coexist temporarily (strangler fig). Shift
+  gradually into the new; remove the old only when safe.
+- Features, appearance, behavior unchanged. Only structure moves.
 
-検証が通らない限り、このPhaseは done にできない。動かなくなった瞬間に
-第一原則違反であることを忘れない。ユーザーが進行を指示し、ゲートが passed
-なら、司令塔の整合性チェックを経てPhase5へ。
+### Type B procedure
+1. From Phase 3's plan, confirm the foundation steps for this run.
+2. Execute one step at a time against **the root working copy** (`origin/`
+   is frozen — untouched). For each step, state "what · for which gap · how
+   to verify".
+3. **Verify and commit after each step**: confirm the app still works as
+   before (the relevant checklist items) on the dev server, then record
+   **one step = one commit**. If broken, redo the step (the previous commit
+   is right there).
+4. When this run's steps are done, confirm the remaining steps still stand
+   as a plan in `phase3-structure.md` and organize the handoff.
+
+---
+
+## Writing the artifacts
+**Type A**:
+- `.h2p/source/refactored/` set: the corrected working HTML (same file
+  layout as the original).
+- `.h2p/phase4-refactor.md`: the corrected divergence list (what, why, how).
+- `state.md`: `gates.p4_html_behaves` → `passed (commit <hash>)`; accepted
+  differences → `approved_deviations`; essentials → decisions.
+
+**Type B**:
+- The modified working code (on the root working copy, with per-step
+  commits).
+- `.h2p/phase4-refactor.md`: steps executed, diffs, per-step verification
+  results, and the handoff of remaining steps.
+- `state.md`: `gates.p4_html_behaves` → `passed (commit <hash>)` (= app
+  confirmed working after every step); decisions summarize the executed
+  range and handoff.
+
+## Completion conditions (to mark done)
+**Shared**: features, appearance, behavior unchanged (accepted differences
+recorded in `approved_deviations`). Behavior verification gate passed
+(`p4_html_behaves: passed`) with the gate commit. `.h2p/phase4-refactor.md`
+has the record. The user agreed to the result.
+- **Type A**: the `refactored/` set exists, divergences from intent are
+  corrected within the agreed range, and no technology migration happened.
+- **Type B**: this run's foundation steps are executed, the app worked after
+  every step (one step = one commit), and remaining steps are handed off as
+  a plan.
+
+Until verification passes, this Phase cannot be done. The moment it stops
+working, the First Principle is being violated. When the user instructs
+progression and the gate is passed, go through the orchestrator's
+consistency check to Phase 5.

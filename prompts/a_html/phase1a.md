@@ -1,118 +1,125 @@
-# phase1a — HTML分析【タイプA：HTMLプロトタイプ】
+# phase1a — HTML analysis [Type A: HTML prototype]
 
-あなたは今 Phase1 にいる。司令塔の第一原則と進行規約はすでに読み込み済みの
-前提で、ここでは Phase1 の作業手順だけを示す。
+You are now in Phase 1. The orchestrator's First Principle and progression
+rules are assumed loaded; only Phase 1's work procedure is given here.
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-`.h2p/source/` に退避された入力HTML（単一ページでも、複数ページで1つの
-アプリを成す一式でもよい）を**観測し、事実を抽出する**。それだけ。
+**Observe the input HTML** evacuated to `.h2p/source/` (a single page, or a
+set of pages forming one app) **and extract facts**. That is all.
 
-このPhaseの唯一の産物は「観測された事実」であり、判断・評価・改善提案では
-ない。後続の全Phaseがこの観測を中立な土台として使う。土台に意見が混じると
-全体が歪むため、ここでは徹底して観測に徹する。
+The sole product of this Phase is "observed facts" — not judgment, not
+evaluation, not improvement proposals. Every later Phase uses this
+observation as neutral ground. Opinions mixed into the ground distort
+everything above it, so observe and nothing else.
 
-### やってはいけないこと
-- 「ここは設計が悪い」「こう直すべき」といった**評価・改善提案をしない**
-  （リファクタリングはPhase4、技術判断はPhase5の仕事）。
-- 「これはReactで作るべき」といった**技術への言及をしない**。
-- 観測していないことを推測で埋めない。確認できた事実だけを書く。
-- 不明・曖昧なものは「不明」「判断保留」として正直に残す。
+### Do not
+- **No evaluation or improvement proposals** ("this design is bad",
+  "this should be fixed") — refactoring is Phase 4's job, technology
+  judgment Phase 5's.
+- **No technology references** ("this should be built in React").
+- Do not fill gaps with speculation. Write only confirmed facts.
+- Leave unknowns and ambiguities honestly as "unknown" / "judgment deferred".
 
-### このPhaseでの唯一の判断
-複数HTMLがある場合の**分析対象の確定**のみ。これは観測ではなく前提の確定
-なので、ユーザーに確認して `state.md` の `analysis_target` に記録する。
-勝手に1つを選ばない。
-
----
-
-## 手順
-
-### 1. 分析対象の確定
-`state.md` の `source.copied_files` を確認する。
-- 単一HTMLなら、それを対象として `analysis_target` に記録。
-- 複数あるなら、各ファイルの役割（メインページ／サブページ／素材か）を
-  観測した上でユーザーに提示し、「全体で1つのアプリか／どれが対象か」を
-  確認してから確定する。
-
-### 2. 観測（以下の観点を漏れなく拾う）
-読みやすさのため観点を分けるが、すべて「事実の列挙」である。
-
-**(a) DOM構造とUI要素**
-- 画面を構成する主要な領域・ブロック。
-- **繰り返し現れる構造**（同じ形のカード/行/リストアイテムが手書きで
-  複製されている等）。これは後のコンポーネント化の証拠なので、数と
-  場所を具体的に記録する。
-
-**(b) 振る舞いとイベント**
-- イベントハンドラ（onclick等の属性、addEventListener）の所在と、それが
-  何を起こすか（観測できる範囲で）。
-- DOM操作（要素の表示/非表示、追加/削除、テキスト書き換え）。
-
-**(c) 状態的に変化する値**
-- ユーザー操作や時間で変化する値。どこに保持され、どこで読まれ、どこで
-  書き換わるか。グローバル変数・data属性・DOMそのものに状態が
-  埋まっている箇所も含む。
-
-**(d) 画面遷移・表示切替**
-- タブ、モーダル、ページ的な切替、history操作など「画面が切り替わる」挙動。
-  （Routerの要否判断＝Phase5の証拠になる。ここでは有無の事実だけ。）
-
-**(e) スタイル**
-- スタイルの持ち方（インライン / `<style>` / 外部CSS）。
-- デザイントークン的な値（色・余白・フォント）が**変数化されているか、
-  ベタ書きか**。（スタイリング戦略選定＝Phase5の証拠。事実だけ記録。）
-
-**(f) 外部依存・バックエンド要求の痕跡 ★最重要**
-HTMLは「フロントだけでは完結しない部分」を痕跡として残している。これを
-事実として検出する。これがPhase2のスコープ確定の入力になる。
-- `fetch`/XHR の呼び出し、またはそのモック・コメントアウトされた通信。
-- **ハードコードされたダミーデータ**（本来サーバーから来るはずの配列等）。
-- localStorage/sessionStorage による**永続化の代用**。
-- **送信先のない、または送信先がダミーの form**。
-- **UIだけのログイン/認証**（実体のない認証画面）。
-- 外部API・CDN・サードパーティスクリプトの読み込み。特に **CDN経由の
-  フレームワーク/ライブラリ（React/Vue/Tailwind 等）の読み込み**は、
-  Phase5 の技術選定で第一級の証拠になるため、必ず具体的に記録する
-  （何を・どのバージョンで・どう使っているか）。
-
-各痕跡について「何を要求しているように見えるか」までは観測してよいが、
-「バックエンドを作るべき」という判断はしない（それはPhase2）。
-
-### 3. 挙動チェックリストの作成 ★動作検証ゲートの照合対象
-観測 (b)(c)(d) を基に、**番号付きの挙動チェックリスト**を作る。各項目は
-「操作 → 期待される結果」の形で、機械的に照合できる粒度で書く。
-- 複数ページ構成なら**ページ単位のセクション**に分け、ページ間遷移も
-  項目化する。
-- このリストが後続の動作検証ゲート（P4/P7/P8）で「同じ挙動か」を判定する
-  唯一の照合対象になる。ここに無い挙動はゲートで検証されないと心得て、
-  漏れなく拾う。
-
-### 4. 成果物の書き込み
-観測結果を `.h2p/phase1-analysis.md` に、`prompts/templates/analysis.md` の
-構造に従って書く（見出し構造を変えない。タイプAで使わないセクションは
-「該当なし」と明記）。各項目は「場所・内容・該当するソースの記述」を伴う
-事実の列挙とする。曖昧なものは「判断保留」として明示的に残す。
-挙動チェックリストの書式もテンプレートに従う。
-
-`state.md` を更新：`analysis_target` 確定、重要な観測（特にバックエンド
-要求の痕跡の有無）を decisions に1〜2行で要約。
-
-### 5. ユーザーへの提示
-観測結果の要点を簡潔に伝える。特に「(f) バックエンド要求の痕跡」の有無は、
-次のPhase2のスコープ確定に直結するので必ず触れる。ただしここでも
-「だからバックエンドが必要」とは言わない。「こういう痕跡が観測された。
-これをどう扱うかは次のPhaseで決めましょう」という提示に留める。
+### The only judgment in this Phase
+Confirming the **analysis target** when multiple HTML files exist. This is
+premise-fixing, not observation, so confirm with the user and record it in
+`state.md`'s `analysis_target`. Never pick one silently.
 
 ---
 
-## 完了条件（doneにできる条件）
+## Procedure
 
-- `analysis_target` が確定している。
-- `.h2p/phase1-analysis.md` に (a)〜(f) の観測が書かれている。
-- **番号付きの挙動チェックリスト**が成果物の末尾に書かれている
-  （複数ページならページ単位＋ページ間遷移を含む）。
-- バックエンド要求の痕跡の有無が明示されている。
-- ユーザーが観測結果を確認した。
+### 1. Confirm the analysis target
+Check `state.md`'s `source.copied_files`.
+- A single HTML file: record it as `analysis_target`.
+- Multiple files: observe each file's role (main page / sub page / asset),
+  present them to the user, and confirm "do they form one app / which is the
+  target?" before finalizing.
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経てPhase2へ。
+### 2. Observe (cover every aspect below, without omission)
+Aspects are separated for readability; all of them are enumerations of fact.
+
+**(a) DOM structure and UI elements**
+- The major regions/blocks composing the screen.
+- **Repeated structures** (same-shaped cards/rows/list items duplicated by
+  hand, etc.). These are evidence for later componentization — record their
+  count and locations concretely.
+
+**(b) Behavior and events**
+- Where event handlers live (onclick attributes, addEventListener) and what
+  they cause (as far as observable).
+- DOM manipulation (show/hide, add/remove, text rewriting).
+
+**(c) Values that change as state**
+- Values that change through user action or time. Where they are held, read,
+  and written. Include state buried in global variables, data attributes, or
+  the DOM itself.
+
+**(d) Navigation and view switching**
+- Tabs, modals, page-like switching, history manipulation — anything where
+  "the screen changes". (Router necessity is Phase 5's evidence; here only
+  the fact of presence/absence.)
+
+**(e) Styling**
+- How styles are held (inline / `<style>` / external CSS).
+- Whether design-token-like values (colors, spacing, fonts) are
+  **variablized or hard-coded**. (Styling strategy is Phase 5's evidence;
+  record facts only.)
+
+**(f) External dependencies and backend-demand traces ★most important**
+HTML leaves traces of "the parts the frontend alone cannot complete". Detect
+these as facts — they feed Phase 2's scope decision.
+- `fetch`/XHR calls, or mocked / commented-out communication.
+- **Hard-coded dummy data** (arrays that should come from a server).
+- localStorage/sessionStorage used as a **stand-in for persistence**.
+- **Forms with no (or dummy) submission target**.
+- **UI-only login/auth** (auth screens with no substance).
+- External APIs, CDNs, third-party scripts. In particular, **frameworks or
+  libraries loaded via CDN (React/Vue/Tailwind, etc.)** are first-class
+  evidence for Phase 5's technology selection — always record them
+  concretely (what, which version, how used).
+
+For each trace you may observe "what it appears to demand", but never judge
+"a backend should be built" (that is Phase 2).
+
+### 3. Build the behavior checklist ★the reference for verification gates
+From observations (b)(c)(d), build a **numbered behavior checklist**. Each
+item is "action → expected result", at a granularity that can be checked
+mechanically.
+- For multi-page inputs, split into **sections per page** and include
+  cross-page navigation as items.
+- This list becomes the sole reference by which the behavior verification
+  gates (P4/P7/P8) decide "same behavior". Behavior not listed here will not
+  be verified — collect exhaustively.
+
+### 4. Write the artifact
+Write the observations to `.h2p/phase1-analysis.md` following the structure
+of `prompts/templates/analysis.md` (do not change the heading structure;
+mark sections unused by Type A as "N/A"). Each item is an enumeration of
+fact with location, content, and the relevant source text. Leave
+ambiguities explicitly as deferred judgments. The behavior checklist format
+also follows the template.
+
+Update `state.md`: fix `analysis_target`; summarize key observations
+(especially backend-demand traces) in decisions in 1–2 lines.
+
+### 5. Present to the user
+Convey the essentials briefly. Always touch on the presence/absence of
+"(f) backend-demand traces", since it feeds Phase 2's scope decision — but
+even here do not say "so a backend is needed". Stay at: "these traces were
+observed; how to treat them is decided in the next Phase."
+
+---
+
+## Completion conditions (to mark done)
+
+- `analysis_target` is confirmed.
+- Observations (a)–(f) are written in `.h2p/phase1-analysis.md`.
+- A **numbered behavior checklist** is written at the end of the artifact
+  (per page, including cross-page navigation, for multi-page inputs).
+- Presence/absence of backend-demand traces is explicit.
+- The user has reviewed the observations.
+
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 2.

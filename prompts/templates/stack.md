@@ -1,43 +1,47 @@
-# stack.md — 技術スタック定義（テンプレート）
+# stack.md — tech stack artifact (template)
 
-`.h2p/phase5-stack.md` の雛形。Phase7/8 はこのファイルからスキャフォールド
-コマンドを機械的に組み立て、Phase9 は documents/ への清書の素材にする。
-セクションの順序・見出しは変更しないこと。
+Skeleton for `.h2p/phase5-stack.md`. Phase 7/8 assemble scaffold commands
+mechanically from this file; Phase 9 uses it as material for `documents/`.
+Do not change section order or headings. Headings are fixed English anchors;
+prose is in the user's language (`meta.language`).
 
-**不採用の記録は採用と同格に重要。** 未来の開発者（とエージェント）が
-不要な依存を足し戻すのを防ぐ、このツールの過剰実装禁止の要。
+**Recording rejections matters as much as recording adoptions.** It is what
+stops future developers (and agents) from re-adding unnecessary
+dependencies — the heart of this tool's over-engineering ban.
 
 ---
 
 ```markdown
-# 技術スタック（phase5-stack）
+# Tech stack (phase5-stack)
 
-## カテゴリ別判定
-機能カテゴリごとに以下のブロックを繰り返す。判定した全カテゴリを載せる
-（不採用カテゴリも省略しない）。
+## Per-category decisions
+Repeat the block below for every category judged (do not omit rejected
+categories).
 
-### <機能カテゴリ名（例: 状態管理）>
-- 要否の観点: <このプロジェクトのどの証拠に照らして、この機能がどこで必要か>
-- 判定: 採用 | 不採用
-- 採用技術: <名前・バージョン方針>（不採用なら「なし」）
-- プロジェクト内での役割: <どの層の・何を担うか。1〜2行>
-- 選ばなかった候補と理由: <候補> — <理由>／不採用カテゴリなら
-  「カテゴリごと不要」の証拠
+### <category name (e.g. state management)>
+- necessity: <against which evidence of this project is this capability
+  needed, and where>
+- verdict: adopted | rejected
+- technology: <name, version policy> ("none" if rejected)
+- role in the project: <which layer, responsible for what; 1–2 lines>
+- candidates not chosen & why: <candidate> — <reason> / for a rejected
+  category, the evidence that the whole category is unnecessary
 
-## スタイリング戦略
-- 選んだ方式: <プレーンCSS / CSS Modules / Tailwind / CSS-in-JS>
-- 理由: <リファクタ後HTMLの証拠とユーザー選択の理由>
+## Styling strategy
+- chosen approach: <plain CSS / CSS Modules / Tailwind / CSS-in-JS>
+- rationale: <evidence from the refactored HTML and the user's choice>
 
-## バックエンド（backend: mock のときのみ）
-- 言語/フレームワーク: <ユーザー選択と理由>
-- 契約の方式: <Zod / TypeSpec / OpenAPI 等。正本の置き場所は shared/ 一箇所>
+## Backend (only when backend: mock)
+- language/framework: <user's choice and reason>
+- contract method: <Zod / TypeSpec / OpenAPI, etc. The canon lives in
+  shared/, one place only>
 
-## 基盤
-- パッケージマネージャ: <npm / pnpm / yarn>
-- バージョン管理・テスト手法: <スコープ（保守の時間軸）に応じた選定>
+## Foundation
+- package manager: <npm / pnpm / yarn>
+- version control & testing approach: <matched to scope (maintenance horizon)>
 
-## スキャフォールドコマンド
-Phase7/8 がそのまま bash で実行する想定のコマンド列。
-- <例: npm create vite@latest frontend -- --template react-ts>
-- <例: cd frontend && npm install>
+## Scaffold commands
+Command sequence Phase 7/8 will execute via bash as-is.
+- <e.g. npm create vite@latest frontend -- --template react-ts>
+- <e.g. cd frontend && npm install>
 ```

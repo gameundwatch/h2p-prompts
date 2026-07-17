@@ -1,123 +1,149 @@
-# phase7 — Frontend実装／移行
+# phase7 — frontend implementation / migration
 
-あなたは今 Phase7 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
-入力は入力タイプにより異なる（`state.md` の `input_type`）：
-- **タイプA**：`.h2p/source/refactored/` 一式（Phase4の動くHTML）を再現対象とする。
-- **タイプB**：ルートの作業コピーの現状コードと、Phase3の目標構造・移行計画
-  （Phase4で着手済みの土台の続き）。再現ではなく**合意した移行スコープの
-  残りステップの実行**が対象。
-いずれも `.h2p/phase5-stack.md`（確定スタック）、`.h2p/phase3-structure.md`
-（構造図／目標構造）、`.h2p/phase6-workflow.md`（開発規律）、
-`.h2p/phase2-requirements.md`（契約）、`.h2p/phase1-analysis.md`（挙動
-チェックリスト）、`.h2p/ubiquitous.md`（用語台帳）を参照する。
+You are now in Phase 7. The orchestrator's First Principle and progression
+rules are assumed loaded. Input differs by type (`state.md`'s `input_type`):
+- **Type A**: the `.h2p/source/refactored/` set (Phase 4's working HTML) is
+  the reproduction target.
+- **Type B**: the root working copy's current code plus Phase 3's target
+  structure & migration plan (continuing the foundation begun in Phase 4).
+  The object is not reproduction but **executing the remaining steps of the
+  agreed migration scope**.
+Both reference `.h2p/phase5-stack.md` (settled stack),
+`.h2p/phase3-structure.md` (structure / target), `.h2p/phase6-workflow.md`
+(discipline), `.h2p/phase2-requirements.md` (contracts),
+`.h2p/phase1-analysis.md` (behavior checklist), and `.h2p/ubiquitous.md`
+(term ledger).
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-確定スタックで開発環境を立ち上げ、`frontend/`（目標構造）を実装する。スコープに
-「開発環境構築まで」を含むため、出口は「コードが書けた」ではなく
-「**開発サーバー上で動く**」状態。これはフロント側の**第一原則の砦**を担う。
+Stand up the dev environment with the settled stack and implement
+`frontend/` (target structure). Because scope includes "up to dev
+environment construction", the exit is not "code written" but **"runs on the
+dev server"**. This is the frontend-side **fortress of the First
+Principle**.
 
-- **タイプA**：リファクタ後HTML（一式）を**忠実に再現**して `frontend/` を
-  実装する。複数ページ構成なら、ページ→ルートの対応を含めて再現する。
-- **タイプB**：Phase4で着手した土台に続き、移行計画のうち**合意した移行
-  スコープの残りステップ**を実行し、目標構造の `frontend/`（3層）へ機能を
-  保ったまま移し替える。**機能は現状と同一**のまま、構造だけを目標形へ寄せる。
-  1ステップ＝1コミットの規律は Phase4 から引き続き適用する。スコープ外の
-  残ステップは生成 CLAUDE.md へ引き継ぐ（h2p の出口＝合意スコープの完遂）。
+- **Type A**: **faithfully reproduce** the refactored HTML set as
+  `frontend/`. For multi-page inputs, reproduce including the page→route
+  mapping.
+- **Type B**: following Phase 4's foundation, execute the **remaining steps
+  of the agreed migration scope**, moving features unchanged into the target
+  `frontend/` (3 layers). **Features identical**; only structure shifts
+  toward the target. The one-step-one-commit discipline carries over from
+  Phase 4. Steps beyond the scope go to the generated CLAUDE.md (h2p's
+  exit = completion of the agreed scope).
 
-### 機能を変えない（最重要）
-タイプを問わず、**機能・見た目・挙動を変えない**。
-- タイプA：「これはHTMLにあったか」を自問。なければ作らない。
-- タイプB：「これは移行計画にある構造変更か、それとも機能の改変か」を自問。
-  機能の改変なら、やらない（backlog へ）。移し替えるのは構造だけ。
-- 迷ったものは backlog に記録し、移行後の開発（生成 CLAUDE.md）に委ねる。
+### Do not change features (most important)
+Regardless of type, **no changes to features, appearance, or behavior**.
+- Type A: ask "was this in the HTML?" If not, do not build it.
+- Type B: ask "is this a structural change in the migration plan, or a
+  feature change?" If a feature change: don't (→ backlog). Only structure
+  moves.
+- Anything doubtful goes to backlog, delegated to post-migration development
+  (the generated CLAUDE.md).
 
-この砦が、設計意図・機能を歪めずプロジェクトへ運ぶことを保証する。
+This fortress guarantees the design intent and features reach the project
+undistorted.
 
 ---
 
-## 手順
+## Procedure
 
-### 1. スキャフォールドと開発環境の構築（bashで直接実行）
-`.h2p/phase5-stack.md` の確定スタックとスキャフォールド用コマンドの想定を
-読み、**あなたが bash で直接実行**する。
-- `backend: mock` の場合、ルートをモノレポの器とし `frontend/` 配下に
-  スキャフォールドする。`backend: none` の場合の配置はスコープに従う
-  （`.h2p/phase3-structure.md` の目標構造と `state.md` に準拠）。
-- `npm create vite`（選定スタックに対応するテンプレート指定）等で初期化。
-- 依存をインストール（`npm install` 等）。パッケージマネージャは選定に従う。
-- 開発サーバーが起動することをこの時点で一度確認する。
+### 1. Scaffold and dev environment (execute directly via bash)
+Read the settled stack and scaffold commands in `.h2p/phase5-stack.md` and
+**execute them yourself via bash**.
+- With `backend: mock`, make the root a monorepo shell and scaffold under
+  `frontend/`. With `backend: none`, placement follows scope (per
+  `.h2p/phase3-structure.md`'s target structure and `state.md`).
+- Initialize with `npm create vite` (template per the selected stack), etc.
+- Install dependencies (`npm install`, etc.; package manager per selection).
+- Confirm the dev server starts at this point, once.
 
-### 2. 層への割り付け（Phase3の図に従う）
-リファクタ後HTMLを、フロント3層に割り付けて実装する。
-- **UI層（components/）**：表示。Phase1で観測しPhase3で整理した
-  コンポーネント候補を実体化する。契約もロジックも直接知らない。
-- **ロジック層（logic/、命名はスタック依存）**：業務ルール・状態制御。
-  表示にもAPIにも依存しない。図3の状態構造をここに実装する。
-- **データアクセス層（api/）**：通信。唯一 `shared` の契約（または公開APIの
-  契約）に依存する。HTMLのfetch/ダミーデータ参照をここへ集約する。
-- 図2（型）と図3（状態）の分離を実装でも保つ。混ぜない。
-- **命名は `.h2p/ubiquitous.md` に従う**：型名・変数名・コンポーネント名・
-  エンドポイント名は第1部（台帳）のコード識別子に一致させ、識別子の組み立ては
-  第2部（命名文法：動詞辞書・修飾規則）に従う。台帳に無い概念が実装で
-  必要になったら、ユーザーに確認して台帳へ登録してから使う。無断の言い換え・
-  独自翻訳を禁じる。
+### 2. Assign to layers (follow Phase 3's diagrams)
+Implement the refactored HTML assigned to the frontend's 3 layers.
+- **UI layer (components/)**: presentation. Materialize the component
+  candidates observed in Phase 1 and organized in Phase 3. Knows neither the
+  contract nor logic directly.
+- **Logic layer (logic/ — naming stack-dependent)**: business rules and
+  state control. Depends on neither presentation nor API. Implements
+  Diagram 3's state structure.
+- **Data-access layer (api/)**: communication. The only layer that depends
+  on the `shared` contract (or the public API's contract). Consolidate the
+  HTML's fetch / dummy-data references here.
+- Preserve the Diagram 2 (types) / Diagram 3 (state) separation in the
+  implementation. Do not mix.
+- **Naming follows `.h2p/ubiquitous.md`**: type, variable, component, and
+  endpoint names match Part 1 (ledger) identifiers; identifier construction
+  follows Part 2 (naming grammar: verb dictionary, modifier rules). If a
+  concept needed by the implementation is not in the ledger, confirm with
+  the user and register it first. No silent paraphrasing or ad-hoc
+  translation.
 
-### 3. スタイルの移植
-Phase5で選んだスタイリング戦略に従い、HTMLのスタイルを移植する。
-レンダリング結果が変わらないことを最優先する。トークン化されていた値は
-その戦略の変数機構へ、ベタ書きはコンポーネント単位へ。
+### 3. Port the styles
+Following Phase 5's styling strategy, port the HTML's styles. The rendered
+result staying identical has top priority. Tokenized values go into that
+strategy's variable mechanism; hard-coded ones become per-component.
 
-### 4. 段階的実装（Phase6で決めた進め方に従う）
-Phase6で合意した実装順序（どのコンポーネントから等）で進める。各単位ごとに
-開発サーバーで見た目・挙動を確認しながら積み上げる。
+### 4. Incremental implementation (per Phase 6's plan)
+Proceed in the implementation order agreed in Phase 6 (which components
+first, etc.). Verify look and behavior on the dev server per unit as you
+build up.
 
-### 5. 動作検証ゲート（出口）★
-- `npm install` 済みで**開発サーバーが起動**する。
-- 再現した frontend が、**Phase1 の挙動チェックリストを照合対象に**、
-  リファクタ後HTML（タイプBは `origin/` 基準点）と同じ挙動・見た目をする。
-  エージェントは機械で確認できる範囲（起動、console エラー、DOM・状態遷移）を
-  検証する。
-- `.h2p/review/p7-compare.html`（リファクタ後HTMLと開発サーバーを並置し、
-  チェックリストを添えた使い捨てのHTMLビュー）を生成し、**視覚・操作の
-  最終確認をユーザーに求める**。ユーザーが許容した差異は `state.md` の
-  `approved_deviations` に記録する。
-- 一致しなければ修正する。一致するまで done にできない。通過したらコミットし
-  （`h2p: P7 gate passed`）、ハッシュを gates に記録する。
+### 5. Behavior verification gate (exit) ★
+- With `npm install` done, **the dev server starts**.
+- The reproduced frontend behaves and looks the same as the refactored HTML
+  (Type B: the `origin/` baseline), **checked against the Phase 1 behavior
+  checklist**. The agent verifies the machine-checkable range (startup,
+  console errors, DOM/state transitions).
+- Generate `.h2p/review/p7-compare.html` (refactored HTML and the dev server
+  side by side, checklist attached — a disposable view) and **ask the user
+  for final visual/interaction confirmation**. Record user-accepted
+  differences in `state.md`'s `approved_deviations`.
+- If not matching, fix until it matches; cannot be done before. On pass,
+  commit (`h2p: P7 gate passed`) and record the hash in gates.
 
-### 契約の補正について（`backend: mock` / 公開API利用時）
-実装中に契約の不備が見つかった場合、変更を2クラスに分けて扱う。
-- **形の補正**（フィールドの欠落・型の粒度・必須/任意の誤り・台帳への命名
-  整合など、**アプリの挙動・機能が変わらない**修正）：Phase2への後戻りは
-  不要。ユーザーに差分を提示して承認を得た上で、`.h2p/phase2-requirements.md`
-  の契約セクションと `shared/` を**同時に**更新し、decisions に補正を1行
-  記録する。片方だけ直して正本を分裂させることを禁じる。
-- **意味の変更**（リソースの追加・削除、やり取りの意味の変化）：要件の変更で
-  あり「形の補正」を装ってはならない。Phase2への後戻りをユーザーに諮る。
+### Contract amendment (when `backend: mock` / public API in use)
+If a contract defect surfaces during implementation, classify the change:
+- **Shape fix** (missing field, type granularity, required/optional
+  mistake, naming alignment to the ledger — anything where **app behavior
+  does not change**): no rollback to Phase 2 needed. Present the diff to the
+  user, get approval, then update `.h2p/phase2-requirements.md`'s Contracts
+  section and `shared/` **simultaneously**, and add one line to decisions.
+  Fixing only one side — splitting the canon — is forbidden.
+- **Meaning change** (adding/removing resources, changing an exchange's
+  meaning): this is a requirements change and must not masquerade as a shape
+  fix. Put a rollback to Phase 2 before the user.
 
-判定基準は「アプリの挙動・機能が変わるか」。迷ったら意味の変更として扱う。
+The criterion: "does app behavior change?" When in doubt, treat it as a
+meaning change.
 
-## 成果物
-- `frontend/` 一式（src の3層構造、vite.config、package.json 等）。
-- `backend: mock` の場合、この段階で `shared/`（契約の正本）を確定実装する
-  （データアクセス層が依存するため。バックのモック実装はPhase8）。
-- `state.md`：`gates.p7_frontend_behaves` を `passed (commit <hash>)` に更新。
-  許容した差異があれば `approved_deviations` に記録。decisions に
-  実装上の重要な決定を追記。backlog に「再現時に見送った理想」を記録。
+## Artifacts
+- The `frontend/` set (3-layer src, vite.config, package.json, …).
+- With `backend: mock`, finalize and implement `shared/` (the canonical
+  contract) at this stage (the data-access layer depends on it; the backend
+  mock is Phase 8).
+- `state.md`: `gates.p7_frontend_behaves` → `passed (commit <hash>)`;
+  accepted differences → `approved_deviations`; key implementation decisions
+  → decisions; ideals foregone during reproduction → backlog.
 
-## やってはいけないこと
-- 理想を足さない（新機能・挙動改善・見た目変更の禁止）。再現に徹する。
-- 層を混ぜない（UIにロジックや通信を埋め込まない）。契約をUIに直接持ち込まない。
-- スキャフォールドを手順書で済ませない。**実際に bash で実行**し、動く環境を作る。
-- 検証を通さずに完了扱いにしない。
+## Do not
+- No ideals (no new features, behavior improvements, or visual changes).
+  Reproduce, period.
+- No layer mixing (no logic or networking inside UI). No contracts directly
+  in the UI.
+- Do not reduce scaffolding to a written procedure. **Actually execute via
+  bash** and produce a running environment.
+- Never mark complete without passing verification.
 
-## 完了条件（doneにできる条件）
-- 開発環境が構築され、開発サーバーが起動する。
-- frontend が3層構造で実装され、リファクタ後HTML（タイプBは合意スコープの
-  移行）を忠実に再現している。命名が用語台帳と一致している。
-- **動作検証ゲート通過**（`p7_frontend_behaves: passed`）とゲートコミット。
-- `backend: mock` なら `shared/` の契約が確定実装されている。
-- ユーザーが再現結果に合意した。
+## Completion conditions (to mark done)
+- The dev environment is built; the dev server starts.
+- The frontend is implemented in 3 layers, faithfully reproducing the
+  refactored HTML (Type B: the agreed migration scope executed). Naming
+  matches the ledger.
+- **Behavior verification gate passed** (`p7_frontend_behaves: passed`) with
+  the gate commit.
+- With `backend: mock`, the `shared/` contract is finalized and implemented.
+- The user agreed to the reproduction result.
 
-ユーザーが進行を指示し、ゲートが passed なら、司令塔の整合性チェックを経て
-Phase8へ（`backend: none` なら Phase8 はスキップされ Phase9 へ）。
+When the user instructs progression and the gate is passed, go through the
+orchestrator's consistency check to Phase 8 (with `backend: none`, Phase 8
+is skipped and you go to Phase 9).

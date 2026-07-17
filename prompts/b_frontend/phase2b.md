@@ -1,100 +1,116 @@
-# phase2b — 現状意図の読取・将来意図・ギャップ定義【タイプB：既存アプリ】
+# phase2b — current intent, future intent, gap definition [Type B: existing app]
 
-あなたは今 Phase2（タイプB）にいる。司令塔の第一原則と進行規約は読み込み
-済みの前提。入力は `.h2p/phase1-analysis.md`（棚卸し・診断）と `origin/` の原本。
+You are now in Phase 2 (Type B). The orchestrator's First Principle and
+progression rules are assumed loaded. Input: `.h2p/phase1-analysis.md`
+(inventory & diagnosis) and the `origin/` originals.
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-タイプAは「何を作ろうとしていたか」を遡って言語化した。タイプBは違う。
-既存アプリには**設計意図がコードに明示的に埋まっている**。だからここでは：
+Type A retro-verbalized "what was this trying to be?". Type B is different:
+an existing app has **design intent explicitly embedded in code**. So here:
 
-1. **現状の設計意図を読み取る** ── コードから、現在どういう意図で何が
-   作られているかを言語化する（推測ではなく、コードという証拠から）。
-2. **将来意図を引き出す** ── ユーザーが「どこへスケールさせたいか／どんな機能を
-   足していきたいか」を対話で確定する。**これがタイプB特有の未来志向の工程。**
-3. **ギャップを定義する** ── 現状の構造と、将来意図を支えるのに必要な構造の
-   差分を明確にする。このギャップが、後のリファクタリング計画の対象になる。
+1. **Read the current design intent** — verbalize, from the code, what is
+   built with what intent (from evidence, not speculation).
+2. **Draw out the future intent** — settle through dialogue where the user
+   wants to scale / what features they want to add. **This is Type B's
+   future-oriented step.**
+3. **Define the gaps** — make explicit the delta between the current
+   structure and the structure needed to support the future intent. These
+   gaps become the targets of the later refactoring plan.
 
-第一原則を忘れない：**将来意図は「足したい機能」を聞くが、このツールはその機能を
-実装しない。** 機能追加に**耐えられる構造**を用意するだけ。将来意図は「どんな
-構造的柔軟性が必要か」を逆算するための材料であって、機能実装の指示ではない。
-
----
-
-## 手順
-
-### 1. 現状の設計意図の読み取り
-Phase1の棚卸し・診断と origin を基に、現在の設計意図を言語化する。
-- このアプリは何をするものか（コードから読み取れる機能の全体像）。
-- どういう構造方針で作られているか（意図的な設計か、なし崩しか）。
-- 5W1H的に整理してよいが、タイプAと違い**遡及ではなくコードの読解**。
-  ユーザーに「この理解で合っているか」を確認する。
-
-### 2. 将来意図の引き出し ★タイプB特有
-ユーザーに、今後の展望を問う。
-- どんな機能・規模に育てたいか。直近で足したい機能、将来見据える方向。
-- 利用者・チームの変化（個人→チーム、利用者増など）。
-- これが**非機能要件の要求**へどう翻訳されるかを一緒に整理する。例：「項目を
-  増やしたい」→ データ構造の拡張容易性、「画面を増やす」→ ルーティングと
-  状態の分離、「チーム開発」→ テスト・型・境界の明確さ。
-
-**機能のリストを作るのが目的ではない。** 「その機能群を足せるために、構造の
-どこに柔軟性が要るか」を抽出するのが目的。
-
-### 3. ギャップ定義
-現状（Phase1診断）と、将来意図を支える構造との差分を定義する。
-- どの非機能要件が、将来意図に対して不足・劣化しているか。
-- 埋めるべきギャップを、優先度とともに列挙する（将来意図への効きが大きい
-  順）。効かないギャップ（将来意図に関係ない理想化）は**埋めない**
-  ── 第一原則2（効く範囲に限る）。
-
-### 4. ユビキタス言語台帳の制定 ★必須成果物
-`prompts/templates/ubiquitous.md` を読み、その構造に従って
-`.h2p/ubiquitous.md` を生成する。第1部（台帳）の用語は2つの源から集める：
-- **既存コードからの発掘**：現行の型名・変数名・モジュール名に埋まっている
-  語彙。既存の識別子が妥当なら尊重してそのまま登録する（改名は移行コスト）。
-- **将来意図からの新概念**：対話で登場した、これから構造が支えるべき概念。
-
-第2部（命名文法）はテンプレートの固定内容をそのまま含める。タイプBでは
-文法は**新規・変更コードにのみ適用**し、既存コードの一括改名はしない。
-運用規約（追記式・登録が先・改名は Phase2 後戻り）はテンプレートに従う。
-
-### 5. スコープ確定
-タイプAと同じく `backend` を確定する（`none` | `mock`）。既存アプリが
-既にバックエンドを持つ/叩いている場合の扱い、契約の有無も診断を基に整理する。
-あわせて、このプロジェクトの**移行スコープ**を確定する：どこまでを今回の
-範囲とし、どこからを生成 CLAUDE.md に委ねるかの線を引く。**この線が h2p の
-出口を決める**（h2p の出口＝合意した移行スコープの完遂。司令塔の管轄境界を
-参照）。範囲はプロジェクト規模とユーザーの意向で決まり、ツール側で量を
-固定しない。
+Never forget the First Principle: **future intent asks about "features they
+want to add", but this tool does not implement those features.** It only
+prepares a structure that can withstand their addition. Future intent is
+material for deriving "what structural flexibility is needed", not an
+implementation order.
 
 ---
 
-## 成果物の書き込み
-`.h2p/phase2-requirements.md`（ファイル名はタイプAと共通）に、
-`prompts/templates/requirements.md` の構造に従って書く（見出し構造を
-変えない）。内容：現状の設計意図と将来意図（5W1H）、ギャップ定義、
-スコープ（`backend`・移行スコープの線引き・保守の時間軸）、契約の論理定義
-（`backend: mock` や外部API契約がある場合）。
+## Procedure
 
-`.h2p/ubiquitous.md` に用語台帳を書く（テンプレートに従う）。
+### 1. Read the current design intent
+From Phase 1's inventory/diagnosis and origin, verbalize the current intent.
+- What the app does (the feature landscape readable from code).
+- Its structural policy (deliberate design, or drift?).
+- 5W1H-style organization is fine, but unlike Type A this is **code reading,
+  not retro-inference**. Confirm with the user: "is this understanding
+  correct?"
 
-`state.md`：`backend` 確定、移行スコープ、decisions に主要な決定（特に将来意図と
-ギャップの優先度）を要約。
+### 2. Draw out the future intent ★Type B specific
+Ask the user about the outlook.
+- What features and scale to grow into: near-term additions, long-term
+  direction.
+- Changes in users/team (solo → team, user growth, etc.).
+- Translate these together into **non-functional demands**. Examples: "add
+  more fields" → data-structure extensibility; "add screens" → routing and
+  state separation; "team development" → tests, types, clear boundaries.
 
-## やってはいけないこと
-- 将来意図を口実に機能を実装・設計しない。抽出するのは**構造的要求**だけ。
-- 将来意図に効かない理想化をギャップに含めない（過剰実装の源）。
-- 現状意図を推測で断定しない。コードという証拠に基づき、ユーザーに確認する。
-- スコープを勝手に広げない。合意した移行スコープを超えない。
+**The goal is not a feature list.** The goal is extracting "where in the
+structure flexibility is needed so those features can be added".
 
-## 完了条件（doneにできる条件）
-- 現状の設計意図が読解・言語化され、ユーザーが確認している。
-- 将来意図が引き出され、非機能要件の要求へ翻訳されている。
-- ギャップが優先度つきで定義されている（効かないものは除外）。
-- スコープ（`backend`・移行スコープ・時間軸）が確定している。
-- `.h2p/ubiquitous.md` に用語台帳が制定されている。
-- ユーザーが要件・ギャップ・スコープ・用語台帳に合意した。
+### 3. Define the gaps
+Define the delta between the current state (Phase 1 diagnosis) and the
+structure that supports the future intent.
+- Which non-functional requirements fall short of the future intent.
+- Enumerate the gaps to close, prioritized (by impact on the future
+  intent). Gaps that do not serve it (idealization irrelevant to the future
+  intent) are **not closed** — First Principle 2 (only what serves).
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経て Phase3（phase3b）へ。
-Phase3 はこのギャップを埋める再設計と段階的移行計画を立てる。
+### 4. Establish the ubiquitous-language ledger ★required artifact
+Read `prompts/templates/ubiquitous.md` and generate `.h2p/ubiquitous.md`
+following its structure. Collect Part 1 (ledger) terms from two sources:
+- **Excavated from existing code**: vocabulary embedded in current type/
+  variable/module names. If an existing identifier is sound, respect it and
+  register as-is (renaming is migration cost).
+- **New concepts from the future intent**: concepts the structure must
+  support going forward.
+
+Include Part 2 (naming grammar) verbatim from the template. For Type B the
+grammar applies **only to new and modified code**; never mass-rename
+existing code. Operating rules (append-only; register before use;
+renaming = rollback to Phase 2) follow the template.
+
+### 5. Scope decision
+As with Type A, settle `backend` (`none` | `mock`). Organize, based on the
+diagnosis, how an already-present/consumed backend is handled and whether a
+contract exists. Also settle this project's **migration scope**: draw the
+line between what h2p executes now and what is delegated to the generated
+CLAUDE.md. **This line defines h2p's exit** (exit = completion of the agreed
+migration scope; see the orchestrator's jurisdiction boundary). The range is
+determined by project size and the user's wishes — the tool never hardcodes
+an amount.
+
+---
+
+## Writing the artifacts
+Write `.h2p/phase2-requirements.md` (same filename as Type A) following the
+structure of `prompts/templates/requirements.md` (do not change the heading
+structure). Content: current design intent and future intent (5W1H), gap
+definition, scope (`backend`, migration-scope line, maintenance horizon),
+logical contracts (when `backend: mock` or external-API contracts exist).
+
+Write `.h2p/ubiquitous.md` (per the template).
+
+`state.md`: `backend` settled, migration scope, decisions summarizing the
+key choices (especially future intent and gap priorities).
+
+## Do not
+- Do not implement or design features under the pretext of future intent.
+  Extract **structural demands** only.
+- Do not include idealization that does not serve the future intent in the
+  gaps (a source of over-engineering).
+- Do not assert current intent by speculation. Ground it in code and confirm
+  with the user.
+- Do not widen scope on your own. Never exceed the agreed migration scope.
+
+## Completion conditions (to mark done)
+- The current design intent is read, verbalized, and confirmed by the user.
+- The future intent is drawn out and translated into non-functional demands.
+- Gaps are defined with priorities (non-serving ones excluded).
+- Scope (`backend`, migration scope, horizon) is settled.
+- `.h2p/ubiquitous.md` is established.
+- The user has agreed to requirements, gaps, scope, and the ledger.
+
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 3 (phase3b). Phase 3 designs the target structure
+and the stepwise migration plan that closes these gaps.

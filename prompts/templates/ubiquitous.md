@@ -1,74 +1,84 @@
-# ubiquitous.md — ユビキタス言語の正本（テンプレート）
+# ubiquitous.md — canonical language of the project (template)
 
-`.h2p/ubiquitous.md` は本プロジェクトの**意味と命名の正本**である。契約が
-「データの形」の正本なら、この台帳は「名前」の正本。Phase3 の図の要素名、
-Phase7/8 のコード識別子、Phase9 の文書の用語は、すべてここに従う。
+`.h2p/ubiquitous.md` is the project's **canonical source of meaning and
+naming**. If the contract is the canon of "data shapes", this ledger is the
+canon of "names". Diagram element names in Phase 3, code identifiers in
+Phase 7/8, and document terminology in Phase 9 all follow this file.
 
-2部構成。**第1部（台帳）はプロジェクトごとに Phase2 で起こす。第2部
-（命名文法）はツールの固定内容であり、生成せずそのまま含める。**
-
----
-
-## 第1部：用語台帳（Phase2 で生成）
-
-| 用語（和） | 定義 | コード識別子（英） | 由来 |
-|-----------|------|-------------------|------|
-| 予約 | 利用者が席を確保する行為・その記録 | Reservation | Phase1(c) の観測、契約 POST /reservations |
-
-要件の対話は日本語、コード・図の識別子は英語になる。**和英対応をこの表で
-一意に固定する**ことが台帳の核心（「予約」が図で Booking、コードで
-Reservation と割れる事故を防ぐ）。
-
-### 運用規約
-- **追記式。** 下流Phaseで新しい概念が必要になったら、ユーザーに確認して
-  登録してから使う（`state.md` の decisions にも1行）。
-- **既存用語の改名は Phase2 への後戻り扱い。** 無断の言い換えを禁じる。
-- タイプB：既存コードの識別子が妥当なら尊重してそのまま登録する
-  （改名は移行コスト）。
+Two parts. **Part 1 (the ledger) is created per project in Phase 2. Part 2
+(the naming grammar) is fixed tool content — include it verbatim, never
+generate it.** Headings are fixed English anchors; ledger entries for terms
+and definitions are written in the user's language (`meta.language`).
 
 ---
 
-## 第2部：命名文法（固定・編集しない）
+## Part 1: Term Ledger (created in Phase 2)
 
-台帳が「語彙」を与え、この文法が「組み立て」を与える。名前だけで意味が
-わかる**辞書的命名**により、説明のためのコメントを不要にする。本ツールは
-0→1 の構築を想定しており、既存の命名規則に合わせる要件はないため、
-この固定辞書に従う。タイプBでは**新規・変更コードにのみ適用**し、既存
-コードの一括改名はしない。
+| Term (user language) | Definition | Code identifier (English) | Origin |
+|----------------------|------------|---------------------------|--------|
+| 予約 | The act (and record) of a user securing a seat | Reservation | Phase1(c) observation; contract POST /reservations |
 
-### 動詞辞書（関数名の先頭に置く動詞は、この定義で使う）
-| 動詞 | 意味 |
-|------|------|
-| get | 同期・副作用なしの取得（手元にあるものを返す） |
-| fetch | ネットワーク越しの取得 |
-| load | ストレージ・ファイルからの読み込み |
-| save | 永続化への書き込み |
-| create | 新しい実体を作る（IDが生まれる） |
-| build | 部品から組み立てる（純粋・副作用なし） |
-| parse | 文字列/外部形式 → 内部構造への変換 |
-| format | 内部構造 → 表示用文字列 |
-| to<X> | 型・形式の変換（純粋。例: toDate, toJson） |
-| validate | 検証し、違反を報告する |
-| render | 画面への反映 |
-| handle | イベントへの応答（例: handleSubmit） |
-| update | 既存の実体の変更 |
-| remove | 集合から外す（実体は残る） |
-| delete | 実体そのものを消す |
-| find | 条件に合う1件を探す（見つからないことがある） |
-| filter | 条件に合う複数件を返す |
-| init | 使用前の準備・初期化 |
+Requirements dialogue happens in the user's language; code and diagram
+identifiers are English. **This table fixes the correspondence uniquely** —
+it prevents the accident where the same concept becomes `Booking` in a
+diagram and `Reservation` in code.
 
-### 修飾規則
-- **boolean** は `is` / `has` / `can` / `should` で始める（`isOpen`, `hasError`）。
-- **数値は単位を名前に含める**（`timeoutMs`, `widthPx`, `delaySeconds`,
-  `maxRetryCount`）。単位のない数値名を禁じる。
-- **コレクション**は複数形（`users`）。キー引きは `xxxById`（`usersById`）。
-- **対称語のペアを崩さない**：open/close、add/remove、start/stop、
-  show/hide、begin/end。片方だけ別の語に変えない。
-- **スコープに比例して名前を長く**：ループ内の `i` は可。モジュール
-  レベル・export される名前に略語は不可（URL・ID 等の慣用語を除く）。
+### Operating rules
+- **Append-only.** When a downstream Phase needs a new concept, confirm with
+  the user and register it before using it (also add one line to `state.md`
+  decisions).
+- **Renaming an existing term is treated as a rollback to Phase 2.** Silent
+  paraphrasing is forbidden.
+- Type B: if an existing code identifier is sound, respect it and register
+  it as-is (renaming is migration cost).
 
-### プロジェクト固有の流儀（Phase5/6 で追記する唯一の場所）
-選定した技術スタックに由来する規約だけをここに足す。
-- <例: イベントハンドラは handleXxx（React の props は onXxx）>
-- <例: コンポーネントファイルは PascalCase.tsx、それ以外は kebab-case.ts>
+---
+
+## Part 2: Naming Grammar (fixed — do not edit)
+
+The ledger provides the vocabulary; this grammar provides the construction.
+**Dictionary-style naming** — names whose meaning is clear on sight — makes
+explanatory comments unnecessary. This tool assumes 0→1 construction, so
+there is no requirement to match a pre-existing convention; follow this fixed
+dictionary. For Type B, the grammar applies **only to new and modified
+code**; never mass-rename existing code.
+
+### Verb dictionary (function names start with a verb used in this sense)
+| Verb | Meaning |
+|------|---------|
+| get | synchronous, side-effect-free retrieval (returns what is at hand) |
+| fetch | retrieval over the network |
+| load | read from storage / file |
+| save | write to persistence |
+| create | bring a new entity into existence (an ID is born) |
+| build | assemble from parts (pure, no side effects) |
+| parse | string/external format → internal structure |
+| format | internal structure → display string |
+| to<X> | type/format conversion (pure; e.g. toDate, toJson) |
+| validate | check and report violations |
+| render | reflect onto the screen |
+| handle | respond to an event (e.g. handleSubmit) |
+| update | modify an existing entity |
+| remove | take out of a collection (the entity remains) |
+| delete | destroy the entity itself |
+| find | look for one match (may not exist) |
+| filter | return all matches |
+| init | prepare for use / initialize |
+
+### Modifier rules
+- **Booleans** start with `is` / `has` / `can` / `should`
+  (`isOpen`, `hasError`).
+- **Numbers carry their unit in the name** (`timeoutMs`, `widthPx`,
+  `delaySeconds`, `maxRetryCount`). Unit-less numeric names are forbidden.
+- **Collections** are plural (`users`); keyed lookups are `xxxById`
+  (`usersById`).
+- **Never break symmetric pairs**: open/close, add/remove, start/stop,
+  show/hide, begin/end. Do not swap one side for a different word.
+- **Name length scales with scope**: `i` inside a loop is fine; abbreviations
+  in module-level / exported names are not (except conventional ones like
+  URL, ID).
+
+### Project-specific idioms (the only section extended in Phase 5/6)
+Add only conventions that stem from the chosen tech stack.
+- <e.g. event handlers are handleXxx; React props are onXxx>
+- <e.g. component files are PascalCase.tsx; everything else kebab-case.ts>

@@ -1,92 +1,103 @@
-# phase6 — 開発フロー設計
+# phase6 — development workflow design
 
-あなたは今 Phase6 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
-入力は `.h2p/phase2-requirements.md`（意図・スコープ）、
-`.h2p/phase5-stack.md`（確定スタック）、`.h2p/phase3-structure.md`（構造）。
+You are now in Phase 6. The orchestrator's First Principle and progression
+rules are assumed loaded. Input: `.h2p/phase2-requirements.md` (intent,
+scope), `.h2p/phase5-stack.md` (settled stack), and
+`.h2p/phase3-structure.md` (structure).
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-**実装(Phase7/8)に入る前に、開発の規律を固める**。どういうサイクルで、
-どういう検証を伴って実装を進めるかを先に決める。規律が先、実装が後。
+**Fix the development discipline before implementation (Phase 7/8)**: in
+what cycle, with what verification, will implementation proceed. Discipline
+first, implementation second.
 
-このPhaseはコードもプロジェクトもまだ生成しない。決めるのは「進め方」。
-ここで決めた規律が Phase7/8 の実装フェーズの進行を規定する。
+This Phase generates no code or project yet. What gets decided is "how to
+proceed". The discipline decided here governs the implementation Phases.
 
-### スコープに応じて規律の重さを調整する（最重要）
-Phase2の軸B（保守の時間軸）が、このPhaseの重さを決める。
-- **使い捨て／短期**：規律は最小限。動くことを確認できる軽い検証だけ。
-  重厚なPDCA・CI・厳格なレビュー規約は敷かない（過剰）。
-- **長期育成**：テスト・レビュー・リリース手順を含む持続可能なサイクルを
-  設計する。
-どちらに倒すかをユーザーに確認しながら決める。**使い捨てに重装備を敷くのも、
-長期育成に規律なしも、どちらも誤り。** 中庸を勝手に決めず、スコープに沿わせる。
-
----
-
-## 決めること
-
-### 1. 開発の目的と思想の明示化
-このプロジェクトを「なぜ・どういう価値観で」開発・保守するのかを言語化する。
-Phase2のWhyを、開発者向けの指針へ翻訳する（例：何を優先し何を犠牲にするか、
-どういうコードを良しとするか）。これは後で CLAUDE.md(Phase9)の核になる。
-
-### 2. 開発フローの5W1H可視化
-今後の開発（このツールでの移行が終わった後の継続開発）がどう回るかを
-5W1Hで描く。
-- Who：誰が開発・保守するか（個人／チーム）。
-- What：変更の単位（機能単位／コンポーネント単位など）。
-- When：どのタイミングで何をするか（実装→検証→統合の流れ）。
-- Where：どのブランチ戦略・どの環境で。
-- Why：その流れにする理由（スコープ・チーム規模との整合）。
-- How：具体的な手順。
-Mermaid のフローチャートで可視化してもよい。
-
-### 3. 設計／実装／テスト／リリースのサイクル構築
-PDCA に相当する反復サイクルを、スコープに応じた重さで定義する。
-- **設計**：変更前に何を確認するか（Phase3の図・契約との整合）。
-- **実装**：層構造（フロント3層／バック3層）を守る規律。契約を介した
-  疎結合を崩さないルール。
-- **テスト／検証**：Phase5で選んだテスト手法をどう回すか。最低限、各実装
-  フェーズの動作検証ゲートをどう満たすか。
-- **リリース**：ビルド・デプロイの方針（スコープが要求する範囲で。使い捨てなら
-  「ローカルで動けば可」まで簡素化してよい）。
-
-### 4. 実装フェーズ(7/8)の進め方の合意
-Phase7/8 をどの粒度で進めるかをここで決めておく。
-- フロントを図1のどの単位から実装していくか（コンポーネント順序など）。
-- 各単位の完了をどう確認するか（出口の動作検証ゲートとの対応）。
-- `backend: mock` なら、契約確定→フロント実装→バックのモック実装、の
-  順序と結合検証のタイミング。
+### Scale discipline to scope (most important)
+Phase 2's Axis B (maintenance horizon) sets this Phase's weight.
+- **Throwaway / short-term**: minimal discipline. Light verification that it
+  works; no heavyweight PDCA, CI, or strict review rules (excessive).
+- **Long-term growth**: design a sustainable cycle including tests, review,
+  and release procedure.
+Confirm with the user which way to lean. **Heavy gear on a throwaway is as
+wrong as no discipline on long-term growth.** Do not pick a middle on your
+own; follow the scope.
 
 ---
 
-## 手順
-1. 入力（意図・スコープ・スタック・構造）を読む。
-2. スコープの軸B（保守の時間軸）を起点に、規律の重さの方針をユーザーと合意。
-3. 上記1〜4を対話で確定する。重さがスコープに沿っているかを都度確認。
-4. `.h2p/phase6-workflow.md` に構造化して書く。
+## What to decide
 
-## 成果物の書き込み
-`.h2p/phase6-workflow.md` に以下を書く。
-- 開発の目的と思想（CLAUDE.mdの素材）。
-- 開発フローの5W1H（必要なら Mermaid）。
-- 設計/実装/テスト/リリースのサイクル定義（スコープ相応の重さ）。
-- Phase7/8 の進め方（実装順序・検証タイミング）。
+### 1. Verbalize the development purpose and philosophy
+Why, and with what values, this project is developed and maintained.
+Translate Phase 2's Why into developer guidance (what to prioritize, what to
+sacrifice, what counts as good code). This becomes the core of CLAUDE.md
+(Phase 9).
 
-`state.md`：decisions に規律の重さの方針と主要な決定を要約。
+### 2. Visualize the development flow as 5W1H
+How development (ongoing work after this tool's migration ends) will run.
+- Who: who develops/maintains (individual/team).
+- What: the unit of change (per feature / per component, …).
+- When: what happens at which timing (implement → verify → integrate).
+- Where: which branch strategy, which environments.
+- Why: why this flow (consistency with scope and team size).
+- How: the concrete procedure.
+A Mermaid flowchart is welcome.
 
-## やってはいけないこと
-- スコープに不相応な重装備を敷かない（使い捨てにCI/重厚レビュー等）。
-  逆に長期育成で検証規律を省かない。
-- ここでコード・プロジェクトを生成しない（それはPhase7/8）。
-- 第一原則を超える理想の開発体制を上乗せしない。今あるもの＋スコープが
-  要求する範囲に留める。
+### 3. Build the design/implement/test/release cycle
+Define the PDCA-like iteration at scope-appropriate weight.
+- **Design**: what to check before changing (consistency with Phase 3
+  diagrams and contracts).
+- **Implement**: discipline that preserves the layer structure (frontend 3
+  layers / backend 3 layers); rules that keep contract-mediated decoupling
+  intact.
+- **Test/verify**: how the Phase 5 testing approach runs; at minimum, how
+  each implementation Phase's behavior verification gate is satisfied.
+- **Release**: build/deploy policy (only as far as scope demands; a
+  throwaway may simplify to "runs locally").
 
-## 完了条件（doneにできる条件）
-- 規律の重さがスコープ（軸B）に沿って決まっている。
-- 開発の目的・思想、5W1Hフロー、PDCAサイクル、Phase7/8の進め方が
-  `.h2p/phase6-workflow.md` に書かれている。
-- ユーザーが開発フローに合意した。
+### 4. Agree how Phase 7/8 will proceed
+Decide the granularity for the implementation Phases now.
+- From which units of Diagram 1 the frontend gets implemented (component
+  order, …).
+- How each unit's completion is confirmed (mapping to the exit gates).
+- With `backend: mock`: the order — contract finalized → frontend
+  implementation → backend mock — and the timing of integration checks.
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経てPhase7へ。
-Phase7はここで決めた規律に従い、リファクタ後HTMLを frontend として実装する。
+---
+
+## Procedure
+1. Read the inputs (intent, scope, stack, structure).
+2. Starting from Axis B (maintenance horizon), agree with the user on the
+   weight of discipline.
+3. Settle items 1–4 through dialogue, checking each stays scope-appropriate.
+4. Write `.h2p/phase6-workflow.md`, structured.
+
+## Writing the artifact
+Write to `.h2p/phase6-workflow.md`:
+- Development purpose and philosophy (material for CLAUDE.md).
+- The 5W1H development flow (Mermaid if useful).
+- The design/implement/test/release cycle definition (scope-appropriate
+  weight).
+- How Phase 7/8 will proceed (implementation order, verification timing).
+
+`state.md`: summarize in decisions the discipline-weight policy and key
+choices.
+
+## Do not
+- No heavy gear disproportionate to scope (CI / heavyweight review for a
+  throwaway); conversely, do not drop verification discipline for long-term
+  growth.
+- Do not generate code or projects here (that is Phase 7/8).
+- Do not stack an ideal development regime beyond the First Principle. Stay
+  within what exists plus what the scope demands.
+
+## Completion conditions (to mark done)
+- The discipline weight follows scope (Axis B).
+- Purpose/philosophy, the 5W1H flow, the PDCA cycle, and the Phase 7/8
+  approach are written in `.h2p/phase6-workflow.md`.
+- The user agreed to the development workflow.
+
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 7. Phase 7 implements the frontend under the
+discipline decided here.

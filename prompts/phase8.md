@@ -1,95 +1,111 @@
-# phase8 — Backend実装【`backend: mock` のときのみ】
+# phase8 — backend implementation [only when `backend: mock`]
 
-あなたは今 Phase8 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
-**`backend: none` の場合、このPhaseはスキップされる**（司令塔が Phase9 へ送る）。
+You are now in Phase 8. The orchestrator's First Principle and progression
+rules are assumed loaded. **When `backend: none`, this Phase is skipped**
+(the orchestrator sends you to Phase 9).
 
-入力は `shared/`（Phase7で確定実装した契約の正本）、
-`.h2p/phase5-stack.md`（バック技術・契約方式）、
-`.h2p/phase2-requirements.md`（契約の論理定義）、
-`.h2p/phase6-workflow.md`（開発規律）、`.h2p/phase1-analysis.md`（挙動
-チェックリスト）、`.h2p/ubiquitous.md`（用語台帳）、稼働中の `frontend/`。
+Input: `shared/` (the canonical contract finalized in Phase 7),
+`.h2p/phase5-stack.md` (backend tech, contract method),
+`.h2p/phase2-requirements.md` (logical contracts),
+`.h2p/phase6-workflow.md` (discipline), `.h2p/phase1-analysis.md` (behavior
+checklist), `.h2p/ubiquitous.md` (term ledger), and the running `frontend/`.
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-Phase7を通じて実地に固まった契約（`shared/`）に沿って、`backend/` に
-**モックレスポンスを返す最小の動くサーバー**を建てる。出口で frontend と
-backend が結合して動くことを検証する。
+Following the contract solidified through Phase 7 (`shared/`), build in
+`backend/` **a minimal working server that returns mock responses**. At the
+exit, verify frontend and backend run integrated.
 
-### 射程の線引き（最重要）
-- **射程内**：契約に沿ってモックデータを返す、動くサーバー。frontend が
-  実際に叩いて結合できる状態。
-- **射程外**：ビジネスロジックの実装。本物のDB接続。認証の実体。これらは
-  HTMLに証拠がないため作らない。足せば「動かない理想」になる（第一原則）。
+### Range line (most important)
+- **In range**: a working server returning mock data per the contract, in a
+  state the frontend can actually call and integrate with.
+- **Out of range**: business-logic implementation; a real database; real
+  authentication. The HTML holds no evidence for them, so they are not built
+  — building them yields "a non-working ideal" (First Principle).
 
-モックは「空殻」ではなく「動く」こと。型だけの未実装ではなく、契約に沿った
-それらしいモックデータを返し、フロントが結合をテストできる状態を出口とする。
+The mock must **work**, not be a hollow shell: it returns plausible mock
+data per the contract, so the frontend can test integration. That is the
+exit.
 
 ---
 
-## 手順
+## Procedure
 
-### 1. backendのスキャフォールド（bashで直接実行）
-`.h2p/phase5-stack.md` のバック技術選定に従い、**あなたが bash で直接**
-`backend/` を初期化し依存をインストールする。サーバーが起動することを確認する。
+### 1. Scaffold the backend (execute directly via bash)
+Per the backend selection in `.h2p/phase5-stack.md`, **initialize `backend/`
+yourself via bash** and install dependencies. Confirm the server starts.
 
-### 2. 契約への束縛
-`shared/` の契約を**唯一の正本**として参照する。
-- 契約方式が Zod 等（TS同士）なら `shared` のスキーマを backend でも import
-  して入出力を検証する。
-- TypeSpec/OpenAPI（言語またぎ）なら、正本から生成した型/バリデーションを
-  使う。
-- **契約を backend 側で再定義しない。** 二重管理は密結合と不整合の源。
-- 実装中に契約の不備が見つかったら、Phase7 の「契約の補正について」の
-  規約に従う（形の補正＝承認の上 `phase2-requirements.md` と `shared/` を
-  同時更新／意味の変更＝Phase2への後戻りを諮る）。
-- ルーティング・モックデータの命名は `.h2p/ubiquitous.md` の識別子と
-  命名文法（第2部）に従う。
+### 2. Binding to the contract
+Reference the `shared/` contract as the **single canon**.
+- If the contract method is Zod etc. (TS on both sides), import the `shared`
+  schemas in the backend too and validate input/output.
+- If TypeSpec/OpenAPI (cross-language), use types/validation generated from
+  the canon.
+- **Never redefine the contract on the backend side.** Dual management is
+  the source of coupling and inconsistency.
+- If a contract defect surfaces during implementation, follow Phase 7's
+  "Contract amendment" rules (shape fix = approved simultaneous update of
+  `phase2-requirements.md` and `shared/`; meaning change = put a Phase 2
+  rollback before the user).
+- Route and mock-data naming follows `.h2p/ubiquitous.md` — identifiers
+  (Part 1) and naming grammar (Part 2).
 
-### 3. バック3層での実装（フロントの鏡像）
-- **ルーティング層（routes/）**：リクエストを受け、契約に沿って入出力を
-  検証する。`shared` に依存。フロントのデータアクセス層と契約を挟んで対をなす。
-- **ロジック層（logic/）**：処理の本体。モック段階では「契約に沿ったモック
-  応答の組み立て」を担う。後に本実装へ差し替わる場所。
-- **データ層（data/）**：モックデータの供給元。後に本DBアクセスへ差し替わる
-  差し替え点。モックデータはここに集約し、ロジック層から参照する。
+### 3. Implement in the backend's 3 layers (mirror of the frontend)
+- **Routing layer (routes/)**: receives requests, validates input/output per
+  the contract. Depends on `shared`. Pairs with the frontend's data-access
+  layer across the contract.
+- **Logic layer (logic/)**: the processing body. At mock stage, assembles
+  contract-conformant mock responses. The place later swapped for the real
+  implementation.
+- **Data layer (data/)**: the mock-data source. The swap point later
+  replaced by real DB access. Consolidate mock data here; the logic layer
+  references it.
 
-この3層分けにより、後でモックを本実装に差し替える際の単位が小さく済む
-（密結合防止の論理がモックサーバーにも効く）。
+This 3-layer split keeps the later mock→real swap unit small (the coupling-
+prevention logic applies to mock servers too).
 
-### 4. frontendとの結線
-frontend のデータアクセス層が backend を叩けるよう設定する（開発時の
-プロキシ/CORS/ベースURL等を、選定スタックの作法に従って設定）。
-公開APIを直接叩く部分があればそれはそのまま（プロキシ対象は自前backendのみ）。
+### 4. Wire up the frontend
+Configure so the frontend's data-access layer can call the backend (dev
+proxy / CORS / base URL, per the selected stack's conventions). Parts that
+call public APIs directly stay as they are (only the own backend gets
+proxied).
 
-### 5. 動作検証ゲート（出口）★
-- frontend と backend を**同時に起動**する。
-- frontend が契約を介して backend のモックを叩き、**結合して動く**ことを
-  確認する。Phase1 の挙動チェックリストのうち通信が絡む項目
-  （Phase3図4の主要フロー）で実際に通信が成立し、リファクタ後HTMLと同等の
-  挙動になることを確かめる。視覚・操作の最終確認はユーザーが行い、許容した
-  差異は `approved_deviations` に記録する。
-- 成立しなければ修正する。成立するまで done にできない。通過したらコミットし
-  （`h2p: P8 gate passed`）、ハッシュを gates に記録する。
+### 5. Behavior verification gate (exit) ★
+- Start frontend and backend **simultaneously**.
+- Confirm the frontend calls the backend's mocks through the contract and
+  **works integrated**. Exercise the communication-involving items of the
+  Phase 1 behavior checklist (the primary flows of Diagram 4) and confirm
+  behavior equivalent to the refactored HTML. Final visual/interaction
+  confirmation is the user's; record accepted differences in
+  `approved_deviations`.
+- If integration fails, fix until it holds; cannot be done before. On pass,
+  commit (`h2p: P8 gate passed`) and record the hash in gates.
 
-## 成果物
-- `backend/` 一式（routes/ logic/ data/ の3層、起動設定、package.json等）。
-- frontend と backend の結線設定（プロキシ等）。
-- `state.md`：`gates.p8_integration_runs` を `passed (commit <hash>)` に更新。
-  decisions に実装・結線上の重要な決定を追記。
+## Artifacts
+- The `backend/` set (routes/ logic/ data/ 3 layers, startup config,
+  package.json, …).
+- Frontend–backend wiring config (proxy, …).
+- `state.md`: `gates.p8_integration_runs` → `passed (commit <hash>)`; key
+  implementation/wiring decisions → decisions.
 
-## やってはいけないこと
-- ビジネスロジック・本DB・認証実体を作らない（射程外。動かない理想になる）。
-- 契約を backend で再定義しない（正本は `shared` 一箇所）。
-- 層を潰してモックを1ファイルに詰め込まない（3層を保つ。差し替え単位のため）。
-- スキャフォールドを手順書で済ませない。実際に bash で実行し動かす。
-- 結合検証を通さずに完了扱いにしない。
+## Do not
+- Do not build business logic, a real DB, or real auth (out of range; they
+  become non-working ideals).
+- Do not redefine the contract in the backend (the canon is `shared`, one
+  place).
+- Do not flatten the layers into a single mock file (keep 3 layers — they
+  are the swap units).
+- Do not reduce scaffolding to a written procedure; actually execute and
+  run it.
+- Never mark complete without passing integration verification.
 
-## 完了条件（doneにできる条件）
-- `backend/` が3層構造で実装され、契約（`shared`）に束縛されている。
-- モックが動き、frontend と結合して通信が成立する。
-- **動作検証ゲート通過**（`p8_integration_runs: passed`）。
-- ユーザーが結合結果に合意した。
+## Completion conditions (to mark done)
+- `backend/` is implemented in 3 layers, bound to the contract (`shared`).
+- The mock works; frontend and backend communicate successfully.
+- **Behavior verification gate passed** (`p8_integration_runs: passed`).
+- The user agreed to the integration result.
 
-ユーザーが進行を指示し、ゲートが passed なら、司令塔の整合性チェックを経て
-Phase9へ。Phase9は全Phaseの合意を清書し、ルート単一の CLAUDE.md 他を
-生成してプロセスを閉じる。
+When the user instructs progression and the gate is passed, go through the
+orchestrator's consistency check to Phase 9. Phase 9 writes up all Phase
+agreements, generates the single root CLAUDE.md and the rest, and closes the
+process.

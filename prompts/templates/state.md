@@ -1,14 +1,17 @@
-# state.md — 進行状態の正本（テンプレート）
+# state.md — canonical progress record (template)
 
-`.h2p/state.md` は html-to-project の**唯一の正本**である。現在地・スコープ・
-各Phaseの完了状況・重要な決定が、ここにしか恒久的に存在しない。司令塔は
-起動時に必ずこれを読み、各Phaseは合意のたびにここを更新する。会話文脈が
-失われても（圧縮・エージェント切替・セッション切断）、ここを読めば作業は
-復元できる。
+`.h2p/state.md` is the **sole source of truth** for html-to-project. The
+current position, scope, per-Phase completion status, and important decisions
+exist permanently nowhere else. The orchestrator always reads it at boot;
+each Phase updates it on every agreement. Even if conversational context is
+lost (compaction, agent switch, dropped session), work can be restored from
+this file alone.
 
-以下が初回起動時に書き込む初期テンプレートである。エージェントはこの構造を
-保ったまま値を更新していく。セクションの順序・見出しは変更しないこと
-（機械的に再読込するため）。
+Below is the initial template written at first boot. The agent updates values
+while keeping this structure intact. Do not change section order or headings
+(they are re-read mechanically). **Headings and keys are fixed English
+anchors; body text and values are written in the user's language
+(`meta.language`).**
 
 ---
 
@@ -16,110 +19,123 @@
 # html-to-project state
 
 ## meta
-- created: <ISO8601 日時>
-- last_updated: <ISO8601 日時>
+- created: <ISO8601>
+- last_updated: <ISO8601>
 - current_phase: 1
-- input_type: undecided   # undecided | A | B（起動時に司令塔が判別・記録）
-- backend: undecided   # undecided | none | mock（Phase2で確定。fullは将来予約・本ツール射程外）
-                       # フロントエンドは常に作る前提。分岐はバックエンドの有無のみ
+- language: <user's language, e.g. ja>   # dialogue and artifact body language
+- input_type: undecided   # undecided | A | B (detected and recorded by the orchestrator at boot)
+- backend: undecided   # undecided | none | mock (settled in Phase 2; "full" is reserved, out of scope)
+                       # The frontend is always built; the only branch is backend presence.
 
 ## source
-入力の退避・作業コピーの状況と、分析対象の確定状況。input_type により記載が変わる。
-- **タイプA**：退避済み入力（.h2p/source/ 配下）を列挙する。
+Input evacuation / working-copy status and analysis-target confirmation.
+Content differs by input_type.
+- **Type A**: list the evacuated input (under .h2p/source/).
   - copied_files:
-    - <例: source/index.html>
-- **タイプB**：退避はしない。作業コピーの状況を記録する。
-  - working_copy: <例: ルートへ作業コピー済み（node_modules/.git 除外）、
-    依存インストール済み、起動確認済み。origin/ は凍結>
-- analysis_target: undecided   # 対象ファイル群と「1つのアプリである」ことの確認記録
-- notes: <複数ページ構成か単一かなど、確定時のメモ>
+    - <e.g. source/index.html>
+- **Type B**: no evacuation. Record the working-copy status.
+  - working_copy: <e.g. copied to root (node_modules/.git excluded),
+    dependencies installed, startup verified. origin/ frozen>
+- analysis_target: undecided   # target files and the confirmation that they form one app
+- notes: <e.g. multi-page or single, notes at confirmation>
 
 ## phases
-各Phaseの状態。status は pending | in_progress | done | skipped のいずれか。
-artifact は成果物の相対パス。done にする条件は各Phaseプロンプトが定義する。
+Status per Phase: pending | in_progress | done | skipped.
+"artifact" is the relative path. Conditions for "done" are defined by each
+Phase prompt.
 
-| # | name                                   | status      | artifact                              |
-|---|----------------------------------------|-------------|---------------------------------------|
-| 1 | 分析（A:観測 / B:棚卸し・診断）           | in_progress | .h2p/phase1-analysis.md（挙動チェックリスト含む） |
-| 2 | 要件（A:意図遡及 / B:将来意図）・契約昇華  | pending     | .h2p/phase2-requirements.md, .h2p/ubiquitous.md |
-| 3 | 構造（A:構造付与 / B:再設計・移行計画）    | pending     | .h2p/phase3-structure.md              |
-| 4 | 構造リファクタリング                      | pending     | .h2p/phase4-refactor.md, source/refactored/(A) |
-| 5 | 技術スタック作成                          | pending     | .h2p/phase5-stack.md                  |
-| 6 | 開発フロー設計                            | pending     | .h2p/phase6-workflow.md               |
-| 7 | Frontend実装/移行                        | pending     | frontend/                             |
-| 8 | Backend実装                              | pending     | backend/, shared/                     |
-| 9 | ドキュメント生成                          | pending     | CLAUDE.md, README.md, documents/      |
+| # | name | status | artifact |
+|---|------|--------|----------|
+| 1 | Analysis (A: observe / B: inventory & diagnose) | in_progress | .h2p/phase1-analysis.md (incl. behavior checklist) |
+| 2 | Requirements & contract elevation | pending | .h2p/phase2-requirements.md, .h2p/ubiquitous.md |
+| 3 | Structure (A: give / B: redesign & migration plan) | pending | .h2p/phase3-structure.md |
+| 4 | Structural refactoring | pending | .h2p/phase4-refactor.md, source/refactored/ (A) |
+| 5 | Tech stack selection | pending | .h2p/phase5-stack.md |
+| 6 | Development workflow design | pending | .h2p/phase6-workflow.md |
+| 7 | Frontend implementation / migration | pending | frontend/ |
+| 8 | Backend implementation | pending | backend/, shared/ |
+| 9 | Documentation | pending | CLAUDE.md, README.md, documents/ |
 
 ## gates
-動作検証ゲートの通過記録。進行時に司令塔が参照する。passed にする際は
-通過時コミットのハッシュを添える（例: `passed (commit a1b2c3d)`）。
+Behavior-verification gate records, consulted by the orchestrator on
+progression. When marking passed, attach the gate commit hash
+(e.g. `passed (commit a1b2c3d)`).
 - p4_html_behaves: not_checked   # not_checked | passed (commit <hash>) | failed
 - p7_frontend_behaves: not_checked
-- p8_integration_runs: not_checked   # backend: none の場合は n/a
+- p8_integration_runs: not_checked   # n/a when backend: none
 
 ## approved_deviations
-検証ゲートで見つかった原本との差異のうち、**ユーザーが明示的に許容したもの**の
-記録（追記式・既存行を消さない）。各エントリは「Phase・差異の内容・許容の理由」を
-1行〜数行で。記録なき黙認は第一原則違反である。
-- <なければ空>
+Differences from the original found at verification gates that the **user
+explicitly accepted** (append-only; never delete lines). Each entry: Phase,
+the difference, and the reason for acceptance, in 1–3 lines. Silent
+acceptance violates the First Principle.
+- <empty if none>
 
 ## decisions
-重要な決定の追記ログ（時系列・末尾追記）。後戻り時の判断根拠にもなる。
-各エントリは「日時・Phase・決定内容・根拠」を1行〜数行で。
-- <ISO8601> P1: <例: 対象を index.html 単一に確定。other.html は素材置き場と判断>
+Append-only log of important decisions (chronological, append at the end).
+Also serves as the basis for rollback judgments. Each entry: timestamp,
+Phase, decision, rationale, in 1–3 lines.
+- <ISO8601> P1: <e.g. target fixed to index.html; other.html judged to be an asset store>
 
 ## backlog
-現Phaseでは扱わないが記録しておくべき事項（スコープ外の気づき、将来課題）。
-- <なければ空>
+Items out of the current Phase's scope but worth recording (out-of-scope
+findings, future work).
+- <empty if none>
 ```
 
 ---
 
-## 運用上の規約
+## Operating rules
 
-### current_phase と phases テーブルの整合
-`current_phase` の値と、phases テーブルで `in_progress` の行は常に一致させる。
-Phase完了時、司令塔は (a) その行を `done` に、(b) 次行を `in_progress` に、
-(c) `current_phase` を進める、の3つを同時に更新する。
+### Consistency between current_phase and the phases table
+The value of `current_phase` and the single `in_progress` row in the phases
+table must always match. On Phase completion the orchestrator updates three
+things at once: (a) that row → `done`, (b) next row → `in_progress`,
+(c) `current_phase` advanced.
 
-### git 規律
-h2p は git 操作込みの環境構築ワークフローである。
-- 初回起動時、作業フォルダが git リポジトリでなければ司令塔が `git init` する。
-- **動作検証ゲート（P4/P7/P8）の通過時は必ずコミット**し（メッセージは
-  `h2p: P4 gate passed` のような `h2p: ` プレフィックスの定型）、ハッシュを
-  gates に記録する。
-- **タイプBの移行ステップは1ステップ＝1コミット。**
-- `.h2p/`・`.h2p-archive/`・`prompts/` は **git で追跡する**（.gitignore に
-  入れない）。移行の意思決定の記録を履歴に残すため。ignore するのは
-  `node_modules` 等の生成物だけ。
+### Git discipline
+h2p is an environment-construction workflow that includes git.
+- At first boot, if the working folder is not a git repository, the
+  orchestrator runs `git init`.
+- **Always commit when a behavior verification gate (P4/P7/P8) passes**
+  (message with the `h2p: ` prefix, e.g. `h2p: P4 gate passed`) and record
+  the hash in gates.
+- **Type B migration steps: one step = one commit.**
+- `.h2p/`, `.h2p-archive/`, and `prompts/` are **tracked by git** (never
+  gitignored) so the migration's decision record stays in history. Ignore
+  only generated things like `node_modules`.
 
-### backend の効き方
-フロントエンドは常に作る。分岐はバックエンドの有無のみ。
-- `backend: none` のとき、Phase8 の行を `skipped` にし、
-  `gates.p8_integration_runs` を `n/a` とする。`shared/` `backend/` は作らない。
-- `backend: mock` のとき、Phase8 を通常進行し、`shared/`（契約の正本）と
-  `backend/`（モックサーバー）を作る。
-- `backend` は Phase2 で確定するまで `undecided`。確定したら decisions に
-  根拠を残す（特に外部API痕跡をCORS/キー秘匿の観点でどう判断したか）。
+### How backend takes effect
+The frontend is always built; the only branch is backend presence.
+- `backend: none`: mark the Phase 8 row `skipped` and
+  `gates.p8_integration_runs` as `n/a`. Do not create `shared/` or
+  `backend/`.
+- `backend: mock`: run Phase 8 normally, creating `shared/` (canonical
+  contract) and `backend/` (mock server).
+- `backend` stays `undecided` until Phase 2 settles it. On settling, record
+  the rationale in decisions (especially how external-API traces were judged
+  regarding CORS / key secrecy).
 
-### gates の更新
-動作検証ゲートに該当するPhase（4・7・8）の出口で検証を行い、結果を gates に
-記録する。検証は Phase1 の挙動チェックリストを照合対象とし、視覚・操作の
-最終確認はユーザーが行う。ユーザーが許容した差異は `approved_deviations` に
-記録してから passed にする。司令塔は進行指示を受けた際、該当ゲートが
-`passed` であることを確認してから次へ進める。`failed` の間は進行を保留する。
+### Updating gates
+Verify at the exit of gated Phases (4, 7, 8) and record the result in gates.
+Verification uses the Phase 1 behavior checklist as the reference; final
+confirmation of visuals and interaction is performed by the user. Record any
+user-accepted differences in `approved_deviations` before marking passed.
+On a progression request, the orchestrator confirms the relevant gate is
+`passed` before advancing; while `failed`, progression is held.
 
-### 後戻り時の扱い
-ユーザーが上流Phaseへの後戻りを指示したら：
-1. 戻り先Phaseの status を `in_progress`、`current_phase` を戻す。
-2. 戻り先より**下流**の全Phaseを `pending` に巻き戻し、該当する gates を
-   `not_checked` に戻す。
-3. decisions に「いつ・どこへ・なぜ戻ったか」を追記する。
-4. 下流の成果物が無効化される旨をユーザーに伝える(ファイルは消さず、
-   再実行で上書きされることを明示)。
+### Rollback handling
+When the user instructs a rollback to an upstream Phase:
+1. Set the target Phase's status to `in_progress` and rewind `current_phase`.
+2. Rewind all Phases **downstream** of the target to `pending` and the
+   affected gates to `not_checked`.
+3. Append to decisions: when, to where, and why the rollback happened.
+4. Tell the user that downstream artifacts are invalidated (files are not
+   deleted; re-execution overwrites them).
 
-### 書き込みの原則
-- last_updated は更新のたびに必ず書き換える。
-- decisions・backlog・approved_deviations は**追記**（既存行を消さない）。
-  後の判断根拠になるため。
-- このファイルは人間が読んで現在地を完全に把握できる状態を常に保つ。
+### Writing principles
+- Always refresh last_updated on every write.
+- decisions, backlog, and approved_deviations are **append-only** (never
+  delete lines); they are future judgment material.
+- Keep this file in a state where a human can fully grasp the current
+  position by reading it.

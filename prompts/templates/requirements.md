@@ -1,43 +1,51 @@
-# requirements.md — 要件定義成果物（テンプレート）
+# requirements.md — requirements artifact (template)
 
-`.h2p/phase2-requirements.md` の雛形。書き手は入力タイプで異なる
-（A: phase2a / B: phase2b）が、下流は入力タイプを意識せず読む。
-**見出し構造は共通・不変**。契約セクションは Phase7/8 の「契約補正」で
-部分更新される対象なので、1契約=1ブロックの書式を必ず守る。
+Skeleton for `.h2p/phase2-requirements.md`. The writer differs by input type
+(A: phase2a / B: phase2b), but downstream Phases read it without caring about
+the type. **The heading structure is shared and immutable.** The Contracts
+section is the target of partial updates via "contract amendment" in
+Phase 7/8, so its one-contract-per-block format must be kept. Headings are
+fixed English anchors; body content is in the user's language
+(`meta.language`).
 
 ---
 
 ```markdown
-# 要件定義（phase2-requirements）
+# Requirements (phase2-requirements)
 
 ## 5W1H
-<タイプA: HTMLから遡及し対話で確定した意図>
-<タイプB: コードから読解した現状意図＋対話で引き出した将来意図>
-- Why: <存在理由>
-- Who: <想定利用者・役割>
-- What: <中心機能・MVPの核>
-- When/Where: <利用文脈>
-- How: <主要な利用の流れ（挙動チェックリストと対応づける）>
+<Type A: intent retrieved from the HTML and settled through dialogue>
+<Type B: current intent read from the code + future intent drawn out in dialogue>
+- Why: <reason to exist>
+- Who: <intended users / roles>
+- What: <core features / the MVP core>
+- When/Where: <usage context>
+- How: <primary usage flows (map to the behavior checklist)>
 
-## スコープ
-- backend: <none | mock> — 根拠: <痕跡の読み分け（CORS/キー秘匿の判断含む）>
-- 保守の時間軸: <使い捨て/短期 | 長期育成>
-- 移行スコープ: <タイプB: 今回実行する範囲／CLAUDE.md に委ねる範囲の線引き。
-  この線が h2p の出口を決める。タイプA: 該当なし（全Phaseを実行）>
+## Scope
+- backend: <none | mock> — rationale: <how traces were read (incl. CORS /
+  key-secrecy judgment)>
+- maintenance horizon: <throwaway/short-term | long-term growth>
+- migration scope: <Type B: the line between what h2p executes now and what
+  is delegated to the generated CLAUDE.md. This line defines h2p's exit.
+  Type A: N/A (all Phases run)>
 
-## ギャップ定義
-<タイプB: 埋めるべき差分、優先度つき。将来意図に効かないものは「除外」と明記>
-<タイプA: 該当なし（新規に構造を与える）>
+## Gap definition
+<Type B: the deltas to close, prioritized; anything that does not serve the
+ future intent is marked "excluded">
+<Type A: N/A (structure is given fresh)>
 
-## 契約の論理定義
-backend: mock（または公開API利用）のときのみ。言語非依存の論理契約。
-1契約=1ブロック。契約補正時はブロック単位で更新し、decisions に記録する。
+## Contracts
+Only when backend: mock (or a public API is used). Language-agnostic logical
+contracts. One contract = one block. Contract amendments update block by
+block and are recorded in decisions.
 
-### <契約名（例: 予約の一覧取得）>
-- リクエスト: <メソッド・パス・パラメータ（型・必須/任意・意味）>
-- レスポンス: <構造（型・必須/任意・意味）>
-- 補足: <リソースとして素直な表現にした際、フロント都合から変えた点>
+### <contract name (e.g. list reservations)>
+- request: <method, path, parameters (type, required/optional, meaning)>
+- response: <structure (type, required/optional, meaning)>
+- notes: <what was changed from the frontend's raw demand to make the
+  resource representation straightforward>
 
-## スコープ外（backlog相当）
-<問うても定まらなかった保留、意図的に切った範囲>
+## Out of scope (backlog)
+<deferred items that would not settle, ranges deliberately cut>
 ```

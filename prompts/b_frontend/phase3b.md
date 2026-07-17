@@ -1,93 +1,114 @@
-# phase3b — 再設計・移行計画【タイプB：既存アプリ】
+# phase3b — redesign & migration plan [Type B: existing app]
 
-あなたは今 Phase3（タイプB）にいる。司令塔の第一原則と進行規約は読み込み
-済みの前提。入力は `.h2p/phase1-analysis.md`（棚卸し・診断）、
-`.h2p/phase2-requirements.md`（現状意図・将来意図・ギャップ・スコープ）、
-`.h2p/ubiquitous.md`（用語台帳）、`origin/` の原本。
+You are now in Phase 3 (Type B). The orchestrator's First Principle and
+progression rules are assumed loaded. Input: `.h2p/phase1-analysis.md`
+(inventory & diagnosis), `.h2p/phase2-requirements.md` (current intent,
+future intent, gaps, scope), `.h2p/ubiquitous.md` (term ledger), and the
+`origin/` originals.
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-タイプAは「構造を与える」ためにMermaid図を描いた。タイプBは既に構造がある。
-だからここでは2つを作る：
+Type A drew Mermaid diagrams to "give structure". Type B already has
+structure. So build two things here:
 
-1. **目標構造（再設計）** ── Phase2のギャップを埋め、将来意図を支える
-   「あるべき構造」をMermaid図で定義する。
-2. **段階的移行計画** ── 現状から目標へ、**機能を保ったまま漸進的に**移る
-   道筋を立てる。これがタイプB特有の最重要工程。
+1. **Target structure (redesign)** — define, as Mermaid diagrams, the
+   "structure as it should be" that closes Phase 2's gaps and supports the
+   future intent.
+2. **Stepwise migration plan** — the path from current to target,
+   **incremental and feature-preserving**. This is Type B's most important
+   step.
 
-第一原則の核心がここに集約される：機能は変えず、構造だけを将来の拡張に
-耐える形へ。**一気に書き換えない。** 各ステップで「まだ同じ機能が動くか」を
-保ちながら進む（ストラングラーフィグ：古い構造を残しつつ新しい構造へ
-少しずつ移し替え、最後に古いものを外す）。
-
----
-
-## 1. 目標構造（再設計）
-Phase2のギャップと将来意図に基づき、あるべき構造を描く。タイプAのPhase3と
-同じ4種を、ただし「現状からの差分」を意識して描く。
-- **アプリケーション構造図**：目標の層構成（フロント3層＝UI/ロジック/データ
-  アクセス、`backend: mock` ならバック3層と `shared` 契約）。現状で混在して
-  いた層を、どう分離するか。
-- **使用データの型**：契約の正本。現状でコンポーネントに散っていた型を、
-  どこに集約するか。
-- **状態構造**：状態の所在をどう整理するか。型（契約）と状態の分離。
-- **フローチャート**：主要な利用フロー（機能は現状と同一。構造だけが変わる）。
-
-**目標構造は現状からの到達可能性を保つ。** 理想形だが、現状から段階的に
-到達できる現実的なものにする。届かない理想は描かない（第一原則2）。
-
-## 2. 段階的移行計画 ★最重要
-現状から目標へ、機能を保ったまま移る手順を、**小さなステップ列**に分解する。
-各ステップは以下を満たす：
-- **単独で完結し、各ステップ後もアプリが動く**（機能が壊れない）。
-- 1ステップの変更単位が小さい（レビュー・検証しやすい）。
-- 依存順序が考慮されている（契約の確立→データアクセス層分離→UI整理、など
-  土台から）。
-
-各ステップに「何を・なぜ（どのギャップを埋めるか）・どう検証するか」を添える。
-
-### 出口の線引き（スコープ）
-Phase2で決めた移行スコープに従い、**今回実行するステップ**と、**計画として
-残し生成 CLAUDE.md に委ねるステップ**を分ける。h2p の出口は「ここで合意した
-今回範囲の完遂」であり、それを超える残ステップは生成 CLAUDE.md 管理下の
-通常開発へ引き継ぐ。全ステップの完遂を強制しない。今回どこまでやるかを
-ユーザーと合意する。
+The core of the First Principle concentrates here: features unchanged,
+structure moved into a form that withstands future growth. **Never rewrite
+in one stroke.** Each step keeps "does it still work the same?" true
+(strangler fig: keep the old structure while gradually shifting into the
+new, removing the old only when safe).
 
 ---
 
-## 手順
-1. 入力（診断・ギャップ・将来意図・用語台帳）と origin を読む。
-2. 目標構造の4図をドラフトし、ユーザーに提示。**図の要素名は
-   `.h2p/ubiquitous.md` の識別子を使う**（無い概念は登録が先）。現状との
-   差分が将来意図に効いているか、現状から到達可能かを確認する。
-   ユーザーが Mermaid のプレビュー環境を持たない場合は、
-   `.h2p/review/p3-diagrams.html`（Mermaid を描画する使い捨てのHTMLビュー）を
-   生成して確認してもらう。正本はあくまで `phase3-structure.md` の Mermaid コード。
-3. 段階的移行計画をステップ列として立て、依存順序と各ステップの検証方法を
-   定める。今回実行する範囲と委ねる範囲をユーザーと線引きする。
-4. `.h2p/phase3-structure.md` に目標構造図と移行計画を書く。
+## 1. Target structure (redesign)
+Based on Phase 2's gaps and future intent, draw the structure as it should
+be — the same four diagrams as Type A's Phase 3, but conscious of the
+**delta from the current state**.
+- **Application structure**: the target layer composition (frontend 3
+  layers = UI / logic / data access; with `backend: mock`, the backend 3
+  layers and the `shared` contract). How currently-mixed layers get
+  separated.
+- **Data types**: the canonical contract. Where the types currently
+  scattered across components get consolidated.
+- **State structure**: how state locations get organized. Separation of
+  types (contract) and state.
+- **Flow chart**: primary usage flows (features identical to current; only
+  structure changes).
 
-## 成果物の書き込み
-`.h2p/phase3-structure.md`（ファイル名はタイプAと共通）に、
-`prompts/templates/structure.md` の構造と図ごとの Mermaid 記法に従って書く。
-- 目標構造の4図（現状からの差分を明記）。
-- 段階的移行計画（1ステップ=1ブロックの書式・依存順序・検証方法）。
-- 今回実行する範囲／CLAUDE.md に委ねる範囲の線引き。
+**The target structure must stay reachable from the current state.** It is
+an ideal form, but a realistic one reachable step by step. Do not draw
+unreachable ideals (First Principle 2).
 
-`state.md`：decisions に目標構造の要点と移行計画のステップ範囲を要約。
+## 2. Stepwise migration plan ★most important
+Decompose the path from current to target into a **sequence of small
+steps**, each satisfying:
+- **Self-contained; the app still works after each step** (features never
+  break).
+- Small change unit per step (reviewable, verifiable).
+- Dependency-ordered (foundation first: contract establishment → data-access
+  extraction → UI cleanup, etc.).
 
-## やってはいけないこと
-- 一気に書き換える計画を立てない。各ステップ後も動く小刻みな移行にする。
-- 現状から到達不能な理想構造を描かない。
-- 将来意図に効かない構造変更を計画に入れない（過剰実装）。
-- 機能の追加・変更を計画に混ぜない。構造の移行だけを扱う。
+Attach to each step: "what · why (which gap it closes) · how to verify".
 
-## 完了条件（doneにできる条件）
-- 目標構造の4図が、現状からの差分と到達可能性をもって描かれている。
-- 段階的移行計画が、各ステップ後も動く小刻みなステップ列として立っている。
-- 今回実行する範囲と委ねる範囲が線引きされている。
-- ユーザーが目標構造と移行計画に合意した。
+### Drawing the exit line (scope)
+Following the migration scope decided in Phase 2, separate **steps executed
+in this run** from **steps left as plan and delegated to the generated
+CLAUDE.md**. h2p's exit is "completion of the range agreed here"; steps
+beyond it are handed to normal development governed by the generated
+CLAUDE.md. Full completion of all steps is never forced. Agree with the user
+on how far this run goes.
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経て Phase4 へ。
-以降（Phase4〜9）はタイプ共通。Phase4 は移行計画の最初のステップ群を、
-機能を保ちながら実行に移す起点となる。
+---
+
+## Procedure
+1. Read the inputs (diagnosis, gaps, future intent, ledger) and origin.
+2. Draft the four target-structure diagrams and present them. **Element
+   names use identifiers from `.h2p/ubiquitous.md`** (unregistered concepts
+   get registered first). Confirm the deltas serve the future intent and are
+   reachable from the current state.
+   If the user has no Mermaid preview environment, generate
+   `.h2p/review/p3-diagrams.html` (a disposable HTML view rendering the
+   Mermaid). The canonical form is always the Mermaid code in
+   `phase3-structure.md`.
+3. Build the migration plan as a step sequence with dependency order and
+   per-step verification. Draw the line between this run's range and the
+   delegated range with the user.
+4. Write the target diagrams and migration plan to
+   `.h2p/phase3-structure.md`.
+
+## Writing the artifact
+Write `.h2p/phase3-structure.md` (same filename as Type A) following the
+structure and per-diagram Mermaid notation of
+`prompts/templates/structure.md`:
+- the four target diagrams (deltas from current explicitly noted);
+- the stepwise migration plan (one step = one block; dependency order;
+  verification per step);
+- the scope line: executed in this run / delegated to CLAUDE.md.
+
+`state.md`: summarize in decisions the target-structure essentials and the
+step range of the migration plan.
+
+## Do not
+- Do not plan a one-stroke rewrite. Keep the migration in small steps where
+  the app works after each.
+- Do not draw a target structure unreachable from the current state.
+- Do not include structural changes that do not serve the future intent
+  (over-engineering).
+- Do not mix feature additions/changes into the plan. Only structure moves.
+
+## Completion conditions (to mark done)
+- The four target diagrams are drawn with deltas and reachability.
+- The migration plan stands as a sequence of small, always-working steps.
+- The line between this run's range and the delegated range is drawn.
+- The user has agreed to the target structure and the migration plan.
+
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 4. From here on (Phases 4–9) the flow is shared
+between types; Phase 4 begins executing the first foundation steps of the
+migration plan while preserving features.

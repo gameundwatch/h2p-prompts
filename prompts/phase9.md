@@ -1,114 +1,129 @@
-# phase9 — ドキュメント生成
+# phase9 — documentation
 
-あなたは今 Phase9、最終フェーズにいる。司令塔の第一原則と進行規約は
-読み込み済みの前提。入力は `.h2p/` の全成果物（phase1〜6・ubiquitous.md・
-state.md）、および稼働中の `frontend/`（と `backend/` `shared/`）。
+You are now in Phase 9, the final Phase. The orchestrator's First Principle
+and progression rules are assumed loaded. Input: all artifacts in `.h2p/`
+(phase1–6, ubiquitous.md, state.md) and the running `frontend/` (and
+`backend/` `shared/`).
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-これまで `.h2p/` に蓄積した全合意を**清書**し、プロジェクトを開発可能な
-状態として完成させる。CLAUDE.md が以降の開発の進行ルールを規定し、
-**プロセスを自己記述的に閉じる**。
+**Write up** all agreements accumulated in `.h2p/` and complete the project
+as a developable state. CLAUDE.md defines the progression rules of
+development from here on, **closing the process self-descriptively**.
 
-ここで新しい設計判断はしない。Phase1〜8で確定したことを、開発者と未来の
-エージェントが読める形に翻訳するのが仕事。
-
----
-
-## 生成するもの
-
-### 1. CLAUDE.md（ルートに単一）★
-プロジェクト全体（frontend / backend / shared）を統べる唯一の統括文書。
-モノレポでも分割しない。以降この CLAUDE.md が、移行後の開発でエージェントが
-従う進行ルールになる。含めるもの：
-- **プロジェクトの目的と思想**（Phase2のWhy、Phase6の開発思想を翻訳）。
-- **アーキテクチャ**（3層構造、契約による疎結合、図の要点。Phase3）。
-- **技術スタックと選定理由**（Phase5。特に「入れなかったもの」とその理由も。
-  未来の開発者が不要な依存を足さないため）。
-- **開発フローと規律**（Phase6。スコープ相応の重さで）。
-- **不可侵の設計原則**：契約の正本は一箇所、UIは契約を直接持たない、層を
-  混ぜない、**命名は用語台帳と命名文法（`documents/ubiquitous.md`）に従い、
-  新概念は台帳への登録が先**、等。密結合と語彙のブレを防ぐルールを明文化する。
-- **起動・開発手順**（dev起動、`backend: mock` なら同時起動の方法）。
-- タイプBで残った移行ステップがあれば、**引き継ぎ計画**として明記する
-  （h2p の出口＝合意スコープの完遂。残りはこの CLAUDE.md の統治下で進む）。
-
-### 2. README.md（ルート）
-人間向けの入口。プロジェクト概要、セットアップ手順、起動方法、ディレクトリ
-構成の説明。CLAUDE.md がエージェント/開発規律向けなのに対し、README は
-プロジェクトの一般的な顔。
-
-ルートの README.md は**2層構造**になっている：マーカーコメント
-（`<!-- Project用に生成したReadmeの内容がある場合、この行より上に表示すること。 -->`）
-より上がプロジェクトの README、下が h2p ツールの使用説明。このPhaseでは
-**マーカーより上にプロジェクトの README を書く**。マーカー以下の扱いは
-後述「ツールの足場の退避」で行う。
-
-### 3. documents/（ルート）
-設計判断の追跡可能性を残す。`.h2p/` の合意（要件・構造図・技術選定根拠・
-開発フロー）を、保守者が後から参照できる設計ドキュメントとして清書・収録する。
-Phase3のMermaid図はここに保全すると後の開発で効く。
-**`.h2p/ubiquitous.md` は `documents/ubiquitous.md` へ清書する**（第2部の
-命名文法も含めて）。移行後の開発でも意味と命名の正本として効き続ける
-（CLAUDE.md がここを参照する）。
+No new design decisions here. The job is translating what Phases 1–8 settled
+into a form developers and future agents can read. Documents are written in
+the user's language (`meta.language`); heading anchors and identifiers stay
+English.
 
 ---
 
-## 手順
+## What to generate
 
-### 1. 清書
-`.h2p/` の各成果物を読み、上記1〜3を生成する。`.h2p` の作業メモ的な記述を、
-成果物として読める文章に整える。スコープ（`backend` の有無・保守時間軸）に
-応じて記述の範囲・厚みを合わせる。
+### 1. CLAUDE.md (single, at root) ★
+The one governing document for the whole project (frontend / backend /
+shared). Never split, even in a monorepo. From now on this CLAUDE.md is the
+progression rule agents follow in post-migration development. Include:
+- **Project purpose and philosophy** (translate Phase 2's Why and Phase 6's
+  development philosophy).
+- **Architecture** (3-layer structure, contract-mediated decoupling, diagram
+  essentials — Phase 3).
+- **Tech stack and rationale** (Phase 5 — especially "what was left out" and
+  why, so future developers do not add unnecessary dependencies).
+- **Development workflow and discipline** (Phase 6, at scope-appropriate
+  weight).
+- **Inviolable design principles**: the contract canon lives in one place;
+  the UI never holds the contract directly; layers never mix; **naming
+  follows the term ledger and naming grammar (`documents/ubiquitous.md`),
+  and new concepts get registered first**; etc. Verbalize the rules that
+  prevent coupling and vocabulary drift.
+- **Startup and development procedure** (dev startup; with `backend: mock`,
+  how to start both).
+- For Type B, if migration steps remain, state them as the **handoff plan**
+  (h2p's exit = the agreed scope completed; the rest proceeds under this
+  CLAUDE.md).
 
-### 2. 整合の最終確認
-- CLAUDE.md の記述が、実際に生成された frontend/backend/shared の構造と
-  一致しているか。
-- 起動手順が実際に動くか（記述通りにdev起動できるか確認）。
+### 2. README.md (root)
+The human entrance: project overview, setup, startup, directory layout.
+Where CLAUDE.md is for agents/discipline, README is the project's public
+face.
 
-### 3. ツールの足場の退避
-変換は一度きりのイベント。完了後、ツールの足場を現役プロジェクトに居座らせ
-ない。ユーザーに諮った上で：
-- `prompts/` と `.h2p/` を `.h2p-archive/` 配下へ畳んで退避する。
-- README.md の**マーカー以下（h2p ツールの使用説明）を
-  `.h2p-archive/h2p_readme.md` として保存してから削除し**、マーカー自身も
-  除去する。ルートの README はプロジェクトの顔に純化する。
-- **`.h2p-archive/` は git で追跡したまま残す**（.gitignore に入れない）。
-  移行の意思決定の記録を履歴に残すため。ignore するのは `node_modules` 等の
-  生成物だけ。
-- **この退避の一式を最終コミットとして記録する**（`h2p: migration completed,
-  scaffolding archived` 等）。
-- **`.h2p-archive/` の最終的な破棄はユーザー判断**。変換の意思決定の記録に
-  なるため、破棄するか残すかを必ず確認する（勝手に消さない）。破棄を選んでも
-  git 履歴には残る旨を伝える。
-- 退避後、ルートにはクリーンなプロジェクト（CLAUDE.md / README.md /
-  documents/ / frontend/ ほか）だけが残る状態にする。
+The root README.md has a **two-layer structure**: above the marker comment
+(`<!-- Project用に生成したReadmeの内容がある場合、この行より上に表示すること。 -->`)
+is the project README; below it is the h2p tool guide. In this Phase,
+**write the project README above the marker**. The part below the marker is
+handled in "Retiring the tool scaffolding" below.
 
-### 4. 完了の報告
-移行が完了したこと、開発を始められる状態であること、`.h2p-archive/` に
-記録が残っていることをユーザーに伝える。
+### 3. documents/ (root)
+Keep design decisions traceable. Write up the `.h2p/` agreements
+(requirements, structure diagrams, stack rationale, workflow) as design
+documents maintainers can consult later. Preserving Phase 3's Mermaid
+diagrams here pays off in later development.
+**Write `.h2p/ubiquitous.md` up as `documents/ubiquitous.md`** (including
+Part 2, the naming grammar). It remains the canon of meaning and naming in
+post-migration development (CLAUDE.md points at it).
 
-## 成果物
-- ルート単一の `CLAUDE.md`、`README.md`、`documents/`（`ubiquitous.md` 含む）。
-- ツール足場の退避と最終コミット（ユーザー合意の範囲で）。
-- `state.md`：Phase9 を done に、全Phase完了を記録。
+---
 
-## やってはいけないこと
-- ここで新しい設計判断・機能追加をしない。清書に徹する。
-- CLAUDE.md を複数に分割しない（ルート単一）。
-- `.h2p-archive/` をユーザー確認なしに破棄しない。
-- 移行記録（`.h2p*`・`prompts/`）を .gitignore に入れない（記録は履歴に残す）。
-- 退避でルートのプロジェクト実体を壊さない。
+## Procedure
 
-## 完了条件（doneにできる条件）
-- CLAUDE.md（ルート単一）・README.md・documents/（ubiquitous.md 含む）が
-  生成されている。
-- README.md のマーカー以下が archive へ保存の上で除去されている。
-- 記述とプロジェクト実体が整合し、起動手順が実際に動く。
-- ツールの足場が（ユーザー合意のもと）退避・整理され、最終コミットが
-  記録されている。
-- ユーザーが完成に合意した。
+### 1. Write up
+Read each `.h2p/` artifact and generate items 1–3 above. Polish working-memo
+prose into readable deliverables. Match the coverage and depth to scope
+(backend presence, maintenance horizon).
 
-これをもって html-to-project の全フローが完了する。動いていたHTML
-プロトタイプは、設計意図を保ったまま、そのまま開発を始められるプロジェクトへ
-移行した。生成された CLAUDE.md が、ここから先の開発を導く。
+### 2. Final consistency check
+- Does CLAUDE.md's description match the actually generated
+  frontend/backend/shared structure?
+- Does the startup procedure actually work (dev starts as written)?
+
+### 3. Retiring the tool scaffolding
+The conversion is a one-time event; do not let the tool's scaffolding squat
+in a live project. With the user's consent:
+- Fold `prompts/` and `.h2p/` into `.h2p-archive/`.
+- **Save the README.md content below the marker (the h2p tool guide) as
+  `.h2p-archive/h2p_readme.md`, then delete it** along with the marker
+  itself. The root README purifies into the project's face.
+- **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
+  migration's decision record stays in history. Ignore only generated
+  things like `node_modules`.
+- **Record this retirement as the final commit**
+  (e.g. `h2p: migration completed, scaffolding archived`).
+- **Final disposal of `.h2p-archive/` is the user's call.** It is the record
+  of the conversion's decisions, so always ask whether to discard or keep
+  (never delete on your own). If they choose disposal, note it remains in
+  git history.
+- After retirement, the root holds only the clean project (CLAUDE.md /
+  README.md / documents/ / frontend/ etc.).
+
+### 4. Report completion
+Tell the user the migration is complete, development can start, and the
+record remains in `.h2p-archive/`.
+
+## Artifacts
+- Single root `CLAUDE.md`, `README.md`, `documents/` (incl. ubiquitous.md).
+- Tool scaffolding retired with the final commit (within user consent).
+- `state.md`: Phase 9 done; all Phases complete.
+
+## Do not
+- No new design decisions or feature additions. Write up, period.
+- Do not split CLAUDE.md (single, at root).
+- Do not discard `.h2p-archive/` without the user's confirmation.
+- Do not gitignore the migration record (`.h2p*`, `prompts/`) — history
+  keeps it.
+- Do not break the project root while retiring.
+
+## Completion conditions (to mark done)
+- CLAUDE.md (single, root), README.md, and documents/ (incl. ubiquitous.md)
+  are generated.
+- The README content below the marker is archived and removed.
+- Descriptions match the project reality; the startup procedure actually
+  works.
+- The tool scaffolding is retired and tidied (with user consent), final
+  commit recorded.
+- The user agreed the project is complete.
+
+With this, the whole html-to-project flow completes. The working HTML
+prototype has migrated, design intent intact, into a project where
+development can start immediately. The generated CLAUDE.md guides
+development from here.

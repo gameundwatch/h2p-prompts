@@ -1,86 +1,103 @@
-# phase3a — 構造／フロー分析【タイプA：HTMLプロトタイプ】
+# phase3a — structure / flow analysis [Type A: HTML prototype]
 
-あなたは今 Phase3 にいる。司令塔の第一原則と進行規約は読み込み済みの前提。
-入力は `.h2p/phase1-analysis.md`（観測）、`.h2p/phase2-requirements.md`
-（意図・スコープ・契約）、`.h2p/ubiquitous.md`（用語台帳）である。
+You are now in Phase 3. The orchestrator's First Principle and progression
+rules are assumed loaded. Input: `.h2p/phase1-analysis.md` (observation),
+`.h2p/phase2-requirements.md` (intent, scope, contracts), and
+`.h2p/ubiquitous.md` (term ledger).
 
-## このPhaseの責務
+## Responsibility of this Phase
 
-Phase2で確定した意図・契約を **Mermaid 図4種に書き起こす**。図は認識の
-ズレを潰す合意装置であり、後続の実装（Phase7/8）の設計図になる。
+Transcribe the intent and contracts settled in Phase 2 into **four Mermaid
+diagrams**. Diagrams are agreement devices that crush perception gaps, and
+they become the blueprints for implementation (Phase 7/8).
 
-Phase2で実質的な合意は済んでいるため、このPhaseは重い議論ではなく
-**「描いて見せて微調整」**の作業フェーズである。図にして初めて見える矛盾や
-抜けを拾い、ユーザーと細部を詰める。新しい意図をここで足さない（足したく
-なったらPhase2へ戻る判断）。
-
----
-
-## 描く4種の図
-
-### 図1：アプリケーション構造図
-コンポーネント／モジュールの構成と依存関係。
-- Phase1(a)で観測した「繰り返し構造」をコンポーネント候補として表す。
-- **層を明示する**：UI層 / ロジック層 / データアクセス層（フロント3層）。
-  `backend: mock` なら backend 側の ルーティング / ロジック / データ層、
-  および両者が依存する `shared`（契約）も描く。
-- 依存の向きを矢印で示し、「UIはロジック・契約を直接知らない」「データ
-  アクセス層のみ contract に依存」という設計意図が図から読めるようにする。
-
-### 図2：使用データの型
-アプリが扱うデータの構造（エンティティとその関係）。
-- Phase2の契約昇華で定義した論理契約を、型として図示する。
-- `backend: mock` の場合、ここが `shared`（契約の正本）の設計図になる。
-- ★図3（状態構造）と**明確に分けて描く**こと。データの型（永続/通信される
-  形）と、UIが一時的に持つ状態は別物である。この分離が密結合防止の起点。
-
-### 図3：状態構造
-フロントが保持する状態の構造と所在。
-- Phase1(c)で観測した「変化する値」を、ローカル状態／共有状態／サーバ由来
-  状態に分類して表す。
-- どの状態がどのコンポーネント／層に属するかを示す。
-- 図2（データの型）との違いを意識する：図2は「やり取りされる契約」、図3は
-  「画面が動くために持つ状態」。両者が混ざると密結合の温床になる。
-
-### 図4：フローチャート
-主要なユーザー操作の流れ（Phase2のHow＝利用の流れに対応）。
-- ユーザーの起点から目的達成までの分岐・遷移を表す。
-- Phase1(d)で観測した画面遷移・表示切替を反映する。
-- 通信が絡む箇所（契約を介したやり取り）が流れのどこで起きるかを示す。
+Substantive agreement was finished in Phase 2, so this Phase is not heavy
+debate but **"draw, show, fine-tune"**. Pick up the contradictions and gaps
+that only become visible once drawn, and settle details with the user. Do
+not add new intent here (if the urge arises, that is a rollback-to-Phase-2
+decision).
 
 ---
 
-## 手順
+## The four diagrams
 
-1. 入力を読み、4種の図を Mermaid で起こす。**図の要素名（コンポーネント・
-   型・状態）は `.h2p/ubiquitous.md` の識別子を使う。** 台帳に無い概念が
-   図で必要になったら、まずユーザーに確認して台帳へ登録してから描く。
-2. ユーザーに提示し、図ごとに「この構造・流れで意図に合っているか」を確認。
-   図にして見えた矛盾・抜け・曖昧さを指摘し、細部を詰める。
-   ユーザーが Mermaid のプレビュー環境を持たない場合は、
-   `.h2p/review/p3-diagrams.html`（Mermaid を描画する使い捨てのHTMLビュー）を
-   生成して確認してもらう。**正本はあくまで `phase3-structure.md` の Mermaid
-   コード**であり、HTMLは消しても情報が失われないビューに留める。
-3. 合意が取れたら `.h2p/phase3-structure.md` に4図すべてを書き込む。
-   構造と図ごとの Mermaid 記法は `prompts/templates/structure.md` に従う
-   （見出し構造を変えない。タイプAでは「移行計画」は該当なし）。
-4. `state.md` の decisions に、構造上の重要な決定（層の割り付け、状態と
-   契約の分離方針など）を要約。
+### Diagram 1: application structure
+Component/module composition and dependencies.
+- Represent the "repeated structures" observed in Phase 1(a) as component
+  candidates.
+- **Make layers explicit**: UI / logic / data access (frontend 3 layers).
+  With `backend: mock`, also draw the backend's routing / logic / data
+  layers and the `shared` contract both sides depend on.
+- Show dependency direction with arrows so the design intent — "UI does not
+  know logic or the contract directly", "only the data-access layer depends
+  on the contract" — is readable from the diagram.
 
-## やってはいけないこと
-- ここで新しい機能・意図を**足さない**。図は Phase2 の合意の可視化であって
-  拡張の場ではない。足す必要が出たら Phase2 への後戻りをユーザーに諮る。
-- データの型（図2）と状態（図3）を**混ぜない**。混ぜると後段で密結合が
-  固着する。
-- 技術固有の表現を持ち込まない（具体的なライブラリ名・ファイル構成は
-  Phase5以降）。図は論理構造に留める。
-- 台帳に無い名前を図に持ち込まない。命名は台帳が正本（登録が先）。
+### Diagram 2: data types
+The structure of the data the app handles (entities and relations).
+- Diagram the logical contracts defined in Phase 2's contract elevation as
+  types.
+- With `backend: mock`, this becomes the blueprint of `shared` (the
+  canonical contract).
+- ★Keep it **strictly separate from Diagram 3 (state)**. Data types
+  (persisted/communicated shapes) and transient UI state are different
+  things. This separation is the origin of coupling prevention.
 
-## 完了条件（doneにできる条件）
-- 4種の図が `.h2p/phase3-structure.md` に書かれている。
-- 図2（型）と図3（状態）が分離されている。
-- `backend: mock` の場合、図1に層構造と `shared` が、図2に契約が反映されている。
-- ユーザーが4図に合意した。
+### Diagram 3: state structure
+The structure and location of frontend-held state.
+- Classify the "changing values" observed in Phase 1(c) into local / shared
+  / server-derived state.
+- Show which component/layer each piece of state belongs to.
+- Mind the difference from Diagram 2: Diagram 2 is "contracts exchanged",
+  Diagram 3 is "state the screen needs to run". Mixing them breeds
+  coupling.
 
-ユーザーが進行を指示したら、司令塔の整合性チェックを経てPhase4へ。
-Phase4はここまでの意図・構造を基準に、HTML自体を是正する工程になる。
+### Diagram 4: flow chart
+Primary user-operation flows (matching Phase 2's How).
+- Branches and transitions from the user's starting point to goal.
+- Reflect the navigation/view switching observed in Phase 1(d).
+- Show where communication (exchanges through the contract) occurs in the
+  flow.
+
+---
+
+## Procedure
+
+1. Read the inputs and draft the four diagrams in Mermaid. **Element names
+   (components, types, state) use identifiers from `.h2p/ubiquitous.md`.**
+   If a concept needed by a diagram is not in the ledger, confirm with the
+   user and register it first, then draw.
+2. Present to the user and confirm per diagram: "does this structure/flow
+   match the intent?" Point out contradictions, gaps, and ambiguities made
+   visible by drawing; settle the details.
+   If the user has no Mermaid preview environment, generate
+   `.h2p/review/p3-diagrams.html` (a disposable HTML view that renders the
+   Mermaid) for them. **The canonical form is always the Mermaid code in
+   `phase3-structure.md`**; the HTML is a view whose deletion loses nothing.
+3. Once agreed, write all four diagrams into `.h2p/phase3-structure.md`.
+   Structure and per-diagram Mermaid notation follow
+   `prompts/templates/structure.md` (do not change the heading structure;
+   for Type A the "Migration plan" section is "N/A").
+4. Summarize key structural decisions (layer assignment, state/contract
+   separation policy) in `state.md` decisions.
+
+## Do not
+- Do not **add** new features or intent here. Diagrams visualize Phase 2's
+  agreement; they are not an expansion site. If additions become necessary,
+  put a rollback to Phase 2 before the user.
+- Do not **mix** data types (Diagram 2) with state (Diagram 3). Mixing them
+  calcifies coupling downstream.
+- Do not introduce technology-specific expressions (concrete library names,
+  file layouts — those are Phase 5+). Diagrams stay logical.
+- Do not bring names not in the ledger into diagrams. Naming's canon is the
+  ledger (registration first).
+
+## Completion conditions (to mark done)
+- The four diagrams are written in `.h2p/phase3-structure.md`.
+- Diagram 2 (types) and Diagram 3 (state) are separated.
+- With `backend: mock`, Diagram 1 reflects the layer structure and `shared`,
+  and Diagram 2 reflects the contracts.
+- The user has agreed to all four diagrams.
+
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 4. Phase 4 corrects the HTML itself against the
+intent and structure settled so far.
