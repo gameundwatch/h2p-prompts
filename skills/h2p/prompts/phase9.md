@@ -46,13 +46,9 @@ progression rule agents follow in post-migration development. Include:
 ### 2. README.md (root)
 The human entrance: project overview, setup, startup, directory layout.
 Where CLAUDE.md is for agents/discipline, README is the project's public
-face.
-
-The root README.md has a **two-layer structure**: above the marker comment
-(`<!-- Project用に生成したReadmeの内容がある場合、この行より上に表示すること。 -->`)
-is the project README; below it is the h2p tool guide. In this Phase,
-**write the project README above the marker**. The part below the marker is
-handled in "Retiring the tool scaffolding" below.
+face. **Generate it fresh** for the migrated project (the h2p tool guide
+lives in the plugin, never in the project, so there is nothing to preserve or
+strip here).
 
 ### 3. documents/ (root)
 Keep design decisions traceable. Write up the `.h2p/` agreements
@@ -79,11 +75,9 @@ prose into readable deliverables. Match the coverage and depth to scope
 
 ### 3. Retiring the tool scaffolding
 The conversion is a one-time event; do not let the tool's scaffolding squat
-in a live project. With the user's consent:
+in a live project. The `prompts/` set was materialized into this project by
+the h2p plugin at the start; retire it now. With the user's consent:
 - Fold `prompts/` and `.h2p/` into `.h2p-archive/`.
-- **Save the README.md content below the marker (the h2p tool guide) as
-  `.h2p-archive/h2p_readme.md`, then delete it** along with the marker
-  itself. The root README purifies into the project's face.
 - **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
   migration's decision record stays in history. Ignore only generated
   things like `node_modules`.
@@ -116,7 +110,6 @@ record remains in `.h2p-archive/`.
 ## Completion conditions (to mark done)
 - CLAUDE.md (single, root), README.md, and documents/ (incl. ubiquitous.md)
   are generated.
-- The README content below the marker is archived and removed.
 - Descriptions match the project reality; the startup procedure actually
   works.
 - The tool scaffolding is retired and tidied (with user consent), final
