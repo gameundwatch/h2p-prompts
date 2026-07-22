@@ -15,11 +15,21 @@
 
 ## インストール
 
-このスキル（`skills/h2p/`）を、Claude Code の個人スキル置き場へ配置します。
+このスキル（`h2p/`）を、Claude Code の個人スキル置き場へ配置します。
+
+**リリースから（推奨）**
+
+```
+# 最新リリースの zip を取得して展開
+gh release download --repo gameundwatch/h2p-prompts --pattern 'h2p.zip'
+unzip h2p.zip -d ~/.claude/skills/
+```
+
+**リポジトリから**
 
 ```
 git clone <このリポジトリ> h2p-prompts
-cp -R h2p-prompts/skills/h2p ~/.claude/skills/h2p
+cp -R h2p-prompts/h2p ~/.claude/skills/h2p
 ```
 
 配置後は、どのフォルダでも `/h2p` で起動できます。
