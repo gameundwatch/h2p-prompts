@@ -200,6 +200,11 @@ shared. When loading a prompt, choose the variant matching
   ledger; identifier construction follows the naming grammar. New concepts
   must be registered first; renaming an existing term is treated as a
   rollback to Phase 2.
+- **Foundation catalog**: Phases 1, 3, 4, 5 consult
+  `prompts/references/foundations.md` — the structural / non-functional
+  foundations that are expensive to retrofit and are provisioned up front as
+  *readiness* (never as features). Each of those Phases declares it as an
+  input.
 - **Rollback is allowed**: if the user decides an upstream Phase needs
   revisiting, return to that Phase. Explain that downstream artifacts are
   invalidated and rewind `state.md`.
