@@ -60,6 +60,19 @@ for future feature growth, never goals.
    Generalization, abstraction, or extra layers that do not serve it are
    over-engineering and are forbidden. Generality is a means, not an end.
 
+**Why front-load the foundation (the anti-YAGNI / MVP stance).** The input is
+typically an MVP — *minimum viable features* — and YAGNI is correct there; this
+tool enforces it (principle 1), keeping that feature-minimalism exactly. But an
+MVP prototype is usually a structural dead-end: built to demonstrate, not to
+grow. At the structural layer YAGNI is therefore inverted on purpose — a
+foundation that is expensive to retrofit must be laid *before* the weight
+arrives, or growth degrades into stopgaps. So h2p keeps the minimal feature set
+while provisioning the extensibility headroom up front — not gold-plating, but
+the ground on which post-MVP feature growth can itself follow YAGNI safely. The
+bound is principle 2: provision only where retrofit is costly and growth is
+plausible for *this* app, sized in proportion (headroom, not infinite
+generality).
+
 Derived principles: read evidence from the input rather than adding
 (a trace present = in scope; no trace = out of scope). What is derived
 backward is the contract, not the implementation. Type B (existing app)
