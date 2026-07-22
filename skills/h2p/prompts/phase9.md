@@ -47,7 +47,7 @@ progression rule agents follow in post-migration development. Include:
 The human entrance: project overview, setup, startup, directory layout.
 Where CLAUDE.md is for agents/discipline, README is the project's public
 face. **Generate it fresh** for the migrated project (the h2p tool guide
-lives in the plugin, never in the project, so there is nothing to preserve or
+lives in the skill, never in the project, so there is nothing to preserve or
 strip here).
 
 ### 3. documents/ (root)
@@ -76,7 +76,7 @@ prose into readable deliverables. Match the coverage and depth to scope
 ### 3. Retiring the tool scaffolding
 The conversion is a one-time event; do not let the tool's scaffolding squat
 in a live project. The `prompts/` set was materialized into this project by
-the h2p plugin at the start; retire it now. With the user's consent:
+the h2p skill at the start; retire it now. With the user's consent:
 - Fold `prompts/` and `.h2p/` into `.h2p-archive/`.
 - **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
   migration's decision record stays in history. Ignore only generated

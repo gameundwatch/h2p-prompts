@@ -1,9 +1,0 @@
-{
-  "name": "h2p",
-  "version": "0.1.0",
-  "description": "html-to-project: migrate a working HTML prototype or existing frontend app into a project ready for continued development, without changing any features. A user-driven, multi-session, 9-phase process.",
-  "author": {
-    "name": "airplayr",
-    "url": "https://github.com/airplayr"
-  }
-}
