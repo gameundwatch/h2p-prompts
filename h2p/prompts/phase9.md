@@ -73,16 +73,17 @@ prose into readable deliverables. Match the coverage and depth to scope
   frontend/backend/shared structure?
 - Does the startup procedure actually work (dev starts as written)?
 
-### 3. Retiring the tool scaffolding
-The conversion is a one-time event; do not let the tool's scaffolding squat
-in a live project. The `prompts/` set was materialized into this project by
-the h2p skill at the start; retire it now. With the user's consent:
-- Fold `prompts/` and `.h2p/` into `.h2p-archive/`.
+### 3. Retiring the working directory
+The conversion is a one-time event; do not let its working directory squat in
+a live project. (The prompt set was never copied here — it is read in place
+from the h2p skill — so there is nothing to un-materialize; only `.h2p/` needs
+tidying.) With the user's consent:
+- Fold `.h2p/` into `.h2p-archive/`.
 - **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
   migration's decision record stays in history. Ignore only generated
   things like `node_modules`.
 - **Record this retirement as the final commit**
-  (e.g. `h2p: migration completed, scaffolding archived`).
+  (e.g. `h2p: migration completed, working dir archived`).
 - **Final disposal of `.h2p-archive/` is the user's call.** It is the record
   of the conversion's decisions, so always ask whether to discard or keep
   (never delete on your own). If they choose disposal, note it remains in
@@ -96,15 +97,15 @@ record remains in `.h2p-archive/`.
 
 ## Artifacts
 - Single root `CLAUDE.md`, `README.md`, `documents/` (incl. ubiquitous.md).
-- Tool scaffolding retired with the final commit (within user consent).
+- Working directory (`.h2p/`) retired with the final commit (within user
+  consent).
 - `state.md`: Phase 9 done; all Phases complete.
 
 ## Do not
 - No new design decisions or feature additions. Write up, period.
 - Do not split CLAUDE.md (single, at root).
 - Do not discard `.h2p-archive/` without the user's confirmation.
-- Do not gitignore the migration record (`.h2p*`, `prompts/`) — history
-  keeps it.
+- Do not gitignore the migration record (`.h2p*`) — history keeps it.
 - Do not break the project root while retiring.
 
 ## Completion conditions (to mark done)
@@ -112,8 +113,8 @@ record remains in `.h2p-archive/`.
   are generated.
 - Descriptions match the project reality; the startup procedure actually
   works.
-- The tool scaffolding is retired and tidied (with user consent), final
-  commit recorded.
+- The working directory (`.h2p/`) is retired and tidied (with user consent),
+  final commit recorded.
 - The user agreed the project is complete.
 
 With this, the whole html-to-project flow completes. The working HTML

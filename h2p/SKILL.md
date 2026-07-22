@@ -13,30 +13,24 @@ description: >
   HTML/CSS help — h2p never changes features.
 ---
 
-# h2p — bootstrap
+# h2p — launcher
 
-This skill is a thin launcher. It materializes the h2p prompt set into the
-current project once, then hands off to the orchestrator, which owns all
-migration logic (git init, input detection, state, phases). Do not reimplement
-any of that here.
+This skill is a thin launcher. The h2p prompt set is read **in place** from
+this skill's own directory; nothing is copied into the user's project. All
+migration logic (git init, input detection, state, phases) lives in the
+orchestrator — do not reimplement any of it here.
 
 ## On invocation
 
-1. **If `prompts/` does not already exist in the current working directory**,
-   copy this skill's bundled `prompts/` directory into it:
+1. This skill's base directory is reported to you at invocation; call it
+   `<H2P>`. The prompt set lives at `<H2P>/prompts/`. **Read it in place —
+   never copy it into the user's project.**
 
-   ```bash
-   [ -d prompts ] || cp -R "<this skill's base directory>/prompts" ./prompts
-   ```
+2. **Read `<H2P>/prompts/orchestrator.md` and follow it.** It reads the
+   remaining prompts from `<H2P>/prompts/` as needed and keeps all working
+   state under `./.h2p/` in the user's project. Re-invoking `/h2p` resumes
+   from `.h2p/state.md`.
 
-   Use the base directory reported for this skill at invocation as the copy
-   source. If `prompts/` already exists (an in-progress or prior migration),
-   **do not copy or overwrite it** — the in-project prompts are frozen for
-   this migration and win.
-
-2. **Read `prompts/orchestrator.md` and follow it.** The orchestrator detects
-   whether this is a first boot (no `.h2p/state.md`) or a resume (state
-   present) and proceeds accordingly. Re-invoking `/h2p` mid-migration simply
-   resumes.
-
-That is all this skill does. Everything else lives in the prompts.
+The user's project only ever accumulates `./.h2p/` (state, artifacts, working
+files) and the actual migration output (`origin/`, `frontend/`, etc.). That is
+all this skill does; everything else lives in the prompts.
