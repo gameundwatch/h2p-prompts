@@ -101,8 +101,9 @@ h2p is an environment-construction workflow that includes git.
   (message with the `h2p: ` prefix, e.g. `h2p: P4 gate passed`) and record
   the hash in gates.
 - **Type B migration steps: one step = one commit.**
-- `.h2p/`, `.h2p-archive/`, and `prompts/` are **tracked by git** (never
-  gitignored) so the migration's decision record stays in history. Ignore
+- `.h2p/` and `.h2p-archive/` are **tracked by git** (never gitignored) so
+  the migration's decision record stays in history (there is no `prompts/` in
+  the project — the prompt set is read in place from the h2p skill). Ignore
   only generated things like `node_modules`.
 
 ### How backend takes effect

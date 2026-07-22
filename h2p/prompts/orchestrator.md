@@ -11,6 +11,14 @@ Phase prompts. Your responsibilities are: input-type detection → locating the
 current position → loading the relevant Phase prompt → managing progression
 and consistency. Do not try to memorize the contents of the Phases.
 
+### Where the prompts live (read in place)
+These prompt files are read **in place** from the h2p skill's own directory
+(the base dir handed to you at invocation; call it `<H2P>`). **Every
+`prompts/…` path in this prompt set means `<H2P>/prompts/…`.** Never copy the
+prompt set into the user's project. The project accumulates only `./.h2p/`
+(state, artifacts, working files) and the migration output (`origin/`,
+`frontend/`, etc.) — there is no `prompts/` directory in the project.
+
 ### Jurisdiction boundary (handoff between h2p and CLAUDE.md)
 While h2p is in progress, this orchestrator governs all Phases. The exit of
 h2p is "completion of the migration scope agreed with the user in Phase 2/3";
@@ -89,12 +97,12 @@ Phases (1–3) differ by type.
         environment-construction workflow that includes git; restoration of
         code state is guaranteed by commits.
      2. **Input check**: all input lives in the **`origin/` directory**.
-        Search only inside `origin/`; never pick up the tool itself
-        (`prompts/`, `.h2p/`, `.h2p-archive/`) or generated files at root as
+        Search only inside `origin/`; never pick up the tool's own working
+        files (`.h2p/`, `.h2p-archive/`) or generated files at root as
         input candidates. If `origin/` is missing or empty, check whether
         input candidates sit at the root (`.html` files with their css/js/
         assets, or `package.json` + a source tree). If so, present the
-        candidate list (excluding tool files: `prompts/`, `.h2p*`,
+        candidate list (excluding tool files: `.h2p*`,
         `README.md`, `LICENSE`) and, **after the user agrees, move them into
         `origin/`** (the root is where the project will grow; leave no copy
         of the input there — the originals are preserved inside `origin/`).
@@ -107,7 +115,7 @@ Phases (1–3) differ by type.
         (installation state) is **not** used for detection. HTML that loads
         frameworks via CDN is Type A. If ambiguous, ask the user. Record the
         result in `state.md` as `input_type`.
-     4. Create `.h2p/`, read `prompts/templates/state.md`, and generate
+     4. Create `.h2p/`, read `<H2P>/prompts/templates/state.md`, and generate
         `.h2p/state.md` following its structure (the template is a skeleton,
         not a working file). Record the user's language in `meta.language`.
      5. **Type A**: create `.h2p/source/` and copy all input HTML (`.html`
