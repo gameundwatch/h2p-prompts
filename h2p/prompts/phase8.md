@@ -1,111 +1,139 @@
-# phase8 — backend implementation [only when `backend: mock`]
+# phase8 — documentation
 
-You are now in Phase 8. The orchestrator's First Principle and progression
-rules are assumed loaded. **When `backend: none`, this Phase is skipped**
-(the orchestrator sends you to Phase 9).
-
-Input: `shared/` (the canonical contract finalized in Phase 7),
-`.h2p/phase5-stack.md` (backend tech, contract method),
-`.h2p/phase2-requirements.md` (logical contracts),
-`.h2p/phase6-workflow.md` (discipline), `.h2p/phase1-analysis.md` (behavior
-checklist), `.h2p/ubiquitous.md` (term ledger), and the running `frontend/`.
+You are now in Phase 8, the final Phase. The orchestrator's First Principle
+and progression rules are assumed loaded. Input: all artifacts in `.h2p/`
+(phase1–5, ubiquitous.md, state.md) and the running `frontend/` (and
+`backend/` `shared/`).
 
 ## Responsibility of this Phase
 
-Following the contract solidified through Phase 7 (`shared/`), build in
-`backend/` **a minimal working server that returns mock responses**. At the
-exit, verify frontend and backend run integrated.
+**Write up** all agreements accumulated in `.h2p/` and complete the project
+as a developable state. CLAUDE.md defines the progression rules of
+development from here on, **closing the process self-descriptively**.
 
-### Range line (most important)
-- **In range**: a working server returning mock data per the contract, in a
-  state the frontend can actually call and integrate with.
-- **Out of range**: business-logic implementation; a real database; real
-  authentication. The HTML holds no evidence for them, so they are not built
-  — building them yields "a non-working ideal" (First Principle).
+No new design decisions here. The job is translating what Phases 1–7 settled
+into a form developers and future agents can read. The `.h2p/` sources are in
+English (internal artifacts); the deliverables here are user-facing, so
+**translate their prose into `meta.language`** (`state.md` records it). Heading
+anchors and identifiers stay English; domain terms keep their ledger form.
 
-The mock must **work**, not be a hollow shell: it returns plausible mock
-data per the contract, so the frontend can test integration. That is the
-exit.
+---
+
+## What to generate
+
+### 1. CLAUDE.md (single, at root) ★
+The one governing document for the whole project (frontend / backend /
+shared). Never split, even in a monorepo. From now on this CLAUDE.md is the
+progression rule agents follow in post-migration development. Include:
+- **Project purpose and philosophy** (translate Phase 2's Why and Phase 5's
+  development philosophy).
+- **Architecture** (3-layer structure, contract-mediated decoupling, diagram
+  essentials — Phase 3).
+- **Tech stack and rationale** (Phase 4 — especially "what was left out" and
+  why, so future developers do not add unnecessary dependencies).
+- **Development workflow and discipline** (Phase 5, at scope-appropriate
+  weight).
+- **Inviolable design principles**: the contract canon lives in one place;
+  the UI never holds the contract directly; layers never mix; **naming
+  follows the term ledger and naming grammar (`documents/ubiquitous.md`),
+  and new concepts get registered first**; etc. Verbalize the rules that
+  prevent coupling and vocabulary drift.
+- **Startup and development procedure** (dev startup; with `backend: mock`,
+  how to start both).
+- For Type B, if migration steps remain, state them as the **handoff plan**
+  (h2p's exit = the agreed scope completed; the rest proceeds under this
+  CLAUDE.md).
+- **Deferred work**: point at root `ISSUES.md` (when generated) as the backlog
+  of problems and open questions to tackle under this CLAUDE.md.
+
+### 2. README.md (root)
+The human entrance: project overview, setup, startup, directory layout.
+Where CLAUDE.md is for agents/discipline, README is the project's public
+face. **Generate it fresh** for the migrated project (the h2p tool guide
+lives in the skill, never in the project, so there is nothing to preserve or
+strip here).
+
+### 3. documents/ (root)
+Keep design decisions traceable. Write up the `.h2p/` agreements
+(requirements, structure diagrams, stack rationale, workflow) as design
+documents maintainers can consult later. Preserving Phase 3's Mermaid
+diagrams here pays off in later development.
+**Write `.h2p/ubiquitous.md` up as `documents/ubiquitous.md`** (including
+Part 2, the naming grammar). It remains the canon of meaning and naming in
+post-migration development (CLAUDE.md points at it).
+
+### 4. ISSUES.md (root) — only if there is deferred work
+The handoff list of problems and open questions migration deliberately left
+untouched (First Principle: behavior must not change), to be tackled under
+this CLAUDE.md. Write up `state.md`'s `backlog` into the structure of
+`prompts/templates/issues.md` (No. ledger + priority sections; per entry:
+subject, repro, root cause, fix plans, **provisioned seams** — the foundations
+already laid that make the fix cheap — and scope). If `backlog` is empty,
+generate nothing (YAGNI). CLAUDE.md references this file as the development
+backlog.
 
 ---
 
 ## Procedure
 
-### 1. Scaffold the backend (execute directly via bash)
-Per the backend selection in `.h2p/phase5-stack.md`, **initialize `backend/`
-yourself via bash** and install dependencies. Confirm the server starts.
+### 1. Write up
+Read each `.h2p/` artifact and generate items 1–4 above (item 4 only if
+`backlog` is non-empty). Polish working-memo prose into readable deliverables.
+Match the coverage and depth to scope (backend presence, maintenance horizon).
 
-### 2. Binding to the contract
-Reference the `shared/` contract as the **single canon**.
-- If the contract method is Zod etc. (TS on both sides), import the `shared`
-  schemas in the backend too and validate input/output.
-- If TypeSpec/OpenAPI (cross-language), use types/validation generated from
-  the canon.
-- **Never redefine the contract on the backend side.** Dual management is
-  the source of coupling and inconsistency.
-- If a contract defect surfaces during implementation, follow Phase 7's
-  "Contract amendment" rules (shape fix = approved simultaneous update of
-  `phase2-requirements.md` and `shared/`; meaning change = put a Phase 2
-  rollback before the user).
-- Route and mock-data naming follows `.h2p/ubiquitous.md` — identifiers
-  (Part 1) and naming grammar (Part 2).
+### 2. Final consistency check
+- Does CLAUDE.md's description match the actually generated
+  frontend/backend/shared structure?
+- Does the startup procedure actually work (dev starts as written)?
 
-### 3. Implement in the backend's 3 layers (mirror of the frontend)
-- **Routing layer (routes/)**: receives requests, validates input/output per
-  the contract. Depends on `shared`. Pairs with the frontend's data-access
-  layer across the contract.
-- **Logic layer (logic/)**: the processing body. At mock stage, assembles
-  contract-conformant mock responses. The place later swapped for the real
-  implementation.
-- **Data layer (data/)**: the mock-data source. The swap point later
-  replaced by real DB access. Consolidate mock data here; the logic layer
-  references it.
+### 3. Retiring the working directory
+The conversion is a one-time event; do not let its working directory squat in
+a live project. (The prompt set was never copied here — it is read in place
+from the h2p skill — so there is nothing to un-materialize; only `.h2p/` needs
+tidying.) With the user's consent:
+- Fold `.h2p/` into `.h2p-archive/`.
+- **Delete `.review/`** — it is a disposable one-way projection with no
+  canonical information (gitignored throughout), so nothing is lost.
+- **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
+  migration's decision record stays in history. Ignore only generated
+  things like `node_modules`.
+- **Record this retirement as the final commit**
+  (e.g. `h2p: migration completed, working dir archived`).
+- **Final disposal of `.h2p-archive/` is the user's call.** It is the record
+  of the conversion's decisions, so always ask whether to discard or keep
+  (never delete on your own). If they choose disposal, note it remains in
+  git history.
+- After retirement, the root holds only the clean project (CLAUDE.md /
+  README.md / documents/ / ISSUES.md / frontend/ etc.).
 
-This 3-layer split keeps the later mock→real swap unit small (the coupling-
-prevention logic applies to mock servers too).
-
-### 4. Wire up the frontend
-Configure so the frontend's data-access layer can call the backend (dev
-proxy / CORS / base URL, per the selected stack's conventions). Parts that
-call public APIs directly stay as they are (only the own backend gets
-proxied).
-
-### 5. Behavior verification gate (exit) ★
-- Start frontend and backend **simultaneously**.
-- Confirm the frontend calls the backend's mocks through the contract and
-  **works integrated**. Exercise the communication-involving items of the
-  Phase 1 behavior checklist (the primary flows of Diagram 4) and confirm
-  behavior equivalent to the refactored HTML. Final visual/interaction
-  confirmation is the user's; record accepted differences in
-  `approved_deviations`.
-- If integration fails, fix until it holds; cannot be done before. On pass,
-  commit (`h2p: P8 gate passed`) and record the hash in gates.
+### 4. Report completion
+Tell the user the migration is complete, development can start, and the
+record remains in `.h2p-archive/`.
 
 ## Artifacts
-- The `backend/` set (routes/ logic/ data/ 3 layers, startup config,
-  package.json, …).
-- Frontend–backend wiring config (proxy, …).
-- `state.md`: `gates.p8_integration_runs` → `passed (commit <hash>)`; key
-  implementation/wiring decisions → decisions.
+- Single root `CLAUDE.md`, `README.md`, `documents/` (incl. ubiquitous.md).
+- Root `ISSUES.md` (only if `state.md`'s `backlog` is non-empty).
+- Working directory (`.h2p/`) retired with the final commit (within user
+  consent).
+- `state.md`: Phase 8 done; all Phases complete.
 
 ## Do not
-- Do not build business logic, a real DB, or real auth (out of range; they
-  become non-working ideals).
-- Do not redefine the contract in the backend (the canon is `shared`, one
-  place).
-- Do not flatten the layers into a single mock file (keep 3 layers — they
-  are the swap units).
-- Do not reduce scaffolding to a written procedure; actually execute and
-  run it.
-- Never mark complete without passing integration verification.
+- No new design decisions or feature additions. Write up, period.
+- Do not split CLAUDE.md (single, at root).
+- Do not discard `.h2p-archive/` without the user's confirmation.
+- Do not gitignore the migration record (`.h2p*`) — history keeps it.
+- Do not break the project root while retiring.
 
 ## Completion conditions (to mark done)
-- `backend/` is implemented in 3 layers, bound to the contract (`shared`).
-- The mock works; frontend and backend communicate successfully.
-- **Behavior verification gate passed** (`p8_integration_runs: passed`).
-- The user agreed to the integration result.
+- CLAUDE.md (single, root), README.md, and documents/ (incl. ubiquitous.md)
+  are generated; root ISSUES.md generated if `backlog` is non-empty.
+- Descriptions match the project reality; the startup procedure actually
+  works.
+- The working directory (`.h2p/`) is retired and tidied (with user consent),
+  final commit recorded.
+- The user agreed the project is complete.
 
-When the user instructs progression and the gate is passed, go through the
-orchestrator's consistency check to Phase 9. Phase 9 writes up all Phase
-agreements, generates the single root CLAUDE.md and the rest, and closes the
-process.
+With this, the whole html-to-project flow completes. The working HTML
+prototype has migrated, design intent intact, into a project where
+development can start immediately. The generated CLAUDE.md guides
+development from here.

@@ -24,7 +24,7 @@ etc.) — there is no `prompts/` directory in the project.
 While h2p is in progress, this orchestrator governs all Phases. The exit of
 h2p is "completion of the migration scope agreed with the user in Phase 2/3";
 work beyond that scope is handed off to normal development governed by the
-CLAUDE.md generated in Phase 9. The moment h2p ends, governance transfers to
+CLAUDE.md generated in Phase 8. The moment h2p ends, governance transfers to
 the generated CLAUDE.md. The position of the scope line (how far h2p goes) is
 decided by agreement with the user, not by this prompt.
 
@@ -44,7 +44,7 @@ three language zones — keep them apart:
 - **`.review/` and root deliverables → `meta.language`.** These are the only
   user-facing outputs. `.review/` (see Artifact writing rules) holds disposable
   projections for human confirmation; root deliverables (CLAUDE.md, README.md,
-  documents/, ISSUES.md) are produced at Phase 9 by **translating** the English
+  documents/, ISSUES.md) are produced at Phase 8 by **translating** the English
   `.h2p/` sources into `meta.language`.
 
 - On first boot, infer the user's language from their messages; confirm if
@@ -171,7 +171,7 @@ Phases (1–3) differ by type.
    Phase prompt; the orchestrator just follows the declaration.
 3. Load the relevant Phase prompt and follow it. For Phases 1–3, read
    `prompts/a_html/phaseNa.md` (Type A) or `prompts/b_frontend/phaseNb.md`
-   (Type B) according to `input_type`. Phases 4–9 use `prompts/phaseN.md`.
+   (Type B) according to `input_type`. Phases 4–8 use `prompts/phaseN.md`.
    (Prompts are named by number; artifacts by content:
    `.h2p/phaseN-<content>.md`. Do not confuse them.)
 4. Briefly tell the user where things stand (which Phase, what was last
@@ -185,30 +185,37 @@ source of truth; your current position exists only there.
 
 ## Phase map and dependencies
 
-Phases 1–3 have per-type prompts. Phases 4–9 and all infrastructure are
-shared. When loading a prompt, choose the variant matching
-`state.md`'s `input_type`.
+Phases 1–3 have per-type prompts. Phases 4–8 and all infrastructure are
+shared. When loading a prompt, choose the variant matching `state.md`'s
+`input_type`.
 
 | # | Name | Prompt | Artifact |
 |---|------|--------|----------|
 | 1 | Analysis (A: observation / B: inventory & diagnosis) | `a_html/phase1a.md` / `b_frontend/phase1b.md` | `.h2p/phase1-analysis.md` (includes behavior checklist) |
 | 2 | Requirements (A: intent retrieval / B: current intent + future intent) | `a_html/phase2a.md` / `b_frontend/phase2b.md` | `.h2p/phase2-requirements.md` + `.h2p/ubiquitous.md` |
 | 3 | Structure (A: give structure / B: redesign & migration plan) | `a_html/phase3a.md` / `b_frontend/phase3b.md` | `.h2p/phase3-structure.md` |
-| 4 | Structural refactoring (A: HTML correction / B: foundation migration) | `phase4.md` | `.h2p/phase4-refactor.md` + `source/refactored/` (A) |
-| 5 | Tech stack selection | `phase5.md` | `.h2p/phase5-stack.md` |
-| 6 | Development workflow design | `phase6.md` | `.h2p/phase6-workflow.md` |
-| 7 | Frontend implementation / migration | `phase7.md` | `frontend/` |
-| 8 | Backend implementation [integrated scope only] | `phase8.md` | `backend/` + `shared/` |
-| 9 | Documentation | `phase9.md` | `CLAUDE.md` / `README.md` / `documents/` / `ISSUES.md` (if backlog non-empty) |
+| 4 | Tech stack selection | `phase4.md` | `.h2p/phase4-stack.md` |
+| 5 | Development workflow design | `phase5.md` | `.h2p/phase5-workflow.md` |
+| 6 | Frontend implementation / migration | `phase6.md` | `frontend/` |
+| 7 | Backend implementation [integrated scope only] | `phase7.md` | `backend/` + `shared/` |
+| 8 | Documentation | `phase8.md` | `CLAUDE.md` / `README.md` / `documents/` / `ISSUES.md` (if backlog non-empty) |
 
-- Order is one-way, 1→9. Each Phase takes the upstream artifacts it declares
+- Order is one-way, 1→8. Each Phase takes the upstream artifacts it declares
   as input.
 - **Type branching**: for Phases 1–3, read `a_html/phaseNa.md` when
   `input_type` is `A`, `b_frontend/phaseNb.md` when `B`. Artifact filenames
   are shared (output formats are aligned so later Phases can read them
   without caring about input type). Phases 4+ use the shared prompts.
+- **Fit-to-intent / foundations happen in Phase 6** (there is no separate
+  refactoring phase). Both types build `frontend/` in Phase 6 and **gate
+  against the baseline** — Type A: the original `.h2p/source/`; Type B: the
+  `origin/` working copy. Type A reproduces the original corrected to Phase
+  2/3 intent; Type B executes the migration plan (foundation steps first, then
+  the rest) on the working copy, strangler-fig with one commit per step. Both
+  lay the in-place foundations (`references/foundations.md`) during the build,
+  never as a behavior change.
 - **Scope branching**: the frontend is always built. If Phase 2 settles
-  `backend: none`, skip Phase 8. If `backend: mock`, Phase 8 builds
+  `backend: none`, skip Phase 7. If `backend: mock`, Phase 7 builds
   `shared/` and `backend/`.
 - **Ubiquitous language**: from Phase 2 onward, `.h2p/ubiquitous.md`
   (Part 1 = term ledger, Part 2 = naming grammar) binds every Phase. Diagram
@@ -216,7 +223,7 @@ shared. When loading a prompt, choose the variant matching
   ledger; identifier construction follows the naming grammar. New concepts
   must be registered first; renaming an existing term is treated as a
   rollback to Phase 2.
-- **Foundation catalog**: Phases 1, 3, 4, 5 consult
+- **Foundation catalog**: Phases 1, 3, 4, 6 consult
   `prompts/references/foundations.md` — the structural / non-functional
   foundations that are expensive to retrofit and are provisioned up front as
   *readiness* (never as features). Each of those Phases declares it as an
@@ -259,14 +266,14 @@ points:
    the user accepts it, record it in `state.md` under `approved_deviations`
    **before** passing the gate. Silent acceptance is forbidden.
 
-- **P4 exit**: does it still behave the same after refactoring?
-- **P7 exit**: with `npm install` done, does the dev server start, and does
-  the reproduced frontend behave the same as the refactored asset (Type B:
-  the `origin/` baseline)?
-- **P8 exit**: do frontend and backend start together and work integrated
+- **P6 exit**: with `npm install` done, does the dev server start, and does
+  the reproduced frontend behave the same as the baseline — **Type A: the
+  original `.h2p/source/`; Type B: the `origin/` baseline**? (Type B verifies
+  after every migration step; one step = one commit.)
+- **P7 exit**: do frontend and backend start together and work integrated
   through the contract?
 
-On gate pass, always commit (e.g., `h2p: P4 gate passed`) and record the
+On gate pass, always commit (e.g., `h2p: P6 gate passed`) and record the
 commit hash in `state.md`'s gates. Tying each gate to a commit keeps
 rollback always possible.
 
@@ -289,10 +296,10 @@ rollback always possible.
   sources of truth.
 - Whenever an important decision is made, update "recent decisions" in
   `state.md` immediately.
-- From P7 on, artifacts are real things (code, projects), not documents.
+- From P6 on, artifacts are real things (code, projects), not documents.
   Scaffolding (`npm create vite`, etc.) and dependency installation are
   **executed by you directly via bash**, with commands assembled from the
-  finalized stack in `.h2p/phase5-stack.md`.
+  finalized stack in `.h2p/phase4-stack.md`.
 
 ---
 

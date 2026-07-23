@@ -2,7 +2,7 @@
 
 Skeleton for `.h2p/phase1-analysis.md`. The writer differs by input type
 (A: phase1a observation / B: phase1b inventory & diagnosis), but downstream
-Phases (2–8) read it without caring about the type. **The heading structure
+Phases (2–7) read it without caring about the type. **The heading structure
 is shared and immutable**; type differences are absorbed inside sections
 (unused sections stay present, marked "N/A"). Headings are fixed English
 anchors; body prose is written in **English** (this is an internal `.h2p/`
@@ -38,7 +38,7 @@ artifact), with domain terms and identifiers recorded verbatim.
 <explicit list of things left unknown or ambiguous>
 
 ## Behavior Checklist
-The sole reference for behavior verification gates (P4/P7/P8). Numbered,
+The sole reference for behavior verification gates (P6/P7). Numbered,
 "action → expected result" format. Split into sections per page/screen;
 include cross-page navigation as items.
 

@@ -111,6 +111,6 @@ step range of the migration plan.
 - The user has agreed to the target structure and the migration plan.
 
 When the user instructs progression, go through the orchestrator's
-consistency check to Phase 4. From here on (Phases 4–9) the flow is shared
-between types; Phase 4 begins executing the first foundation steps of the
-migration plan while preserving features.
+consistency check to **Phase 4** (tech stack). The migration plan is executed
+in Phase 6 (foundation steps first, then the rest) on the working copy; Phases
+4–8 are shared across types.

@@ -3,7 +3,7 @@
 `.h2p/ubiquitous.md` is the project's **canonical source of meaning and
 naming**. If the contract is the canon of "data shapes", this ledger is the
 canon of "names". Diagram element names in Phase 3, code identifiers in
-Phase 7/8, and document terminology in Phase 9 all follow this file.
+Phase 6/7, and document terminology in Phase 8 all follow this file.
 
 Two parts. **Part 1 (the ledger) is created per project in Phase 2. Part 2
 (the naming grammar) is fixed tool content — include it verbatim, never
@@ -81,7 +81,7 @@ code**; never mass-rename existing code.
   in module-level / exported names are not (except conventional ones like
   URL, ID).
 
-### Project-specific idioms (the only section extended in Phase 5/6)
+### Project-specific idioms (the only section extended in Phase 4/5)
 Add only conventions that stem from the chosen tech stack.
 - <e.g. event handlers are handleXxx; React props are onXxx>
 - <e.g. component files are PascalCase.tsx; everything else kebab-case.ts>

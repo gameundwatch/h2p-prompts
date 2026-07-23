@@ -6,7 +6,7 @@ Ledger of known problems and deliberately deferred improvements. Because
 listed here are, as a rule, tackled **after handoff (under CLAUDE.md
 governance)**. Migration does not resolve them directly, but **it provisions
 the "seams" that make them cheap to tackle** (see each entry's "provisioned
-seams"). Written up from state.md's `backlog` at Phase 9; body text follows
+seams"). Written up from state.md's `backlog` at Phase 8; body text follows
 meta.language, these anchors stay English.
 
 Notation: one entry = one heading. `status: deferred | in-progress | done`.

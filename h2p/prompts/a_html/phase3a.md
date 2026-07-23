@@ -11,7 +11,7 @@ seams and contracts shape the diagrams.
 
 Transcribe the intent and contracts settled in Phase 2 into **four Mermaid
 diagrams**. Diagrams are agreement devices that crush perception gaps, and
-they become the blueprints for implementation (Phase 7/8).
+they become the blueprints for implementation (Phase 6/7).
 
 Substantive agreement was finished in Phase 2, so this Phase is not heavy
 debate but **"draw, show, fine-tune"**. Pick up the contradictions and gaps
@@ -89,7 +89,7 @@ Primary user-operation flows (matching Phase 2's How).
 - Do not **mix** data types (Diagram 2) with state (Diagram 3). Mixing them
   calcifies coupling downstream.
 - Do not introduce technology-specific expressions (concrete library names,
-  file layouts — those are Phase 5+). Diagrams stay logical.
+  file layouts — those are Phase 4+). Diagrams stay logical.
 - Do not bring names not in the ledger into diagrams. Naming's canon is the
   ledger (registration first).
 
@@ -101,5 +101,6 @@ Primary user-operation flows (matching Phase 2's How).
 - The user has agreed to all four diagrams.
 
 When the user instructs progression, go through the orchestrator's
-consistency check to Phase 4. Phase 4 corrects the HTML itself against the
-intent and structure settled so far.
+consistency check to **Phase 4** (tech stack). The HTML is corrected to the
+intent and structure settled here later, during the Phase 6 build, which ports
+directly from the original and gates against it.

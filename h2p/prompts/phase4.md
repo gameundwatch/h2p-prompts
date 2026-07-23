@@ -1,158 +1,187 @@
-# phase4 — structural refactoring (shared across input types)
+# phase4 — tech stack selection
 
 You are now in Phase 4. The orchestrator's First Principle and progression
-rules are assumed loaded. This Phase is the **first fortress** of the First
-Principle: features unchanged, only structure aligned to intent and target.
-At the exit, always verify that **it still works the same**.
+rules are assumed loaded. Input differs by type (`state.md`'s `input_type`):
+- **Type A**: the original set `.h2p/source/` plus the Phase 3 diagrams
+  (which already encode component boundaries and state flow from intent) and
+  `.h2p/phase1-analysis.md` (observations such as CDN loads).
+- **Type B**: the root working copy's current stack (existing deps in
+  package.json) + `.h2p/phase3-structure.md`'s target structure & migration
+  plan + the diagnosed gaps (`.h2p/phase1-analysis.md`, `phase2-requirements`).
+Both also reference `.h2p/phase2-requirements.md` (intent, scope, contracts)
+and `.h2p/phase3-structure.md` (structure). Also consult
+`prompts/references/foundations.md` (foundation catalog) — bind stack choices
+to the foundations (TypeScript, validation, config strategy, render strategy,
+test tooling) and reject anything no foundation requires (First Principle 2).
 
-**Behavior branches by input type** (see `state.md`'s `input_type`).
+## Responsibility of this Phase
 
-Reference (both types): `prompts/references/foundations.md` (foundation
-catalog) — this Phase lays the foundations that can be established **in place
-without changing behavior** (externalize literals, semantic / a11y, tokens,
-error / async states, testability seams). Each still passes the P4 gate.
+From the settled intent and scope, **select the tech stack conservatively,
+evidence-based**.
 
-## Type A (HTML prototype)
-Input: the original HTML set in `.h2p/source/`, `.h2p/phase1-analysis.md`
-(behavior checklist), `.h2p/phase2-requirements.md` (intent), and
-`.h2p/phase3-structure.md` (structure). **Keeping it working HTML**, correct
-its divergences from intent and structure. Artifact: the **corrected set**
-under `.h2p/source/refactored/` (same file layout as the original; one file
-for a single page, several for multi-page). No technology migration
-(frameworkization is Phase 7). Details under "Type A details".
+- **Type A**: read the **source HTML through the Phase 3 diagrams** — the
+  diagrams carry the intent-fit (component boundaries, state flow, contract
+  shapes), so they are the higher-quality evidence for technology judgment;
+  the source HTML is the concrete backing.
+- **Type B**: a stack already exists. Selection here is not "pick from
+  zero" but "**starting from the current stack, choose only the changes
+  needed to close the future-intent gaps**". Respect sound existing choices;
+  replace/add only what must change (obsolete, duplicated, insufficient for
+  the future intent), based on evidence and the two-stage decision.
+  Migration cost is part of the judgment (changes hit maintenance directly).
 
-## Type B (existing app)
-Input: `.h2p/phase3-structure.md` (target structure & stepwise migration
-plan), `.h2p/phase2-requirements.md` (gaps), `.h2p/phase1-analysis.md`
-(behavior checklist), and the root **working copy** (copied from `origin/`
-at boot). Execute, **against the root working copy**, the first
-foundation-level steps of the migration plan's this-run range while
-preserving features. `origin/` is a frozen baseline — **never modify it**
-(the comparison target is always `origin/` booted up). After each step,
-verify behavior and record **one step = one commit** (with the `h2p: `
-prefix). Remaining steps are handed to Phase 7+ and the generated CLAUDE.md.
-Artifacts: `.h2p/phase4-refactor.md` (steps executed and diffs) plus the
-modified working code. Type B does not create `refactored/`.
+### The two-stage decision (principle for all categories)
 
-For both types, the goal is **fit to design intent and target structure**,
-not generic code-quality improvement. Features, appearance, and behavior do
-not change.
+Split selection into two stages. Never conflate them.
 
----
+**Stage 1: category necessity (evidence-based, agent-decided)**
+With the source HTML and Phase 3 diagrams as evidence, decide "is this
+capability category needed at all?". This is derivable from evidence. If
+unnecessary, cut it — that is the agent's responsibility.
 
-## Type A details
+**Stage 2: candidate choice (user-decided)**
+For categories judged "needed" with **multiple viable candidates**, never
+pick unilaterally. **Present candidates and trade-offs (learning cost,
+maintainability, scale fit, bundle size, …) neutrally and let the user
+choose.** Technology choice binds to the user's skill set and maintenance
+responsibility.
 
-### What is this refactoring for?
-**"Fit to design intent" only.** Not generic quality improvement. Fix where
-the current HTML diverges from the intent verbalized in Phase 2 and the
-structure drawn in Phase 3. For example:
-- A value organized as "shared state" in Diagram 3 is scattered across
-  DOM/variables in the HTML → consolidate per the intent.
-- A repeated structure marked as a component candidate in Diagram 1 exists
-  as slightly-inconsistent hand copies → align the structure per the intent
-  (a shape easy to componentize later).
-- Dummy data in the HTML diverges from Diagram 2's contract shape → align to
-  the contract.
+Evidence can derive "whether it's needed"; "which one satisfies it" belongs
+to the user's preference and fluency. No threshold-based auto-adoption.
 
----
-
-## Do not (most important)
-
-This Phase is not technology migration. **Correct in plain HTML/CSS/JS.**
-- Do **not** replace with React/Vue or any framework. No componentization,
-  no JSX, no build tooling (that is Phase 7).
-- No new libraries. No npm initialization.
-- No behavior-changing "improvements". Adding/removing features or changing
-  behavior is forbidden. Only "same behavior, internals aligned to intent".
-- Do not change appearance. Style consolidation (dedup, tokenization) is
-  allowed within intent, but the rendered result must not change.
-
-When in doubt, ask: "is this fit-to-intent, or ideal-stacking?" If
-ideal-stacking: don't (or record in backlog for later Phases).
-
-### Type A procedure
-1. Copy the original set into `.h2p/source/refactored/` (same file layout)
-   and edit that (never the originals).
-2. Cross-check Phase 2 / Phase 3 against the current HTML and build a
-   **divergence list**. For each: "what the intent says / current state /
-   correction policy".
-3. Present the list to the user and confirm whether and how to correct
-   (present facts, delegate judgment). No verdicts: "this looks divergent
-   from the intent — align it, or leave it?"
-4. Correct the `refactored/` set within the agreed range.
-5. **Behavior verification gate (exit)**: with the Phase 1 behavior
-   checklist as the reference, confirm the corrected set behaves the same as
-   the original.
-   - The agent verifies what a machine can check (syntax, DOM structure,
-     console errors, etc.).
-   - Generate `.review/p4-compare.html` (original and corrected side by
-     side, checklist attached — a disposable view, in `meta.language`) and
-     **ask the user for final visual/interaction confirmation**.
-   - Record user-accepted differences in `state.md`'s `approved_deviations`.
-   - If behavior changed, redo the correction. On pass, commit
-     (`h2p: P4 gate passed`) and record the hash in gates.
+### Base stance: conservative; over-engineering forbidden
+The role of available cards is, if anything, to encourage the decision **not
+to use them**. In Stage 1, cut unnecessary categories aggressively against
+scope and evidence. **Adding an unnecessary dependency is a design defect.**
 
 ---
 
-## Type B details
+## Judgment material per category
 
-### Goal
-Execute the **first foundation steps** of the this-run range of Phase 3's
-migration plan. Foundation = what later migration depends on — typically
-establishing the contract (`shared` types), extracting the data-access
-layer, separating state from types. Large UI reshuffles wait for Phase 7+;
-here, build "the base that makes further migration possible".
+### A. Frontend
+For each category, keep Stage 1 (evidence of necessity) and Stage 2
+(candidate presentation) separate.
 
-### Incrementality discipline (most important)
-- **Never rewrite in one stroke.** Move step by step per the plan, and
-  confirm the app works after each step.
-- Old and new structures may coexist temporarily (strangler fig). Shift
-  gradually into the new; remove the old only when safe.
-- Features, appearance, behavior unchanged. Only structure moves.
+- **UI library (React/Vue/Svelte, …)**
+  Stage 1: from the number of component candidates and state complexity,
+  decide whether a framework is needed or plain TS + Vite suffices. **If
+  Phase 1 observed a framework loaded via CDN (React/Vue, …), treat that as
+  the strongest evidence for adopting that framework** (it is already in
+  use).
+  Stage 2: if needed, present candidates and traits (ecosystem, learning
+  cost, the user's fluency) and let the user choose.
 
-### Type B procedure
-1. From Phase 3's plan, confirm the foundation steps for this run.
-2. Execute one step at a time against **the root working copy** (`origin/`
-   is frozen — untouched). For each step, state "what · for which gap · how
-   to verify".
-3. **Verify and commit after each step**: confirm the app still works as
-   before (the relevant checklist items) on the dev server, then record
-   **one step = one commit**. If broken, redo the step (the previous commit
-   is right there).
-4. When this run's steps are done, confirm the remaining steps still stand
-   as a plan in `phase3-structure.md` and organize the handoff.
+- **Router**
+  Stage 1: does Diagram 4 / Phase 1(d) contain navigation? **A multi-page
+  input (several HTML files, one app) is first-class evidence for Router
+  necessity.** If none, reject the whole category.
+  Stage 2: if needed, present Router candidates matching the chosen UI
+  library.
+
+- **State management (built-in vs dedicated library)**
+  Stage 1: assess the shared-state scale in Diagram 3. **No mechanical
+  thresholds.** Dedicated libraries (Zustand/Jotai/Recoil, …) pay off via
+  fine-grained subscriptions (re-render optimization at scale) and moving
+  state logic out of the UI; with few shared states and no re-render
+  bottleneck, those benefits barely apply and the costs remain (extra
+  dependency, scattered state, over-design). In that band, framework
+  built-ins (useState/useContext, ref/provide) win. Stage 1 presents this
+  trade-off: "built-ins suffice / dedicated is warranted".
+  Stage 2: only when dedicated is warranted, present trade-offs (Zustand:
+  single store, minimal learning cost / Jotai: atom-level granularity but
+  easily scattered / Recoil: stalled development, low recommendation for new
+  projects) and let the user choose.
+
+- **UI component set (Radix/MUI, …)**
+  Stage 1: does the source HTML clearly contain accessible interactive
+  widgets (modal/dropdown/tooltip)? If not, reject.
+  Stage 2: if needed, present headless vs styled candidates.
+
+- **Networking (fetch vs library)**
+  Stage 1: decide from the `backend` setting and contracts. Does fetch
+  suffice?
+  Stage 2: if a library is warranted, present candidates (axios, or TanStack
+  Query for a data-fetching layer) and let the user choose.
+
+- **Styling strategy**
+  Stage 1: use the source HTML's style situation as evidence (tokens
+  variablized, or hard-coded?).
+  Stage 2: present trade-offs among plain CSS / CSS Modules / Tailwind /
+  CSS-in-JS and let the user choose. **Record which and why.**
+  (Custom visual-design needs are absorbed into this selection.)
+
+- **Package manager / version control / testing approach**
+  Stage 1: decide necessity/strictness from scope (maintenance horizon) —
+  minimal for throwaway, test infrastructure for long-term growth.
+  Stage 2: multiple candidates (npm/pnpm/yarn, …) → user chooses.
+
+Tie every Stage 1 verdict to "this evidence in the source HTML / Phase 3
+diagrams". Adopting a category without evidence is forbidden.
+
+### B. Backend — entirely the user's call (only when `backend: mock`)
+Backend language/framework cannot be derived from HTML (the same contract
+can be served by Node/Hono or Python/FastAPI). It binds to maintenance,
+organizational skill sets, and existing assets. Therefore Stage 1 is skipped
+— go straight to **neutral candidate presentation** and let the user choose.
+
+### C. Contract method — tied to the backend language (only when `backend: mock`)
+The canonical contract lives in `shared/`. The method follows B's language
+choice.
+- Frontend and backend both TypeScript → unify types and runtime validation
+  in one schema (Zod, …) placed in `shared/` (lightweight, no generated
+  intermediates).
+- Cross-language (e.g. TS frontend / Python backend) → make TypeSpec /
+  OpenAPI the canon and derive both sides' types by generation.
+- Multiple viable methods → present trade-offs, user chooses. Whatever the
+  method, the invariant holds: **the type canon lives in one place; both
+  sides derive from it.**
 
 ---
 
-## Writing the artifacts
-**Type A**:
-- `.h2p/source/refactored/` set: the corrected working HTML (same file
-  layout as the original).
-- `.h2p/phase4-refactor.md`: the corrected divergence list (what, why, how).
-- `state.md`: `gates.p4_html_behaves` → `passed (commit <hash>)`; accepted
-  differences → `approved_deviations`; essentials → decisions.
+## Procedure
+1. Read the source HTML, Phase 2, Phase 3. **Stage 1**: decide each
+   category's necessity on evidence (cut the unnecessary here).
+2. **Stage 2**: for needed categories with multiple candidates, present
+   trade-offs neutrally and let the user choose. With `backend: mock`, also
+   put B (backend tech) and C (contract method) before the user.
+3. Present the complete selection, **including rejected categories and their
+   grounds**, and have the user confirm it is not over-engineered.
+4. On agreement, write `.h2p/phase4-stack.md`.
 
-**Type B**:
-- The modified working code (on the root working copy, with per-step
-  commits).
-- `.h2p/phase4-refactor.md`: steps executed, diffs, per-step verification
-  results, and the handoff of remaining steps.
-- `state.md`: `gates.p4_html_behaves` → `passed (commit <hash>)` (= app
-  confirmed working after every step); decisions summarize the executed
-  range and handoff.
+## Writing the artifact
+Write `.h2p/phase4-stack.md` following the structure of
+`prompts/templates/stack.md` (do not change the heading structure; do not
+omit rejected categories).
+- Per category: necessity, verdict, adopted technology, **role in the
+  project**, candidates not chosen and why.
+- Styling strategy; with `backend: mock`, backend tech and contract method;
+  foundation (package manager, …).
+- **Scaffold commands**: the command sequence Phase 6/7 agents will execute
+  via bash as-is.
+
+If the selection settles framework-specific naming idioms (handler naming,
+file naming, …), append them to the "Project-specific idioms" section of
+`.h2p/ubiquitous.md` Part 2.
+
+`state.md`: summarize in decisions the main technology choices and "what was
+left out".
+
+## Do not
+- No evidence, no adoption (Stage 1); no equipping for imagined futures.
+- Never pick candidates unilaterally in Stage 2. Categories with multiple
+  candidates always go to the user. No threshold-based auto-adoption.
+- Never choose a method that permits dual contract management (one canon).
 
 ## Completion conditions (to mark done)
-**Shared**: features, appearance, behavior unchanged (accepted differences
-recorded in `approved_deviations`). Behavior verification gate passed
-(`p4_html_behaves: passed`) with the gate commit. `.h2p/phase4-refactor.md`
-has the record. The user agreed to the result.
-- **Type A**: the `refactored/` set exists, divergences from intent are
-  corrected within the agreed range, and no technology migration happened.
-- **Type B**: this run's foundation steps are executed, the app worked after
-  every step (one step = one commit), and remaining steps are handed off as
-  a plan.
+- Stage 1: every category's necessity decided on evidence, with rejection
+  grounds recorded.
+- Stage 2: every multi-candidate category settled by user choice.
+- With `backend: mock`: backend tech and contract method settled by the
+  user.
+- Styling strategy selected and recorded.
+- Scaffold commands written.
+- The user agreed to the stack.
 
-Until verification passes, this Phase cannot be done. The moment it stops
-working, the First Principle is being violated. When the user instructs
-progression and the gate is passed, go through the orchestrator's
-consistency check to Phase 5.
+When the user instructs progression, go through the orchestrator's
+consistency check to Phase 5. Phase 5 designs the development workflow and
+discipline before implementation begins.

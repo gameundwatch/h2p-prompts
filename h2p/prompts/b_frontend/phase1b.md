@@ -72,7 +72,7 @@ range).
    flows and behaviors as a numbered "action → expected result" checklist.
    Split into sections per screen; include cross-screen navigation. This
    becomes the sole reference by which the behavior verification gates
-   (P4/P7/P8) decide "does it still work the same?".
+   (P6/P7) decide "does it still work the same?".
 4. Present inventory + diagnosis to the user. Show "possible obstacles to
    growth" as facts and risks (no verdicts; judgment belongs to later
    Phases). If the codebase is large, confirm with the user which

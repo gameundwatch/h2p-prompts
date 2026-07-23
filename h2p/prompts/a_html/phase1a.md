@@ -19,8 +19,8 @@ everything above it, so observe and nothing else.
 
 ### Do not
 - **No evaluation or improvement proposals** ("this design is bad",
-  "this should be fixed") — refactoring is Phase 4's job, technology
-  judgment Phase 5's.
+  "this should be fixed") — fit-to-intent correction is Phase 6's job,
+  technology judgment Phase 4's.
 - **No technology references** ("this should be built in React").
 - Do not fill gaps with speculation. Write only confirmed facts.
 - Leave unknowns and ambiguities honestly as "unknown" / "judgment deferred".
@@ -62,13 +62,13 @@ Aspects are separated for readability; all of them are enumerations of fact.
 
 **(d) Navigation and view switching**
 - Tabs, modals, page-like switching, history manipulation — anything where
-  "the screen changes". (Router necessity is Phase 5's evidence; here only
+  "the screen changes". (Router necessity is Phase 4's evidence; here only
   the fact of presence/absence.)
 
 **(e) Styling**
 - How styles are held (inline / `<style>` / external CSS).
 - Whether design-token-like values (colors, spacing, fonts) are
-  **variablized or hard-coded**. (Styling strategy is Phase 5's evidence;
+  **variablized or hard-coded**. (Styling strategy is Phase 4's evidence;
   record facts only.)
 
 **(f) External dependencies and backend-demand traces ★most important**
@@ -81,7 +81,7 @@ these as facts — they feed Phase 2's scope decision.
 - **UI-only login/auth** (auth screens with no substance).
 - External APIs, CDNs, third-party scripts. In particular, **frameworks or
   libraries loaded via CDN (React/Vue/Tailwind, etc.)** are first-class
-  evidence for Phase 5's technology selection — always record them
+  evidence for Phase 4's technology selection — always record them
   concretely (what, which version, how used).
 
 For each trace you may observe "what it appears to demand", but never judge
@@ -94,7 +94,7 @@ mechanically.
 - For multi-page inputs, split into **sections per page** and include
   cross-page navigation as items.
 - This list becomes the sole reference by which the behavior verification
-  gates (P4/P7/P8) decide "same behavior". Behavior not listed here will not
+  gates (P6/P7) decide "same behavior". Behavior not listed here will not
   be verified — collect exhaustively.
 
 ### 4. Write the artifact
