@@ -3,6 +3,10 @@
 You are now in Phase 1. The orchestrator's First Principle and progression
 rules are assumed loaded; only Phase 1's work procedure is given here.
 
+Reference: `prompts/references/foundations.md` (retrofit-cost foundation
+catalog) — while observing, note which readiness elements the input already
+has vs. lacks, as **facts** (do not fix here).
+
 ## Responsibility of this Phase
 
 **Observe the input HTML** evacuated to `.h2p/source/` (a single page, or a

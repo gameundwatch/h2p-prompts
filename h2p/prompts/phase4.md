@@ -7,6 +7,11 @@ At the exit, always verify that **it still works the same**.
 
 **Behavior branches by input type** (see `state.md`'s `input_type`).
 
+Reference (both types): `prompts/references/foundations.md` (foundation
+catalog) — this Phase lays the foundations that can be established **in place
+without changing behavior** (externalize literals, semantic / a11y, tokens,
+error / async states, testability seams). Each still passes the P4 gate.
+
 ## Type A (HTML prototype)
 Input: the original HTML set in `.h2p/source/`, `.h2p/phase1-analysis.md`
 (behavior checklist), `.h2p/phase2-requirements.md` (intent), and

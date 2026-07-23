@@ -5,6 +5,10 @@ progression rules are assumed loaded. Input: the original app in `origin/`
 (package.json + src + dependencies). **Never touch the originals** — read
 and diagnose.
 
+Reference: `prompts/references/foundations.md` (retrofit-cost foundation
+catalog) — include the presence/absence of these readiness elements in the
+diagnosis.
+
 ## Responsibility of this Phase
 
 **Inventory** the existing app (grasp the facts) and **diagnose** it (detect
