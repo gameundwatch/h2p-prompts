@@ -5,8 +5,9 @@ Skeleton for `.h2p/phase2-requirements.md`. The writer differs by input type
 the type. **The heading structure is shared and immutable.** The Contracts
 section is the target of partial updates via "contract amendment" in
 Phase 7/8, so its one-contract-per-block format must be kept. Headings are
-fixed English anchors; body content is in the user's language
-(`meta.language`).
+fixed English anchors; body prose is written in **English** (this is an
+internal `.h2p/` artifact), with domain terms and identifiers recorded
+verbatim.
 
 ---
 

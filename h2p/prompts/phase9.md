@@ -12,9 +12,10 @@ as a developable state. CLAUDE.md defines the progression rules of
 development from here on, **closing the process self-descriptively**.
 
 No new design decisions here. The job is translating what Phases 1–8 settled
-into a form developers and future agents can read. Documents are written in
-the user's language (`meta.language`); heading anchors and identifiers stay
-English.
+into a form developers and future agents can read. The `.h2p/` sources are in
+English (internal artifacts); the deliverables here are user-facing, so
+**translate their prose into `meta.language`** (`state.md` records it). Heading
+anchors and identifiers stay English; domain terms keep their ledger form.
 
 ---
 
@@ -42,6 +43,8 @@ progression rule agents follow in post-migration development. Include:
 - For Type B, if migration steps remain, state them as the **handoff plan**
   (h2p's exit = the agreed scope completed; the rest proceeds under this
   CLAUDE.md).
+- **Deferred work**: point at root `ISSUES.md` (when generated) as the backlog
+  of problems and open questions to tackle under this CLAUDE.md.
 
 ### 2. README.md (root)
 The human entrance: project overview, setup, startup, directory layout.
@@ -59,14 +62,24 @@ diagrams here pays off in later development.
 Part 2, the naming grammar). It remains the canon of meaning and naming in
 post-migration development (CLAUDE.md points at it).
 
+### 4. ISSUES.md (root) — only if there is deferred work
+The handoff list of problems and open questions migration deliberately left
+untouched (First Principle: behavior must not change), to be tackled under
+this CLAUDE.md. Write up `state.md`'s `backlog` into the structure of
+`prompts/templates/issues.md` (No. ledger + priority sections; per entry:
+subject, repro, root cause, fix plans, **provisioned seams** — the foundations
+already laid that make the fix cheap — and scope). If `backlog` is empty,
+generate nothing (YAGNI). CLAUDE.md references this file as the development
+backlog.
+
 ---
 
 ## Procedure
 
 ### 1. Write up
-Read each `.h2p/` artifact and generate items 1–3 above. Polish working-memo
-prose into readable deliverables. Match the coverage and depth to scope
-(backend presence, maintenance horizon).
+Read each `.h2p/` artifact and generate items 1–4 above (item 4 only if
+`backlog` is non-empty). Polish working-memo prose into readable deliverables.
+Match the coverage and depth to scope (backend presence, maintenance horizon).
 
 ### 2. Final consistency check
 - Does CLAUDE.md's description match the actually generated
@@ -79,6 +92,8 @@ a live project. (The prompt set was never copied here — it is read in place
 from the h2p skill — so there is nothing to un-materialize; only `.h2p/` needs
 tidying.) With the user's consent:
 - Fold `.h2p/` into `.h2p-archive/`.
+- **Delete `.review/`** — it is a disposable one-way projection with no
+  canonical information (gitignored throughout), so nothing is lost.
 - **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
   migration's decision record stays in history. Ignore only generated
   things like `node_modules`.
@@ -89,7 +104,7 @@ tidying.) With the user's consent:
   (never delete on your own). If they choose disposal, note it remains in
   git history.
 - After retirement, the root holds only the clean project (CLAUDE.md /
-  README.md / documents/ / frontend/ etc.).
+  README.md / documents/ / ISSUES.md / frontend/ etc.).
 
 ### 4. Report completion
 Tell the user the migration is complete, development can start, and the
@@ -97,6 +112,7 @@ record remains in `.h2p-archive/`.
 
 ## Artifacts
 - Single root `CLAUDE.md`, `README.md`, `documents/` (incl. ubiquitous.md).
+- Root `ISSUES.md` (only if `state.md`'s `backlog` is non-empty).
 - Working directory (`.h2p/`) retired with the final commit (within user
   consent).
 - `state.md`: Phase 9 done; all Phases complete.
@@ -110,7 +126,7 @@ record remains in `.h2p-archive/`.
 
 ## Completion conditions (to mark done)
 - CLAUDE.md (single, root), README.md, and documents/ (incl. ubiquitous.md)
-  are generated.
+  are generated; root ISSUES.md generated if `backlog` is non-empty.
 - Descriptions match the project reality; the startup procedure actually
   works.
 - The working directory (`.h2p/`) is retired and tidied (with user consent),

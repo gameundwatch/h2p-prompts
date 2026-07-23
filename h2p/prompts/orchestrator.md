@@ -16,8 +16,9 @@ These prompt files are read **in place** from the h2p skill's own directory
 (the base dir handed to you at invocation; call it `<H2P>`). **Every
 `prompts/…` path in this prompt set means `<H2P>/prompts/…`.** Never copy the
 prompt set into the user's project. The project accumulates only `./.h2p/`
-(state, artifacts, working files) and the migration output (`origin/`,
-`frontend/`, etc.) — there is no `prompts/` directory in the project.
+(state, artifacts, working files), `./.review/` (disposable user-facing
+projections, gitignored), and the migration output (`origin/`, `frontend/`,
+etc.) — there is no `prompts/` directory in the project.
 
 ### Jurisdiction boundary (handoff between h2p and CLAUDE.md)
 While h2p is in progress, this orchestrator governs all Phases. The exit of
@@ -28,15 +29,29 @@ the generated CLAUDE.md. The position of the scope line (how far h2p goes) is
 decided by agreement with the user, not by this prompt.
 
 ### Language policy
-- These prompts are written in en-US and are read only by the agent.
-- **All dialogue with the user, and all artifact body text, MUST be written
-  in the user's language**, recorded in `state.md` as `meta.language`.
-- Artifact section headings and keys are **fixed English anchors** (they are
-  re-read mechanically); only the body content follows `meta.language`.
+The user's language is recorded in `state.md` as `meta.language`. There are
+three language zones — keep them apart:
+
+- **Dialogue with the user → `meta.language`.** Everything you say to the user.
+- **`.h2p/` (internal working artifacts) → English, no exceptions.** state.md,
+  the phaseN artifacts, backlog, ubiquitous.md, etc. are the agent's own
+  working memory and are never shown to the user raw, so they are written in
+  English for a single, drift-free internal vocabulary. **The English rule
+  governs prose/narration only**; domain terms, identifiers, proper nouns, and
+  code are recorded **verbatim** (never translated) — e.g. the ubiquitous term
+  ledger keeps `予約` in its "Term (user language)" column. Section headings
+  and keys are fixed English anchors (re-read mechanically).
+- **`.review/` and root deliverables → `meta.language`.** These are the only
+  user-facing outputs. `.review/` (see Artifact writing rules) holds disposable
+  projections for human confirmation; root deliverables (CLAUDE.md, README.md,
+  documents/, ISSUES.md) are produced at Phase 9 by **translating** the English
+  `.h2p/` sources into `meta.language`.
+
 - On first boot, infer the user's language from their messages; confirm if
   ambiguous; record it in `meta.language`. On session restore, read
-  `meta.language` and continue the dialogue in that language — do not drift
-  into English because these prompts are in English.
+  `meta.language` and continue the **dialogue** in that language. These prompts
+  are English and `.h2p/` is English — that is by design; do not let it pull
+  your dialogue or the user-facing outputs into English.
 
 ---
 
@@ -108,7 +123,8 @@ Phases (1–3) differ by type.
         when a behavior verification gate passes (and per migration step for
         Type B), using messages prefixed `h2p: `. h2p is an
         environment-construction workflow that includes git; restoration of
-        code state is guaranteed by commits.
+        code state is guaranteed by commits. Ensure `.gitignore` ignores
+        `.review/` (and `node_modules`); `.h2p/` stays tracked.
      2. **Input check**: all input lives in the **`origin/` directory**.
         Search only inside `origin/`; never pick up the tool's own working
         files (`.h2p/`, `.h2p-archive/`) or generated files at root as
@@ -183,7 +199,7 @@ shared. When loading a prompt, choose the variant matching
 | 6 | Development workflow design | `phase6.md` | `.h2p/phase6-workflow.md` |
 | 7 | Frontend implementation / migration | `phase7.md` | `frontend/` |
 | 8 | Backend implementation [integrated scope only] | `phase8.md` | `backend/` + `shared/` |
-| 9 | Documentation | `phase9.md` | `CLAUDE.md` / `README.md` / `documents/` |
+| 9 | Documentation | `phase9.md` | `CLAUDE.md` / `README.md` / `documents/` / `ISSUES.md` (if backlog non-empty) |
 
 - Order is one-way, 1→9. Each Phase takes the upstream artifacts it declares
   as input.
@@ -237,8 +253,8 @@ points:
 2. **Division of roles.** The agent verifies what a machine can check
    (server starts, console errors, DOM presence, state transitions). **Final
    confirmation of visuals and feel is the user's responsibility.** The
-   agent generates comparison HTML views under `.h2p/review/` (targets side
-   by side, checklist attached) to support the user's confirmation.
+   agent generates comparison views under `.review/` (targets side by side,
+   checklist attached), in `meta.language`, to support the user's confirmation.
 3. **Handling differences.** If a difference from the original is found and
    the user accepts it, record it in `state.md` under `approved_deviations`
    **before** passing the gate. Silent acceptance is forbidden.
@@ -261,9 +277,16 @@ rollback always possible.
 - **Write to file the moment agreement is reached.** Never leave it in
   conversational context. Write, structured, to the artifact file each Phase
   prompt specifies.
-- **The canonical form of every artifact is markdown.** HTML under
-  `.h2p/review/` is a **disposable view** for human review; deleting it must
-  never lose information. No dual sources of truth.
+- **The canonical form of every artifact is markdown, and it lives in
+  `.h2p/` (English).** `.review/` holds **disposable, one-directional
+  projections** of `.h2p/` for human confirmation, written in `meta.language`,
+  in whatever format shows the slice best (html for visual/side-by-side
+  compares, md for text; not mdx unless a concrete interactive need and an
+  existing pipeline). Rules that keep it from becoming a second source of
+  truth: generate-only (never author `.review/` directly), one-directional
+  (`.h2p/` → `.review/`), disposable (deleting it loses no information), and
+  render only the slice the user needs now (never a full mirror). No dual
+  sources of truth.
 - Whenever an important decision is made, update "recent decisions" in
   `state.md` immediately.
 - From P7 on, artifacts are real things (code, projects), not documents.

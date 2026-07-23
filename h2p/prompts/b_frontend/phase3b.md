@@ -75,8 +75,8 @@ on how far this run goes.
    get registered first). Confirm the deltas serve the future intent and are
    reachable from the current state.
    If the user has no Mermaid preview environment, generate
-   `.h2p/review/p3-diagrams.html` (a disposable HTML view rendering the
-   Mermaid). The canonical form is always the Mermaid code in
+   `.review/p3-diagrams.html` (a disposable view rendering the Mermaid, in
+   `meta.language`). The canonical form is always the Mermaid code in
    `phase3-structure.md`.
 3. Build the migration plan as a step sequence with dependency order and
    per-step verification. Draw the line between this run's range and the

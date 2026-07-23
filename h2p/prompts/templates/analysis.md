@@ -5,7 +5,8 @@ Skeleton for `.h2p/phase1-analysis.md`. The writer differs by input type
 Phases (2–8) read it without caring about the type. **The heading structure
 is shared and immutable**; type differences are absorbed inside sections
 (unused sections stay present, marked "N/A"). Headings are fixed English
-anchors; body content is written in the user's language (`meta.language`).
+anchors; body prose is written in **English** (this is an internal `.h2p/`
+artifact), with domain terms and identifiers recorded verbatim.
 
 ---
 

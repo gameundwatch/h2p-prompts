@@ -85,9 +85,9 @@ ideal-stacking: don't (or record in backlog for later Phases).
    the original.
    - The agent verifies what a machine can check (syntax, DOM structure,
      console errors, etc.).
-   - Generate `.h2p/review/p4-compare.html` (original and corrected side by
-     side, checklist attached — a disposable HTML view) and **ask the user
-     for final visual/interaction confirmation**.
+   - Generate `.review/p4-compare.html` (original and corrected side by
+     side, checklist attached — a disposable view, in `meta.language`) and
+     **ask the user for final visual/interaction confirmation**.
    - Record user-accepted differences in `state.md`'s `approved_deviations`.
    - If behavior changed, redo the correction. On pass, commit
      (`h2p: P4 gate passed`) and record the hash in gates.

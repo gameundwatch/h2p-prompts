@@ -5,8 +5,9 @@ Skeleton for `.h2p/phase3-structure.md`. The writer differs by input type
 about the type. **The heading structure and the per-diagram Mermaid notation
 are immutable**; only the diagram content varies per project. All element
 names use identifiers from `.h2p/ubiquitous.md` (register new concepts
-first). Headings are fixed English anchors; prose is in the user's language
-(`meta.language`).
+first). Headings are fixed English anchors; prose is written in **English**
+(this is an internal `.h2p/` artifact), with domain terms and identifiers
+recorded verbatim.
 
 ---
 

@@ -94,10 +94,10 @@ build up.
   (Type B: the `origin/` baseline), **checked against the Phase 1 behavior
   checklist**. The agent verifies the machine-checkable range (startup,
   console errors, DOM/state transitions).
-- Generate `.h2p/review/p7-compare.html` (refactored HTML and the dev server
-  side by side, checklist attached — a disposable view) and **ask the user
-  for final visual/interaction confirmation**. Record user-accepted
-  differences in `state.md`'s `approved_deviations`.
+- Generate `.review/p7-compare.html` (refactored HTML and the dev server
+  side by side, checklist attached — a disposable view, in `meta.language`)
+  and **ask the user for final visual/interaction confirmation**. Record
+  user-accepted differences in `state.md`'s `approved_deviations`.
 - If not matching, fix until it matches; cannot be done before. On pass,
   commit (`h2p: P7 gate passed`) and record the hash in gates.
 

@@ -7,8 +7,11 @@ Phase 7/8, and document terminology in Phase 9 all follow this file.
 
 Two parts. **Part 1 (the ledger) is created per project in Phase 2. Part 2
 (the naming grammar) is fixed tool content — include it verbatim, never
-generate it.** Headings are fixed English anchors; ledger entries for terms
-and definitions are written in the user's language (`meta.language`).
+generate it.** Headings are fixed English anchors; **definitions and prose are
+written in English** (this is an internal `.h2p/` artifact), but the ledger's
+"Term (user language)" column keeps the domain surface term **verbatim** in
+the user's language (e.g. `予約`) — that column is canonical data, not prose,
+and is the whole point of the ledger.
 
 ---
 
