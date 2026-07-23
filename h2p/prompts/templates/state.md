@@ -54,7 +54,7 @@ Phase prompt.
 | 6 | Development workflow design | pending | .h2p/phase6-workflow.md |
 | 7 | Frontend implementation / migration | pending | frontend/ |
 | 8 | Backend implementation | pending | backend/, shared/ |
-| 9 | Documentation | pending | CLAUDE.md, README.md, documents/ |
+| 9 | Documentation | pending | CLAUDE.md, README.md, documents/, ISSUES.md (if backlog non-empty) |
 
 ## gates
 Behavior-verification gate records, consulted by the orchestrator on
@@ -78,8 +78,14 @@ Phase, decision, rationale, in 1–3 lines.
 - <ISO8601> P1: <e.g. target fixed to index.html; other.html judged to be an asset store>
 
 ## backlog
-Items out of the current Phase's scope but worth recording (out-of-scope
-findings, future work).
+Deferred work: items out of the current Phase's scope, plus problems and open
+questions the First Principle forces us to leave untouched during migration
+(behavior must not change) — to be tackled **after handoff, under CLAUDE.md
+governance**. This is the internal running log; record items here as they
+arise in any Phase. Phase 9 writes it up into the root deliverable `ISSUES.md`
+(from `prompts/templates/issues.md`), which survives migration and CLAUDE.md
+points at. Migration never resolves these — it only lays the seams (see
+`references/foundations.md`) that make them cheap later. Append-only.
 - <empty if none>
 ```
 

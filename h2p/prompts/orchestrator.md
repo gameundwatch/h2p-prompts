@@ -170,7 +170,7 @@ shared. When loading a prompt, choose the variant matching
 | 6 | Development workflow design | `phase6.md` | `.h2p/phase6-workflow.md` |
 | 7 | Frontend implementation / migration | `phase7.md` | `frontend/` |
 | 8 | Backend implementation [integrated scope only] | `phase8.md` | `backend/` + `shared/` |
-| 9 | Documentation | `phase9.md` | `CLAUDE.md` / `README.md` / `documents/` |
+| 9 | Documentation | `phase9.md` | `CLAUDE.md` / `README.md` / `documents/` / `ISSUES.md` (if backlog non-empty) |
 
 - Order is one-way, 1→9. Each Phase takes the upstream artifacts it declares
   as input.
