@@ -72,9 +72,9 @@ Primary user-operation flows (matching Phase 2's How).
    match the intent?" Point out contradictions, gaps, and ambiguities made
    visible by drawing; settle the details.
    If the user has no Mermaid preview environment, generate
-   `.h2p/review/p3-diagrams.html` (a disposable HTML view that renders the
-   Mermaid) for them. **The canonical form is always the Mermaid code in
-   `phase3-structure.md`**; the HTML is a view whose deletion loses nothing.
+   `.review/p3-diagrams.html` (a disposable view that renders the Mermaid,
+   in `meta.language`) for them. **The canonical form is always the Mermaid
+   code in `phase3-structure.md`**; the view's deletion loses nothing.
 3. Once agreed, write all four diagrams into `.h2p/phase3-structure.md`.
    Structure and per-diagram Mermaid notation follow
    `prompts/templates/structure.md` (do not change the heading structure;

@@ -3,7 +3,8 @@
 Skeleton for `.h2p/phase5-stack.md`. Phase 7/8 assemble scaffold commands
 mechanically from this file; Phase 9 uses it as material for `documents/`.
 Do not change section order or headings. Headings are fixed English anchors;
-prose is in the user's language (`meta.language`).
+prose is written in **English** (this is an internal `.h2p/` artifact), with
+domain terms and identifiers recorded verbatim.
 
 **Recording rejections matters as much as recording adoptions.** It is what
 stops future developers (and agents) from re-adding unnecessary

@@ -10,8 +10,10 @@ this file alone.
 Below is the initial template written at first boot. The agent updates values
 while keeping this structure intact. Do not change section order or headings
 (they are re-read mechanically). **Headings and keys are fixed English
-anchors; body text and values are written in the user's language
-(`meta.language`).**
+anchors; body text is written in English (this is an internal `.h2p/`
+artifact), with domain terms and identifiers recorded verbatim.** The
+`meta.language` value itself records the user's language for dialogue and
+user-facing deliverables — it does not make this file the user's language.
 
 ---
 
@@ -22,7 +24,7 @@ anchors; body text and values are written in the user's language
 - created: <ISO8601>
 - last_updated: <ISO8601>
 - current_phase: 1
-- language: <user's language, e.g. ja>   # dialogue and artifact body language
+- language: <user's language, e.g. ja>   # dialogue + user-facing deliverables; .h2p/ artifacts are English
 - input_type: undecided   # undecided | A | B (detected and recorded by the orchestrator at boot)
 - backend: undecided   # undecided | none | mock (settled in Phase 2; "full" is reserved, out of scope)
                        # The frontend is always built; the only branch is backend presence.
@@ -110,7 +112,9 @@ h2p is an environment-construction workflow that includes git.
 - `.h2p/` and `.h2p-archive/` are **tracked by git** (never gitignored) so
   the migration's decision record stays in history (there is no `prompts/` in
   the project — the prompt set is read in place from the h2p skill). Ignore
-  only generated things like `node_modules`.
+  generated / disposable things: `node_modules`, and `.review/` (a one-way
+  projection of `.h2p/` that holds no canonical information — add it to
+  `.gitignore` at first boot).
 
 ### How backend takes effect
 The frontend is always built; the only branch is backend presence.

@@ -12,9 +12,10 @@ as a developable state. CLAUDE.md defines the progression rules of
 development from here on, **closing the process self-descriptively**.
 
 No new design decisions here. The job is translating what Phases 1–8 settled
-into a form developers and future agents can read. Documents are written in
-the user's language (`meta.language`); heading anchors and identifiers stay
-English.
+into a form developers and future agents can read. The `.h2p/` sources are in
+English (internal artifacts); the deliverables here are user-facing, so
+**translate their prose into `meta.language`** (`state.md` records it). Heading
+anchors and identifiers stay English; domain terms keep their ledger form.
 
 ---
 
@@ -91,6 +92,8 @@ a live project. (The prompt set was never copied here — it is read in place
 from the h2p skill — so there is nothing to un-materialize; only `.h2p/` needs
 tidying.) With the user's consent:
 - Fold `.h2p/` into `.h2p-archive/`.
+- **Delete `.review/`** — it is a disposable one-way projection with no
+  canonical information (gitignored throughout), so nothing is lost.
 - **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
   migration's decision record stays in history. Ignore only generated
   things like `node_modules`.
