@@ -8,7 +8,10 @@ rules are assumed loaded. Input differs by type (`state.md`'s `input_type`):
   package.json) + `.h2p/phase3-structure.md`'s target structure & migration
   plan + the foundation begun in Phase 4.
 Both also reference `.h2p/phase2-requirements.md` (intent, scope, contracts)
-and `.h2p/phase3-structure.md` (structure).
+and `.h2p/phase3-structure.md` (structure). Also consult
+`prompts/references/foundations.md` (foundation catalog) — bind stack choices
+to the foundations (TypeScript, validation, config strategy, render strategy,
+test tooling) and reject anything no foundation requires (First Principle 2).
 
 ## Responsibility of this Phase
 

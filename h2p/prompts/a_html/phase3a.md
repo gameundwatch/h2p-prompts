@@ -3,7 +3,9 @@
 You are now in Phase 3. The orchestrator's First Principle and progression
 rules are assumed loaded. Input: `.h2p/phase1-analysis.md` (observation),
 `.h2p/phase2-requirements.md` (intent, scope, contracts), and
-`.h2p/ubiquitous.md` (term ledger).
+`.h2p/ubiquitous.md` (term ledger). Also consult
+`prompts/references/foundations.md` (foundation catalog) — let its structural
+seams and contracts shape the diagrams.
 
 ## Responsibility of this Phase
 
