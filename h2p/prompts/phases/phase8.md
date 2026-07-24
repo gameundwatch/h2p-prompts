@@ -1,8 +1,8 @@
-# phase9 — documentation
+# phase8 — documentation
 
-You are now in Phase 9, the final Phase. The orchestrator's First Principle
+You are now in Phase 8, the final Phase. The orchestrator's First Principle
 and progression rules are assumed loaded. Input: all artifacts in `.h2p/`
-(phase1–6, ubiquitous.md, state.md) and the running `frontend/` (and
+(phase1–5, ubiquitous.md, state.md) and the running `frontend/` (and
 `backend/` `shared/`).
 
 ## Responsibility of this Phase
@@ -11,7 +11,7 @@ and progression rules are assumed loaded. Input: all artifacts in `.h2p/`
 as a developable state. CLAUDE.md defines the progression rules of
 development from here on, **closing the process self-descriptively**.
 
-No new design decisions here. The job is translating what Phases 1–8 settled
+No new design decisions here. The job is translating what Phases 1–7 settled
 into a form developers and future agents can read. The `.h2p/` sources are in
 English (internal artifacts); the deliverables here are user-facing, so
 **translate their prose into `meta.language`** (`state.md` records it). Heading
@@ -25,13 +25,13 @@ anchors and identifiers stay English; domain terms keep their ledger form.
 The one governing document for the whole project (frontend / backend /
 shared). Never split, even in a monorepo. From now on this CLAUDE.md is the
 progression rule agents follow in post-migration development. Include:
-- **Project purpose and philosophy** (translate Phase 2's Why and Phase 6's
+- **Project purpose and philosophy** (translate Phase 2's Why and Phase 5's
   development philosophy).
 - **Architecture** (3-layer structure, contract-mediated decoupling, diagram
   essentials — Phase 3).
-- **Tech stack and rationale** (Phase 5 — especially "what was left out" and
+- **Tech stack and rationale** (Phase 4 — especially "what was left out" and
   why, so future developers do not add unnecessary dependencies).
-- **Development workflow and discipline** (Phase 6, at scope-appropriate
+- **Development workflow and discipline** (Phase 5, at scope-appropriate
   weight).
 - **Inviolable design principles**: the contract canon lives in one place;
   the UI never holds the contract directly; layers never mix; **naming
@@ -91,37 +91,40 @@ The conversion is a one-time event; do not let its working directory squat in
 a live project. (The prompt set was never copied here — it is read in place
 from the h2p skill — so there is nothing to un-materialize; only `.h2p/` needs
 tidying.) With the user's consent:
-- Fold `.h2p/` into `.h2p-archive/`.
+- Fold `.h2p/` into `.archive/`.
 - **Delete `.review/`** — it is a disposable one-way projection with no
   canonical information (gitignored throughout), so nothing is lost.
-- **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
-  migration's decision record stays in history. Ignore only generated
-  things like `node_modules`.
+- **Keep `.archive/` tracked by git** (do not gitignore it) so the migration's
+  decision record stays in history. Ignore only generated things like
+  `node_modules`.
 - **Record this retirement as the final commit**
   (e.g. `h2p: migration completed, working dir archived`).
-- **Final disposal of `.h2p-archive/` is the user's call.** It is the record
-  of the conversion's decisions, so always ask whether to discard or keep
-  (never delete on your own). If they choose disposal, note it remains in
-  git history.
+- **`.archive/` is safe to delete.** Once archived, tell the user plainly that
+  `.archive/` is just the migration's working-dir record and they may remove
+  it whenever they like — it stays in git history for recovery. Do not delete
+  it on your own.
 - After retirement, the root holds only the clean project (CLAUDE.md /
   README.md / documents/ / ISSUES.md / frontend/ etc.).
 
 ### 4. Report completion
 Tell the user the migration is complete, development can start, and the
-record remains in `.h2p-archive/`.
+migration record now lives in `.archive/` — kept in git history, and **safe
+to delete** whenever they no longer want it around.
 
 ## Artifacts
 - Single root `CLAUDE.md`, `README.md`, `documents/` (incl. ubiquitous.md).
 - Root `ISSUES.md` (only if `state.md`'s `backlog` is non-empty).
 - Working directory (`.h2p/`) retired with the final commit (within user
   consent).
-- `state.md`: Phase 9 done; all Phases complete.
+- `state.md`: Phase 8 done; all Phases complete.
 
 ## Do not
 - No new design decisions or feature additions. Write up, period.
 - Do not split CLAUDE.md (single, at root).
-- Do not discard `.h2p-archive/` without the user's confirmation.
-- Do not gitignore the migration record (`.h2p*`) — history keeps it.
+- Do not delete `.archive/` on your own (tell the user it is safe to delete;
+  the choice is theirs).
+- Do not gitignore the migration record (`.h2p/`, `.archive/`) — history
+  keeps it.
 - Do not break the project root while retiring.
 
 ## Completion conditions (to mark done)

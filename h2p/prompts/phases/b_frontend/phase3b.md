@@ -4,7 +4,7 @@ You are now in Phase 3 (Type B). The orchestrator's First Principle and
 progression rules are assumed loaded. Input: `.h2p/phase1-analysis.md`
 (inventory & diagnosis), `.h2p/phase2-requirements.md` (current intent,
 future intent, gaps, scope), `.h2p/ubiquitous.md` (term ledger), and the
-`origin/` originals. Also consult `prompts/references/foundations.md`
+`.origin/` originals. Also consult `prompts/references/foundations.md`
 (foundation catalog) — let its structural seams and contracts shape the
 redesign and migration plan.
 
@@ -111,6 +111,6 @@ step range of the migration plan.
 - The user has agreed to the target structure and the migration plan.
 
 When the user instructs progression, go through the orchestrator's
-consistency check to Phase 4. From here on (Phases 4–9) the flow is shared
-between types; Phase 4 begins executing the first foundation steps of the
-migration plan while preserving features.
+consistency check to **Phase 4** (tech stack). The migration plan is executed
+in Phase 6 (foundation steps first, then the rest) on the working copy; Phases
+4–8 are shared across types.

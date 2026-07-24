@@ -1,12 +1,13 @@
-# phase5 — tech stack selection
+# phase4 — tech stack selection
 
-You are now in Phase 5. The orchestrator's First Principle and progression
+You are now in Phase 4. The orchestrator's First Principle and progression
 rules are assumed loaded. Input differs by type (`state.md`'s `input_type`):
-- **Type A**: the `.h2p/source/refactored/` set (Phase 4's tidied HTML) plus
+- **Type A**: the original set `.h2p/source/` plus the Phase 3 diagrams
+  (which already encode component boundaries and state flow from intent) and
   `.h2p/phase1-analysis.md` (observations such as CDN loads).
 - **Type B**: the root working copy's current stack (existing deps in
   package.json) + `.h2p/phase3-structure.md`'s target structure & migration
-  plan + the foundation begun in Phase 4.
+  plan + the diagnosed gaps (`.h2p/phase1-analysis.md`, `phase2-requirements`).
 Both also reference `.h2p/phase2-requirements.md` (intent, scope, contracts)
 and `.h2p/phase3-structure.md` (structure). Also consult
 `prompts/references/foundations.md` (foundation catalog) — bind stack choices
@@ -18,9 +19,10 @@ test tooling) and reject anything no foundation requires (First Principle 2).
 From the settled intent and scope, **select the tech stack conservatively,
 evidence-based**.
 
-- **Type A**: it matters that the input is the **refactored HTML**, not the
-  original. HTML tidied to intent has clear component boundaries and state
-  flow — higher-quality evidence for technology judgment.
+- **Type A**: read the **source HTML through the Phase 3 diagrams** — the
+  diagrams carry the intent-fit (component boundaries, state flow, contract
+  shapes), so they are the higher-quality evidence for technology judgment;
+  the source HTML is the concrete backing.
 - **Type B**: a stack already exists. Selection here is not "pick from
   zero" but "**starting from the current stack, choose only the changes
   needed to close the future-intent gaps**". Respect sound existing choices;
@@ -33,7 +35,7 @@ evidence-based**.
 Split selection into two stages. Never conflate them.
 
 **Stage 1: category necessity (evidence-based, agent-decided)**
-With the refactored HTML and Phase 3 diagrams as evidence, decide "is this
+With the source HTML and Phase 3 diagrams as evidence, decide "is this
 capability category needed at all?". This is derivable from evidence. If
 unnecessary, cut it — that is the agent's responsibility.
 
@@ -91,7 +93,7 @@ For each category, keep Stage 1 (evidence of necessity) and Stage 2
   projects) and let the user choose.
 
 - **UI component set (Radix/MUI, …)**
-  Stage 1: does the refactored HTML clearly contain accessible interactive
+  Stage 1: does the source HTML clearly contain accessible interactive
   widgets (modal/dropdown/tooltip)? If not, reject.
   Stage 2: if needed, present headless vs styled candidates.
 
@@ -102,7 +104,7 @@ For each category, keep Stage 1 (evidence of necessity) and Stage 2
   Query for a data-fetching layer) and let the user choose.
 
 - **Styling strategy**
-  Stage 1: use the refactored HTML's style situation as evidence (tokens
+  Stage 1: use the source HTML's style situation as evidence (tokens
   variablized, or hard-coded?).
   Stage 2: present trade-offs among plain CSS / CSS Modules / Tailwind /
   CSS-in-JS and let the user choose. **Record which and why.**
@@ -113,8 +115,8 @@ For each category, keep Stage 1 (evidence of necessity) and Stage 2
   minimal for throwaway, test infrastructure for long-term growth.
   Stage 2: multiple candidates (npm/pnpm/yarn, …) → user chooses.
 
-Tie every Stage 1 verdict to "this evidence in the refactored HTML".
-Adopting a category without evidence is forbidden.
+Tie every Stage 1 verdict to "this evidence in the source HTML / Phase 3
+diagrams". Adopting a category without evidence is forbidden.
 
 ### B. Backend — entirely the user's call (only when `backend: mock`)
 Backend language/framework cannot be derived from HTML (the same contract
@@ -137,24 +139,24 @@ choice.
 ---
 
 ## Procedure
-1. Read the refactored HTML, Phase 2, Phase 3. **Stage 1**: decide each
+1. Read the source HTML, Phase 2, Phase 3. **Stage 1**: decide each
    category's necessity on evidence (cut the unnecessary here).
 2. **Stage 2**: for needed categories with multiple candidates, present
    trade-offs neutrally and let the user choose. With `backend: mock`, also
    put B (backend tech) and C (contract method) before the user.
 3. Present the complete selection, **including rejected categories and their
    grounds**, and have the user confirm it is not over-engineered.
-4. On agreement, write `.h2p/phase5-stack.md`.
+4. On agreement, write `.h2p/phase4-stack.md`.
 
 ## Writing the artifact
-Write `.h2p/phase5-stack.md` following the structure of
+Write `.h2p/phase4-stack.md` following the structure of
 `prompts/templates/stack.md` (do not change the heading structure; do not
 omit rejected categories).
 - Per category: necessity, verdict, adopted technology, **role in the
   project**, candidates not chosen and why.
 - Styling strategy; with `backend: mock`, backend tech and contract method;
   foundation (package manager, …).
-- **Scaffold commands**: the command sequence Phase 7/8 agents will execute
+- **Scaffold commands**: the command sequence Phase 6/7 agents will execute
   via bash as-is.
 
 If the selection settles framework-specific naming idioms (handler naming,
@@ -181,5 +183,5 @@ left out".
 - The user agreed to the stack.
 
 When the user instructs progression, go through the orchestrator's
-consistency check to Phase 6. Phase 6 designs the development workflow and
+consistency check to Phase 5. Phase 5 designs the development workflow and
 discipline before implementation begins.

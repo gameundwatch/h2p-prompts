@@ -1,6 +1,6 @@
 # Foundation catalog — what to provision up front (high retrofit cost)
 
-Reference consulted by Phases 1, 3, 4, 5. This is the canonical list of
+Reference consulted by Phases 1, 3, 4, 6. This is the canonical list of
 structural / non-functional **foundations that are expensive to retrofit**
 (large blast radius) and are therefore laid up front as *readiness* — per the
 First Principle's anti-YAGNI / MVP stance.
@@ -56,7 +56,7 @@ Reading an entry: **blast radius** = what a late retrofit touches.
 | Layer separation + dependency direction (UI / logic / data; no cycles) — core | untangle coupling | FE / BE |
 | State-management architecture (server-state ⇄ client-state split; data-fetch/cache placement) | rewrite data flow | FE |
 | Routing / navigation structure (URL design, deep-linkability) | rework navigation | FE |
-| Render-strategy readiness (CSR / SSR / SSG): keep components render-agnostic, avoid hard `window`/`document` coupling | major rework to switch later | FE (the choice itself is Phase 5) |
+| Render-strategy readiness (CSR / SSR / SSG): keep components render-agnostic, avoid hard `window`/`document` coupling | major rework to switch later | FE (the choice itself is Phase 4) |
 | **Performance seams (code-split boundaries, lazy-load points; Core Web Vitals awareness)** | restructure to split later | FE — medium |
 | Testability seams (pure functions, DI, no hidden globals / direct-DOM coupling) | restructure to make testable | FE / BE |
 | Module / directory organization (feature-sliced or layered) | mass file moves | FE / BE |
@@ -104,11 +104,13 @@ Provision none of these by default (frontend + mock only); they take effect only
   behavior); keep it as structural observations.
 - **Phase 3 (structure):** let the structural seams (E) and contracts (B)
   shape the target structure and diagrams.
-- **Phase 4 (refactoring):** lay the foundations that can be established
-  in place without changing behavior — externalize literals (A), semantic /
-  a11y (F), tokens (A), error / async states (D), testability seams (E).
-  Each still passes the P4 behavior gate.
-- **Phase 5 (tech-stack selection):** bind choices to foundations — TypeScript
+- **Phase 6 (in-place foundations):** lay the foundations that can be
+  established without changing behavior — externalize literals (A), semantic /
+  a11y (F), tokens (A), error / async states (D), testability seams (E). Both
+  types lay them during the Phase 6 build, before the bulk implementation,
+  gated against the baseline (Type A: the original `.h2p/source/`; Type B:
+  `.origin/`).
+- **Phase 4 (tech-stack selection):** bind choices to foundations — TypeScript
   (B), validation library (B), config strategy (A), render strategy (E),
   test tooling (E/G). Reject anything a foundation does not require
   (First Principle 2).

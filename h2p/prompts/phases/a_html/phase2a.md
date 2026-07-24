@@ -69,10 +69,10 @@ Judge from Phase 1's (f) backend-demand traces; record `none` or `mock` in
 - Ask: throwaway/short-term, or long-term growth?
 - The **number** of layers does not change (3 layers is the baseline). The
   horizon adjusts build depth and the strictness of the dev workflow
-  (Phase 6).
+  (Phase 5).
 
 Once settled, record in decisions with rationale. If `backend: none`, tell
-the user Phase 8 will be skipped.
+the user Phase 7 will be skipped.
 
 ### 3. Contract elevation ★most important step
 **Required when `backend: mock`.** (With `backend: none` but direct public-
@@ -90,7 +90,7 @@ So **elevate raw demands into contracts sound as an API**:
   (types, required/optional, meaning).
 - Language-agnostic logical contracts suffice at this point (the concrete
   schema method — Zod / TypeSpec, etc. — is chosen with the tech in
-  Phase 5).
+  Phase 4).
 
 **Principle: what is derived backward is the contract, not the
 implementation.** The contract is "the honest representation of this
@@ -114,7 +114,7 @@ Write `.h2p/phase2-requirements.md` following the structure of
 `prompts/templates/requirements.md` (do not change the heading structure;
 mark sections unused by Type A as "N/A").
 
-Update `state.md`: `backend` settled, Phase 8 treatment (normal/skipped),
+Update `state.md`: `backend` settled, Phase 7 treatment (normal/skipped),
 decisions appended.
 
 ---

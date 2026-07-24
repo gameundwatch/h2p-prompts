@@ -1,13 +1,13 @@
-# phase6 — development workflow design
+# phase5 — development workflow design
 
-You are now in Phase 6. The orchestrator's First Principle and progression
+You are now in Phase 5. The orchestrator's First Principle and progression
 rules are assumed loaded. Input: `.h2p/phase2-requirements.md` (intent,
-scope), `.h2p/phase5-stack.md` (settled stack), and
+scope), `.h2p/phase4-stack.md` (settled stack), and
 `.h2p/phase3-structure.md` (structure).
 
 ## Responsibility of this Phase
 
-**Fix the development discipline before implementation (Phase 7/8)**: in
+**Fix the development discipline before implementation (Phase 6/7)**: in
 what cycle, with what verification, will implementation proceed. Discipline
 first, implementation second.
 
@@ -32,7 +32,7 @@ own; follow the scope.
 Why, and with what values, this project is developed and maintained.
 Translate Phase 2's Why into developer guidance (what to prioritize, what to
 sacrifice, what counts as good code). This becomes the core of CLAUDE.md
-(Phase 9).
+(Phase 8).
 
 ### 2. Visualize the development flow as 5W1H
 How development (ongoing work after this tool's migration ends) will run.
@@ -51,12 +51,12 @@ Define the PDCA-like iteration at scope-appropriate weight.
 - **Implement**: discipline that preserves the layer structure (frontend 3
   layers / backend 3 layers); rules that keep contract-mediated decoupling
   intact.
-- **Test/verify**: how the Phase 5 testing approach runs; at minimum, how
+- **Test/verify**: how the Phase 4 testing approach runs; at minimum, how
   each implementation Phase's behavior verification gate is satisfied.
 - **Release**: build/deploy policy (only as far as scope demands; a
   throwaway may simplify to "runs locally").
 
-### 4. Agree how Phase 7/8 will proceed
+### 4. Agree how Phase 6/7 will proceed
 Decide the granularity for the implementation Phases now.
 - From which units of Diagram 1 the frontend gets implemented (component
   order, …).
@@ -71,15 +71,15 @@ Decide the granularity for the implementation Phases now.
 2. Starting from Axis B (maintenance horizon), agree with the user on the
    weight of discipline.
 3. Settle items 1–4 through dialogue, checking each stays scope-appropriate.
-4. Write `.h2p/phase6-workflow.md`, structured.
+4. Write `.h2p/phase5-workflow.md`, structured.
 
 ## Writing the artifact
-Write to `.h2p/phase6-workflow.md`:
+Write to `.h2p/phase5-workflow.md`:
 - Development purpose and philosophy (material for CLAUDE.md).
 - The 5W1H development flow (Mermaid if useful).
 - The design/implement/test/release cycle definition (scope-appropriate
   weight).
-- How Phase 7/8 will proceed (implementation order, verification timing).
+- How Phase 6/7 will proceed (implementation order, verification timing).
 
 `state.md`: summarize in decisions the discipline-weight policy and key
 choices.
@@ -88,16 +88,16 @@ choices.
 - No heavy gear disproportionate to scope (CI / heavyweight review for a
   throwaway); conversely, do not drop verification discipline for long-term
   growth.
-- Do not generate code or projects here (that is Phase 7/8).
+- Do not generate code or projects here (that is Phase 6/7).
 - Do not stack an ideal development regime beyond the First Principle. Stay
   within what exists plus what the scope demands.
 
 ## Completion conditions (to mark done)
 - The discipline weight follows scope (Axis B).
-- Purpose/philosophy, the 5W1H flow, the PDCA cycle, and the Phase 7/8
-  approach are written in `.h2p/phase6-workflow.md`.
+- Purpose/philosophy, the 5W1H flow, the PDCA cycle, and the Phase 6/7
+  approach are written in `.h2p/phase5-workflow.md`.
 - The user agreed to the development workflow.
 
 When the user instructs progression, go through the orchestrator's
-consistency check to Phase 7. Phase 7 implements the frontend under the
+consistency check to Phase 6. Phase 6 implements the frontend under the
 discipline decided here.

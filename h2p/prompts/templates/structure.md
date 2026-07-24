@@ -1,7 +1,7 @@
 # structure.md — structure artifact (template)
 
 Skeleton for `.h2p/phase3-structure.md`. The writer differs by input type
-(A: phase3a / B: phase3b), but downstream Phases (4–7) read it without caring
+(A: phase3a / B: phase3b), but downstream Phases (4–6) read it without caring
 about the type. **The heading structure and the per-diagram Mermaid notation
 are immutable**; only the diagram content varies per project. All element
 names use identifiers from `.h2p/ubiquitous.md` (register new concepts

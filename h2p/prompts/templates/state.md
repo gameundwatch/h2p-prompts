@@ -37,7 +37,7 @@ Content differs by input_type.
     - <e.g. source/index.html>
 - **Type B**: no evacuation. Record the working-copy status.
   - working_copy: <e.g. copied to root (node_modules/.git excluded),
-    dependencies installed, startup verified. origin/ frozen>
+    dependencies installed, startup verified. .origin/ frozen>
 - analysis_target: undecided   # target files and the confirmation that they form one app
 - notes: <e.g. multi-page or single, notes at confirmation>
 
@@ -51,20 +51,18 @@ Phase prompt.
 | 1 | Analysis (A: observe / B: inventory & diagnose) | in_progress | .h2p/phase1-analysis.md (incl. behavior checklist) |
 | 2 | Requirements & contract elevation | pending | .h2p/phase2-requirements.md, .h2p/ubiquitous.md |
 | 3 | Structure (A: give / B: redesign & migration plan) | pending | .h2p/phase3-structure.md |
-| 4 | Structural refactoring | pending | .h2p/phase4-refactor.md, source/refactored/ (A) |
-| 5 | Tech stack selection | pending | .h2p/phase5-stack.md |
-| 6 | Development workflow design | pending | .h2p/phase6-workflow.md |
-| 7 | Frontend implementation / migration | pending | frontend/ |
-| 8 | Backend implementation | pending | backend/, shared/ |
-| 9 | Documentation | pending | CLAUDE.md, README.md, documents/, ISSUES.md (if backlog non-empty) |
+| 4 | Tech stack selection | pending | .h2p/phase4-stack.md |
+| 5 | Development workflow design | pending | .h2p/phase5-workflow.md |
+| 6 | Frontend implementation / migration | pending | frontend/ |
+| 7 | Backend implementation | pending | backend/, shared/ |
+| 8 | Documentation | pending | CLAUDE.md, README.md, documents/, ISSUES.md (if backlog non-empty) |
 
 ## gates
 Behavior-verification gate records, consulted by the orchestrator on
 progression. When marking passed, attach the gate commit hash
 (e.g. `passed (commit a1b2c3d)`).
-- p4_html_behaves: not_checked   # not_checked | passed (commit <hash>) | failed
-- p7_frontend_behaves: not_checked
-- p8_integration_runs: not_checked   # n/a when backend: none
+- p6_frontend_behaves: not_checked   # not_checked | passed (commit <hash>) | failed
+- p7_integration_runs: not_checked   # n/a when backend: none
 
 ## approved_deviations
 Differences from the original found at verification gates that the **user
@@ -84,7 +82,7 @@ Deferred work: items out of the current Phase's scope, plus problems and open
 questions the First Principle forces us to leave untouched during migration
 (behavior must not change) — to be tackled **after handoff, under CLAUDE.md
 governance**. This is the internal running log; record items here as they
-arise in any Phase. Phase 9 writes it up into the root deliverable `ISSUES.md`
+arise in any Phase. Phase 8 writes it up into the root deliverable `ISSUES.md`
 (from `prompts/templates/issues.md`), which survives migration and CLAUDE.md
 points at. Migration never resolves these — it only lays the seams (see
 `references/foundations.md`) that make them cheap later. Append-only.
@@ -105,23 +103,25 @@ things at once: (a) that row → `done`, (b) next row → `in_progress`,
 h2p is an environment-construction workflow that includes git.
 - At first boot, if the working folder is not a git repository, the
   orchestrator runs `git init`.
-- **Always commit when a behavior verification gate (P4/P7/P8) passes**
-  (message with the `h2p: ` prefix, e.g. `h2p: P4 gate passed`) and record
+- **Always commit when a behavior verification gate (P6/P7) passes**
+  (message with the `h2p: ` prefix, e.g. `h2p: P6 gate passed`) and record
   the hash in gates.
 - **Type B migration steps: one step = one commit.**
-- `.h2p/` and `.h2p-archive/` are **tracked by git** (never gitignored) so
-  the migration's decision record stays in history (there is no `prompts/` in
-  the project — the prompt set is read in place from the h2p skill). Ignore
-  generated / disposable things: `node_modules`, and `.review/` (a one-way
-  projection of `.h2p/` that holds no canonical information — add it to
-  `.gitignore` at first boot).
+- `.h2p/`, `.origin/` (frozen input baseline), and `.archive/` (retired
+  working dir, created at Phase 8) are **tracked by git** (never gitignored)
+  so the migration's decision record stays in history — there is no `prompts/`
+  in the project (the prompt set is read in place from the h2p skill).
+  `.archive/` is safe for the user to delete after completion; the choice is
+  theirs. Gitignore only the disposable / generated: `.review/` (a one-way
+  projection of `.h2p/` with no canonical information — add it to `.gitignore`
+  at first boot) and `node_modules`.
 
 ### How backend takes effect
 The frontend is always built; the only branch is backend presence.
-- `backend: none`: mark the Phase 8 row `skipped` and
-  `gates.p8_integration_runs` as `n/a`. Do not create `shared/` or
+- `backend: none`: mark the Phase 7 row `skipped` and
+  `gates.p7_integration_runs` as `n/a`. Do not create `shared/` or
   `backend/`.
-- `backend: mock`: run Phase 8 normally, creating `shared/` (canonical
+- `backend: mock`: run Phase 7 normally, creating `shared/` (canonical
   contract) and `backend/` (mock server).
 - `backend` stays `undecided` until Phase 2 settles it. On settling, record
   the rationale in decisions (especially how external-API traces were judged

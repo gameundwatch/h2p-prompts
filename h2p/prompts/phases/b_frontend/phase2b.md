@@ -2,7 +2,7 @@
 
 You are now in Phase 2 (Type B). The orchestrator's First Principle and
 progression rules are assumed loaded. Input: `.h2p/phase1-analysis.md`
-(inventory & diagnosis) and the `origin/` originals.
+(inventory & diagnosis) and the `.origin/` originals.
 
 ## Responsibility of this Phase
 
