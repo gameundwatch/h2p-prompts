@@ -170,7 +170,7 @@ Phases (1–3) differ by type.
    Phases (context economy). The authority over what to read belongs to each
    Phase prompt; the orchestrator just follows the declaration.
 3. Load the relevant Phase prompt and follow it. For Phases 1–3, read
-   `prompts/a_html/phaseNa.md` (Type A) or `prompts/b_frontend/phaseNb.md`
+   `prompts/phases/a_html/phaseNa.md` (Type A) or `prompts/phases/b_frontend/phaseNb.md`
    (Type B) according to `input_type`. Phases 4–8 use `prompts/phaseN.md`.
    (Prompts are named by number; artifacts by content:
    `.h2p/phaseN-<content>.md`. Do not confuse them.)
@@ -191,19 +191,19 @@ shared. When loading a prompt, choose the variant matching `state.md`'s
 
 | # | Name | Prompt | Artifact |
 |---|------|--------|----------|
-| 1 | Analysis (A: observation / B: inventory & diagnosis) | `a_html/phase1a.md` / `b_frontend/phase1b.md` | `.h2p/phase1-analysis.md` (includes behavior checklist) |
-| 2 | Requirements (A: intent retrieval / B: current intent + future intent) | `a_html/phase2a.md` / `b_frontend/phase2b.md` | `.h2p/phase2-requirements.md` + `.h2p/ubiquitous.md` |
-| 3 | Structure (A: give structure / B: redesign & migration plan) | `a_html/phase3a.md` / `b_frontend/phase3b.md` | `.h2p/phase3-structure.md` |
-| 4 | Tech stack selection | `phase4.md` | `.h2p/phase4-stack.md` |
-| 5 | Development workflow design | `phase5.md` | `.h2p/phase5-workflow.md` |
-| 6 | Frontend implementation / migration | `phase6.md` | `frontend/` |
-| 7 | Backend implementation [integrated scope only] | `phase7.md` | `backend/` + `shared/` |
-| 8 | Documentation | `phase8.md` | `CLAUDE.md` / `README.md` / `documents/` / `ISSUES.md` (if backlog non-empty) |
+| 1 | Analysis (A: observation / B: inventory & diagnosis) | `phases/a_html/phase1a.md` / `phases/b_frontend/phase1b.md` | `.h2p/phase1-analysis.md` (includes behavior checklist) |
+| 2 | Requirements (A: intent retrieval / B: current intent + future intent) | `phases/a_html/phase2a.md` / `phases/b_frontend/phase2b.md` | `.h2p/phase2-requirements.md` + `.h2p/ubiquitous.md` |
+| 3 | Structure (A: give structure / B: redesign & migration plan) | `phases/a_html/phase3a.md` / `phases/b_frontend/phase3b.md` | `.h2p/phase3-structure.md` |
+| 4 | Tech stack selection | `phases/phase4.md` | `.h2p/phase4-stack.md` |
+| 5 | Development workflow design | `phases/phase5.md` | `.h2p/phase5-workflow.md` |
+| 6 | Frontend implementation / migration | `phases/phase6.md` | `frontend/` |
+| 7 | Backend implementation [integrated scope only] | `phases/phase7.md` | `backend/` + `shared/` |
+| 8 | Documentation | `phases/phase8.md` | `CLAUDE.md` / `README.md` / `documents/` / `ISSUES.md` (if backlog non-empty) |
 
 - Order is one-way, 1→8. Each Phase takes the upstream artifacts it declares
   as input.
-- **Type branching**: for Phases 1–3, read `a_html/phaseNa.md` when
-  `input_type` is `A`, `b_frontend/phaseNb.md` when `B`. Artifact filenames
+- **Type branching**: for Phases 1–3, read `phases/a_html/phaseNa.md` when
+  `input_type` is `A`, `phases/b_frontend/phaseNb.md` when `B`. Artifact filenames
   are shared (output formats are aligned so later Phases can read them
   without caring about input type). Phases 4+ use the shared prompts.
 - **Fit-to-intent / foundations happen in Phase 6** (there is no separate
