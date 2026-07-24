@@ -1,28 +1,49 @@
-name: release
+name: create tag & release
 
-# Cut a release by pushing a version tag:
-#   git tag v0.1.0 && git push origin v0.1.0
-# The tag is the single source of truth for the version.
+# Release flow: open a PR from a version branch (`v*`, e.g. `v0.2.0`) into
+# `main`. When that PR is merged, this workflow tags `main` with the branch
+# name and cuts a GitHub Release for it. The branch name is the version.
 on:
-  push:
-    tags:
-      - 'v*'
+    pull_request:
+        types:
+            - closed
+        branches:
+            - main
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    release:
+        # Only a *merged* PR whose head branch is a version branch (`v*`).
+        # A closed-without-merge PR, or any non-`v` branch, is ignored.
+        if: >-
+            github.event.pull_request.merged == true &&
+            startsWith(github.event.pull_request.head.ref, 'v')
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: main
+                  fetch-depth: 0
 
-      - name: Package the h2p skill
-        run: |
-          test -f h2p/SKILL.md  # refuse to publish an empty/broken skill
-          zip -r h2p.zip h2p -x '*/.DS_Store'
+            - name: Package the h2p skill
+              run: |
+                  test -f h2p/SKILL.md  # refuse to publish an empty/broken skill
+                  zip -r h2p.zip h2p -x '*/.DS_Store'
 
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" h2p.zip --generate-notes
+            - name: Create tag & GitHub Release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  TAG: ${{ github.event.pull_request.head.ref }}
+              run: |
+                  # Fail clearly if this version was already released.
+                  if gh release view "$TAG" >/dev/null 2>&1; then
+                      echo "Release $TAG already exists; nothing to do." >&2
+                      exit 1
+                  fi
+                  # Creates the tag $TAG at main's merge commit, then the release.
+                  gh release create "$TAG" h2p.zip \
+                      --target main \
+                      --title "$TAG" \
+                      --generate-notes
