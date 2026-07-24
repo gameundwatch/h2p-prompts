@@ -91,24 +91,25 @@ The conversion is a one-time event; do not let its working directory squat in
 a live project. (The prompt set was never copied here — it is read in place
 from the h2p skill — so there is nothing to un-materialize; only `.h2p/` needs
 tidying.) With the user's consent:
-- Fold `.h2p/` into `.h2p-archive/`.
+- Fold `.h2p/` into `.archive/`.
 - **Delete `.review/`** — it is a disposable one-way projection with no
   canonical information (gitignored throughout), so nothing is lost.
-- **Keep `.h2p-archive/` tracked by git** (do not gitignore it) so the
-  migration's decision record stays in history. Ignore only generated
-  things like `node_modules`.
+- **Keep `.archive/` tracked by git** (do not gitignore it) so the migration's
+  decision record stays in history. Ignore only generated things like
+  `node_modules`.
 - **Record this retirement as the final commit**
   (e.g. `h2p: migration completed, working dir archived`).
-- **Final disposal of `.h2p-archive/` is the user's call.** It is the record
-  of the conversion's decisions, so always ask whether to discard or keep
-  (never delete on your own). If they choose disposal, note it remains in
-  git history.
+- **`.archive/` is safe to delete.** Once archived, tell the user plainly that
+  `.archive/` is just the migration's working-dir record and they may remove
+  it whenever they like — it stays in git history for recovery. Do not delete
+  it on your own.
 - After retirement, the root holds only the clean project (CLAUDE.md /
   README.md / documents/ / ISSUES.md / frontend/ etc.).
 
 ### 4. Report completion
 Tell the user the migration is complete, development can start, and the
-record remains in `.h2p-archive/`.
+migration record now lives in `.archive/` — kept in git history, and **safe
+to delete** whenever they no longer want it around.
 
 ## Artifacts
 - Single root `CLAUDE.md`, `README.md`, `documents/` (incl. ubiquitous.md).
@@ -120,8 +121,10 @@ record remains in `.h2p-archive/`.
 ## Do not
 - No new design decisions or feature additions. Write up, period.
 - Do not split CLAUDE.md (single, at root).
-- Do not discard `.h2p-archive/` without the user's confirmation.
-- Do not gitignore the migration record (`.h2p*`) — history keeps it.
+- Do not delete `.archive/` on your own (tell the user it is safe to delete;
+  the choice is theirs).
+- Do not gitignore the migration record (`.h2p/`, `.archive/`) — history
+  keeps it.
 - Do not break the project root while retiring.
 
 ## Completion conditions (to mark done)

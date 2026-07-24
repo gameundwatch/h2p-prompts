@@ -109,7 +109,7 @@ Provision none of these by default (frontend + mock only); they take effect only
   a11y (F), tokens (A), error / async states (D), testability seams (E). Both
   types lay them during the Phase 6 build, before the bulk implementation,
   gated against the baseline (Type A: the original `.h2p/source/`; Type B:
-  `origin/`).
+  `.origin/`).
 - **Phase 4 (tech-stack selection):** bind choices to foundations — TypeScript
   (B), validation library (B), config strategy (A), render strategy (E),
   test tooling (E/G). Reject anything a foundation does not require

@@ -37,7 +37,7 @@ Content differs by input_type.
     - <e.g. source/index.html>
 - **Type B**: no evacuation. Record the working-copy status.
   - working_copy: <e.g. copied to root (node_modules/.git excluded),
-    dependencies installed, startup verified. origin/ frozen>
+    dependencies installed, startup verified. .origin/ frozen>
 - analysis_target: undecided   # target files and the confirmation that they form one app
 - notes: <e.g. multi-page or single, notes at confirmation>
 
@@ -107,12 +107,14 @@ h2p is an environment-construction workflow that includes git.
   (message with the `h2p: ` prefix, e.g. `h2p: P6 gate passed`) and record
   the hash in gates.
 - **Type B migration steps: one step = one commit.**
-- `.h2p/` and `.h2p-archive/` are **tracked by git** (never gitignored) so
-  the migration's decision record stays in history (there is no `prompts/` in
-  the project — the prompt set is read in place from the h2p skill). Ignore
-  generated / disposable things: `node_modules`, and `.review/` (a one-way
-  projection of `.h2p/` that holds no canonical information — add it to
-  `.gitignore` at first boot).
+- `.h2p/`, `.origin/` (frozen input baseline), and `.archive/` (retired
+  working dir, created at Phase 8) are **tracked by git** (never gitignored)
+  so the migration's decision record stays in history — there is no `prompts/`
+  in the project (the prompt set is read in place from the h2p skill).
+  `.archive/` is safe for the user to delete after completion; the choice is
+  theirs. Gitignore only the disposable / generated: `.review/` (a one-way
+  projection of `.h2p/` with no canonical information — add it to `.gitignore`
+  at first boot) and `node_modules`.
 
 ### How backend takes effect
 The frontend is always built; the only branch is backend presence.

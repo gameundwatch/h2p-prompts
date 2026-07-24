@@ -68,7 +68,7 @@ them yourself via bash**.
 ### 2. Fit to intent / foundation first (before the bulk build)
 Both types do the fit-to-intent and in-place foundations **here**, before the
 bulk implementation — never as a behavior change; the gate is against the
-baseline (Type A: the original; Type B: `origin/`).
+baseline (Type A: the original; Type B: `.origin/`).
 - **Type A**: build a **divergence list** — where `.h2p/source/` diverges
   from Phase 2 intent and Phase 3 structure (e.g. shared state scattered
   across DOM/variables → consolidate; inconsistent hand-copied structures →
@@ -117,7 +117,7 @@ build up.
 ### 6. Behavior verification gate (exit) ★
 - With `npm install` done, **the dev server starts**.
 - The reproduced frontend behaves and looks the same as the baseline —
-  **Type A: the original `.h2p/source/`; Type B: the `origin/` baseline** —
+  **Type A: the original `.h2p/source/`; Type B: the `.origin/` baseline** —
   **checked against the Phase 1 behavior checklist**. The agent verifies the
   machine-checkable range (startup, console errors, DOM/state transitions).
 - Generate `.review/p7-compare.html` (the baseline and the dev server side by

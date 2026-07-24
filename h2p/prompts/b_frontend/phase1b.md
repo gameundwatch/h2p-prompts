@@ -1,7 +1,7 @@
 # phase1b — inventory & diagnosis [Type B: existing frontend app]
 
 You are now in Phase 1 (Type B). The orchestrator's First Principle and
-progression rules are assumed loaded. Input: the original app in `origin/`
+progression rules are assumed loaded. Input: the original app in `.origin/`
 (package.json + src + dependencies). **Never touch the originals** — read
 and diagnose.
 
@@ -25,7 +25,7 @@ features themselves.
 
 ## Inventory (grasping facts)
 
-Read `origin/` and establish as fact:
+Read `.origin/` and establish as fact:
 
 - **Dependencies and scripts** (package.json): frameworks, libraries,
   versions; build/test/start scripts; package manager.
@@ -64,8 +64,8 @@ range).
 ---
 
 ## Procedure
-1. Read `origin/` and take the inventory (do not modify the originals; all
-   subsequent changes happen on the root working copy, and `origin/` remains
+1. Read `.origin/` and take the inventory (do not modify the originals; all
+   subsequent changes happen on the root working copy, and `.origin/` remains
    the frozen baseline).
 2. Detect the non-functional condition along the diagnosis aspects.
 3. **Build the behavior checklist**: run the app and list its main usage
@@ -96,7 +96,7 @@ per the template).
   limited to non-functional requirements.
 - Do not decree fixes ("this must be corrected") — remediation is planned in
   Phase 3. Stay at detection and risk presentation.
-- Do not **modify** the `origin/` originals (this Phase is read-only).
+- Do not **modify** the `.origin/` originals (this Phase is read-only).
 - Do not fill gaps with speculation. Write only confirmed facts and explicit
   deferrals.
 

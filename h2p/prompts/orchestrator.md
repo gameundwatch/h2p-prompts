@@ -17,7 +17,7 @@ These prompt files are read **in place** from the h2p skill's own directory
 `prompts/…` path in this prompt set means `<H2P>/prompts/…`.** Never copy the
 prompt set into the user's project. The project accumulates only `./.h2p/`
 (state, artifacts, working files), `./.review/` (disposable user-facing
-projections, gitignored), and the migration output (`origin/`, `frontend/`,
+projections, gitignored), and the migration output (`.origin/`, `frontend/`,
 etc.) — there is no `prompts/` directory in the project.
 
 ### Jurisdiction boundary (handoff between h2p and CLAUDE.md)
@@ -124,20 +124,20 @@ Phases (1–3) differ by type.
         Type B), using messages prefixed `h2p: `. h2p is an
         environment-construction workflow that includes git; restoration of
         code state is guaranteed by commits. Ensure `.gitignore` ignores
-        `.review/` (and `node_modules`); `.h2p/` stays tracked.
-     2. **Input check**: all input lives in the **`origin/` directory**.
-        Search only inside `origin/`; never pick up the tool's own working
-        files (`.h2p/`, `.h2p-archive/`) or generated files at root as
-        input candidates. If `origin/` is missing or empty, check whether
-        input candidates sit at the root (`.html` files with their css/js/
-        assets, or `package.json` + a source tree). If so, present the
-        candidate list (excluding tool files: `.h2p*`,
-        `README.md`, `LICENSE`) and, **after the user agrees, move them into
-        `origin/`** (the root is where the project will grow; leave no copy
-        of the input there — the originals are preserved inside `origin/`).
-        If there are no candidates either, ask the user to place the input in
-        `origin/` and wait.
-     3. **Detect input type**: if `origin/` contains `package.json` (with
+        `.review/` (and `node_modules`); `.h2p/`, `.origin/`, and `.archive/`
+        stay tracked.
+     2. **Input check**: input candidates normally sit at the project
+        **root** (`.html` files with their css/js/assets, or `package.json` +
+        a source tree). Present the candidate list (excluding tool files:
+        `.h2p*`, `.origin/`, `.review/`, `.archive/`, `README.md`, `LICENSE`)
+        and, **once the user confirms the input, evacuate it into `.origin/`**
+        — a hidden, frozen baseline that later project operation does not use
+        (leave no copy at the root; the originals are preserved inside
+        `.origin/`). If `.origin/` already exists and is populated (a prepared
+        or resumed input), use it as-is. If there are neither candidates nor a
+        populated `.origin/`, ask the user to place the input at the root and
+        wait.
+     3. **Detect input type**: if `.origin/` contains `package.json` (with
         dependencies declared) and a source tree such as `src/`, it is
         **Type B**; if it is `.html`-centric with no `package.json`, it is
         **Type A**. The presence of `node_modules` or a lockfile
@@ -148,17 +148,17 @@ Phases (1–3) differ by type.
         `.h2p/state.md` following its structure (the template is a skeleton,
         not a working file). Record the user's language in `meta.language`.
      5. **Type A**: create `.h2p/source/` and copy all input HTML (`.html`
-        plus accompanying css/js/assets) from `origin/` into it. If multiple
+        plus accompanying css/js/assets) from `.origin/` into it. If multiple
         `.html` files exist, do not silently pick one; present all detected
         HTML and confirm "which is the target / do they form one app?"
         before finalizing. From here on, `.h2p/source/` is the working axis.
-     6. **Type B**: copy the contents of `origin/` (excluding
+     6. **Type B**: copy the contents of `.origin/` (excluding
         `node_modules`, `.git`, and build outputs) **to the root as the
         working copy**, install dependencies, and confirm the working copy
         starts the same as the original. All subsequent Phases modify **only
-        the root working copy**; `origin/` is a frozen baseline and is never
+        the root working copy**; `.origin/` is a frozen baseline and is never
         touched (the comparison target for "does it still work the same?" is
-        always `origin/` booted up). Do not copy into `.h2p/source/`.
+        always `.origin/` booted up). Do not copy into `.h2p/source/`.
      Set the current Phase to "1".
    - **Present → session restore.** Read `state.md`; grasp `input_type`,
      `meta.language`, the current Phase, per-Phase completion flags, and
@@ -209,7 +209,7 @@ shared. When loading a prompt, choose the variant matching `state.md`'s
 - **Fit-to-intent / foundations happen in Phase 6** (there is no separate
   refactoring phase). Both types build `frontend/` in Phase 6 and **gate
   against the baseline** — Type A: the original `.h2p/source/`; Type B: the
-  `origin/` working copy. Type A reproduces the original corrected to Phase
+  `.origin/` working copy. Type A reproduces the original corrected to Phase
   2/3 intent; Type B executes the migration plan (foundation steps first, then
   the rest) on the working copy, strangler-fig with one commit per step. Both
   lay the in-place foundations (`references/foundations.md`) during the build,
@@ -268,7 +268,7 @@ points:
 
 - **P6 exit**: with `npm install` done, does the dev server start, and does
   the reproduced frontend behave the same as the baseline — **Type A: the
-  original `.h2p/source/`; Type B: the `origin/` baseline**? (Type B verifies
+  original `.h2p/source/`; Type B: the `.origin/` baseline**? (Type B verifies
   after every migration step; one step = one commit.)
 - **P7 exit**: do frontend and backend start together and work integrated
   through the contract?

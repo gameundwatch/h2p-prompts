@@ -4,7 +4,7 @@ You are now in Phase 3 (Type B). The orchestrator's First Principle and
 progression rules are assumed loaded. Input: `.h2p/phase1-analysis.md`
 (inventory & diagnosis), `.h2p/phase2-requirements.md` (current intent,
 future intent, gaps, scope), `.h2p/ubiquitous.md` (term ledger), and the
-`origin/` originals. Also consult `prompts/references/foundations.md`
+`.origin/` originals. Also consult `prompts/references/foundations.md`
 (foundation catalog) — let its structural seams and contracts shape the
 redesign and migration plan.
 
